@@ -8,17 +8,17 @@
     //一次審査・管理者メニューsubmenu
     const ichijishinnsakanrishaMenusubmenu = document.getElementById("ichijishinnsakanrishaMenu-submenu");
     //二次審査メニュー
-    const nichijishinnsatsukanrishaMenu = document.getElementById("nichijishinnsatsukanrishaMenu");
+    const nichijishinnsakanrishaMenu = document.getElementById("nichijishinnsakanrishaMenu");
     //二次審査メニューsubmenu
-    const nichijishinnsatsukanrishaMenusubmenu = document.getElementById("nichijishinnsatsukanrishaMenusubmenu-submenu");
+    const nichijishinnsakanrishaMenusubmenu = document.getElementById("nichijishinnsakanrishaMenusubmenu-submenu");
     //局管理者メニュー
     const kyokukannrishaMenu = document.getElementById("kyokukannrishaMenu");
     //局管理者メニューsubmenu
     const kyokukannrishaMenusubmenu = document.getElementById("kyokukannrishaMenu-submenu");
     //三次審査メニュー
-    const sanjishinnsatsukanrishaMenu = document.getElementById("sanjishinnsatsukanrishaMenu");
+    const sanjishinnsaMenu = document.getElementById("sanjishinnsaMenu");
     //三次審査メニューsubmenu
-    const sanjishinnsatsukanrishaMenusubmenu = document.getElementById("sanjishinnsatsukanrishaMenu-submenu");
+    const sanjishinnsaMenusubmenu = document.getElementById("sanjishinnsaMenu-submenu");
     //庁管理者メニュー
     const chokannrishaMenu = document.getElementById("chokannrishaMenu");
     //庁管理者メニューsubmenu
@@ -41,9 +41,9 @@
         });
     }
     //二次審査メニュー
-    if (nichijishinnsatsukanrishaMenu && nichijishinnsatsukanrishaMenusubmenu) {
-        nichijishinnsatsukanrishaMenu.addEventListener("click", function () {
-            nichijishinnsatsukanrishaMenusubmenu.style.display = nichijishinnsatsukanrishaMenusubmenu.style.display === "none" ? "block" : "none";
+    if (nichijishinnsakanrishaMenu && nichijishinnsakanrishaMenusubmenu) {
+        nichijishinnsakanrishaMenu.addEventListener("click", function () {
+            nichijishinnsakanrishaMenusubmenu.style.display = nichijishinnsakanrishaMenusubmenu.style.display === "none" ? "block" : "none";
         });
     }
     //局管理者メニュー
@@ -53,9 +53,9 @@
         });
     }
     //三次審査メニュー
-    if (sanjishinnsatsukanrishaMenu && sanjishinnsatsukanrishaMenusubmenu) {
+    if (sanjishinnsaMenu && sanjishinnsaMenusubmenu) {
         sanjishinnsatsukanrishaMenu.addEventListener("click", function () {
-            sanjishinnsatsukanrishaMenusubmenu.style.display = sanjishinnsatsukanrishaMenusubmenu.style.display === "none" ? "block" : "none";
+            sanjishinnsaMenusubmenu.style.display = sanjishinnsaMenusubmenu.style.display === "none" ? "block" : "none";
         });
     }
     //庁管理者メニュー
