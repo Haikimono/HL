@@ -20,16 +20,6 @@ namespace Proposal.Controllers
             _loginBL = new LoginBL(connStr);
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -39,20 +29,44 @@ namespace Proposal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            // 检查是否已经登录
+            var userId = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // 已登录，直接跳转到菜单
+                return RedirectToAction("Menu");
+            }
+            return View(new LoginModel());
         }
 
         [HttpPost]
         [Route("proposal/login")]
-        public IActionResult Login(string user_id, string password)
+        public IActionResult Login(LoginModel model, string action)
         {
-            bool user = _loginBL.ValidateUser(user_id, password);
-            if (user == false)
+            if (action == "login")
             {
-                ViewBag.Error = "ユーザーIDまたはパスワードが間違っています。";
-                return View();
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Error = "入力内容に誤りがあります。";
+                    return View(model);
+                }
+
+                var user = _loginBL.ValidateUser(model);
+                if (user == null)
+                {
+                    ViewBag.Error = "ユーザーIDまたはパスワードが間違っています。";
+                    return View(model);
+                }
+
+                // 登录成功，设置 session
+                HttpContext.Session.SetString("UserId", user.UserId);
+                HttpContext.Session.SetString("UserName", user.UserName);
+                HttpContext.Session.SetString("UserKbn", user.UserKbn);
+
+                return RedirectToAction("Menu");
             }
-            return RedirectToAction("Menu");
+            ViewBag.Error = "不明なアクションです。";
+            return View(model);
         }
 
         [HttpGet]
@@ -111,8 +125,16 @@ namespace Proposal.Controllers
         [Route("proposal/menu")]
         public IActionResult Menu()
         {
-            ViewBag.UserName = TempData["user_name"];
-            ViewBag.UserKbn = TempData["user_kbn"];
+            // 检查是否已登录
+            var userId = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                // 未登录，跳转到登录页面
+                return RedirectToAction("Login");
+            }
+            
+            ViewBag.UserName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserKbn = HttpContext.Session.GetString("UserKbn");
             return View("~/Views/Menu/Menu.cshtml");
         }
     }

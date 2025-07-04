@@ -1,4 +1,5 @@
 ﻿using Proposal.BL;
+using Proposal.Models;
 
 namespace Proposal.Logic
 {
@@ -15,11 +16,11 @@ namespace Proposal.Logic
         /// 处理登录流程：格式校验 + 调用BL层业务校验
         /// </summary>
         /// <returns>登录结果和消息</returns>
-        public (bool Success, string Message) Login(string userId, string password)
+        public (bool Success, string Message) Login(string userId, string password,LoginModel pModel)
         {
             // 调用业务逻辑校验账号密码
-            bool valid = _loginBL.ValidateUser(userId, password);
-            if (valid)
+            var User = _loginBL.ValidateUser(pModel);
+            if (User != null)
             {
                 return (true, "登录成功");
             }

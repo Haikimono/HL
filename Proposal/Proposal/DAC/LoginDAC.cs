@@ -13,13 +13,13 @@ namespace Proposal.DAC
             _connectionString = connectionString;
         }
 
-        public User GetUserById(string userId)
+        public User GetUserById(LoginModel pModel)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
             string sql = "SELECT user_id, user_name, password, user_kbn FROM M_User WHERE user_id=@userId";
             using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@userId", pModel.UserId);
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {

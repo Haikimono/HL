@@ -20,16 +20,16 @@ namespace Proposal.BL
         /// 验证用户账号密码
         /// </summary>
         /// <returns>登录成功返回用户对象，否则返回 null</returns>
-        public bool ValidateUser(string userId, string password)
+        public User ValidateUser(LoginModel pModel)
         {
-            var user = _LoginDAC.GetUserById(userId);
-            if (user != null && user.Password == password) 
+            var user = _LoginDAC.GetUserById(pModel);
+            if (user != null && user.Password == pModel.Password) 
             {
-                return true;
+                return user;
             }
             else
             {
-                return false;
+                return null;
             }
         }
     }

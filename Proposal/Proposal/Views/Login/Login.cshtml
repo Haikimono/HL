@@ -1,23 +1,32 @@
+@model Proposal.Models.LoginModel
 @{
     ViewData["Title"] = "ログイン";
 }
+
 <div class="container" style="max-width:400px;margin-top:80px;">
     <h2 class="text-center mb-4">提案書作成提出システム ログイン</h2>
-    <form method="post" action="/proposal/login">
+
+    <form asp-action="Login" asp-controller="Login" method="post">
         <div class="mb-3">
-            <label for="user_id" class="form-label">ユーザーID</label>
-            <input type="text" class="form-control" id="user_id" name="user_id" required minlength="4" maxlength="20">
+            @Html.LabelFor(m => m.UserId, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.UserId, new { @class = "form-control", required = "required", minlength = "4", maxlength = "20" })
+            @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "text-danger" })
         </div>
+
         <div class="mb-3">
-            <label for="password" class="form-label">パスワード</label>
-            <input type="password" class="form-control" id="password" name="password" required minlength="8" maxlength="32">
+            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", required = "required", minlength = "8", maxlength = "32" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
+
         <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">ログイン</button>
+            <button type="submit" name="action" value="login" class="btn btn-primary" method="post">ログイン</button>
             <a href="/proposal/register" class="btn btn-secondary">新規ユーザー登録</a>
         </div>
     </form>
-    @if(ViewBag.Error != null) {
+
+    @if (ViewBag.Error != null)
+    {
         <div class="alert alert-danger mt-3 text-center">@ViewBag.Error</div>
     }
-</div> 
+</div>
