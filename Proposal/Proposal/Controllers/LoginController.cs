@@ -40,7 +40,6 @@ namespace Proposal.Controllers
         }
 
         [HttpPost]
-        [Route("proposal/login")]
         public IActionResult Login(LoginModel model, string action)
         {
             if (action == "login")

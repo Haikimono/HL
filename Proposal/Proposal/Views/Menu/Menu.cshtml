@@ -8,7 +8,7 @@
 @section Scripts {
     <script src="~/js/Menu.js"></script>
 }
-<div class="container" style="max-width:500px;margin-top:80px;">
+<form asp-action="Menu" asp-controller="Menu" method="post">
     <h2 class="text-center mb-4">提案書作成提出システム メニュー</h2>
     @if (!string.IsNullOrEmpty(userName)) {
         <div class="mb-3 text-end">
@@ -22,7 +22,7 @@
     <div class="d-grid gap-3">
         <button id="teianshosakuseiMenu" class="btn btn-outline-primary btn-lg">提案書作成メニュー</button>
         <div id="teianshosakuseiMenu-submenu" class="ms-4 d-grid gap-2" style="display: none;">
-            <a href="/proposal/create" class="btn btn-outline-success btn-md">① 提案書作成</a>
+            <button type="submit" name="action" value="teianshosakuseiMenuteianshosakusei" class="btn btn-outline-success btn-md" method="post">① 提案書作成</button>
             <a href="/proposal/list" class="btn btn-outline-success btn-md">② 提案書一覧</a>
         </div>
 
@@ -60,4 +60,4 @@
         </div>
 
     </div>
-</div> 
+</form>
