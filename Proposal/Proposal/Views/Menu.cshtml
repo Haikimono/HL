@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "メニュー";
+    var userName = ViewBag.UserName as string;
+    var userKbn = ViewBag.UserKbn as string;
+    string[] kbnNames = { "", "提案者", "一次審査者", "総務課長", "局総務課", "二次審査者", "庁総務課", "三次審査者" };
+}
+<div class="container" style="max-width:500px;margin-top:80px;">
+    <h2 class="text-center mb-4">提案書作成提出システム メニュー</h2>
+    @if (!string.IsNullOrEmpty(userName)) {
+        <div class="mb-3 text-end">
+            <span>ユーザー名：@userName</span>　
+            <span>区分：@kbnNames[int.TryParse(userKbn, out var kbn) ? kbn : 0]</span>
+        </div>
+    }
+    <div class="d-grid gap-3">
+        <a href="#" class="btn btn-outline-primary btn-lg">提案書作成メニュー</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">一次審査メニュー</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">二次審査メニュー</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">局管理者メニュー</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">三次審査メニュー</a>
+        <a href="#" class="btn btn-outline-primary btn-lg">庁管理者メニュー</a>
+        <a href="#" class="btn btn-outline-secondary btn-lg">検索メニュー</a>
+    </div>
+</div> 
