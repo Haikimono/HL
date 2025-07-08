@@ -4,6 +4,9 @@ namespace Proposal.Models
 {
     public class CreateModel
     {
+        //提案年度
+        public string? TeianYear { get; set; }
+
         //提案題名
         [Required(ErrorMessage = "提案題名を入力してください。")]
         [MaxLength(20, ErrorMessage = "20文字以内で入力してください。")]

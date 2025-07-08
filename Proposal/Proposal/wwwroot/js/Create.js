@@ -1,10 +1,4 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    //年数の取得
-    const yearSpan = document.getElementById("year");
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-    }
-
     //添付ファイル
     for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`btn${i}`);
@@ -32,13 +26,19 @@
 
 //基本情報と提案内容
 function showDiv(target) {
-    if (target === 'base') {
-        document.getElementById('baseDiv').style.display = 'block';
-        document.getElementById('teianDiv').style.display = 'none';
-    } else if (target === 'teian') {
-        document.getElementById('baseDiv').style.display = 'none';
-        document.getElementById('teianDiv').style.display = 'block';
-    }
+    const baseDiv = document.getElementById('baseDiv');
+    const teianDiv = document.getElementById('teianDiv');
+    const btnBase = document.getElementById('btnBase');
+    const btnTeian = document.getElementById('btnTeian');
+
+    baseDiv.style.display = target === 'base' ? 'block' : 'none';
+    teianDiv.style.display = target === 'teian' ? 'block' : 'none';
+
+    btnBase.classList.toggle('btn-primary', target === 'base');
+    btnBase.classList.toggle('btn-outline-primary', target !== 'base');
+
+    btnTeian.classList.toggle('btn-primary', target === 'teian');
+    btnTeian.classList.toggle('btn-outline-primary', target !== 'teian');
 }
 
 //初期化
