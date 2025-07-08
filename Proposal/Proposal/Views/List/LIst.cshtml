@@ -1,85 +1,100 @@
-﻿@model List<Proposal.Models.TeProposal>  
-@using Proposal.Models  
-@{  
-    ViewData["Title"] = "提案書一覧";  
-    var years = ViewBag.Years as List<int> ?? new List<int>();  
-    var statuses = ViewBag.Statuses as List<ProposalStatus> ?? new List<ProposalStatus>();  
-    int? selectedYear = ViewBag.SelectedYear as int?;  
-    int? selectedStatus = ViewBag.SelectedStatus as int?;  
-}  
-
-<h2 class="mb-4">提案書一覧【提案書作成メニュー】</h2>  
-
-<div id="search-list-top" class="p-3 mb-4" style="background-color: #007bff; border-radius: 8px; max-width: 600px;">  
-    <form method="get" asp-controller="Proposal" asp-action="List">  
-        <div class="d-flex align-items-center gap-3">  
-            <select name="year" class="form-select" style="width: 120px;">  
-                <option value="">すべて</option>  
-                @foreach (var y in years)  
-                {  
-                    <option value="@y" selected="@(selectedYear == y ? "selected" : null)">@y 提案年度</option>  
-                }  
-            </select>  
-            <input type="date" name="date" class="form-control" style="width: 160px;">  
-            <select name="status" class="form-select" style="width: 120px;">  
-                <option value="">すべて</option>  
-                @foreach (var s in statuses)  
-                {  
-                    <option value="@((int)s)" selected="@(selectedStatus == (int)s ? "selected" : null)">@s.ToString()</option>  
-                }  
-            </select>  
-        </div>  
-        <div class="d-flex justify-content-end gap-2 mt-3">  
-            <button type="submit" class="btn btn-light">検索</button>  
-            <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("List", "Proposal")'">クリア</button>
-            <button type="button" class="btn btn-outline-light" onclick="history.back();">戻る</button>  
-        </div>  
-    </form>  
-</div>  
-
-<h5 class="mb-3">提案書一覧</h5>  
-<div class="table-responsive">  
-    <table class="table table-bordered table-sm bg-white">  
-        <thead class="table-primary">  
-            <tr>  
-                <th>提案年度</th>  
-                <th>提案番号</th>  
-                <th>状態</th>  
-                <th>提案題名</th>  
-                <th>提案者氏名・グループ名</th>  
-                <th>所属</th>  
-                <th>提出日</th>  
-                <th>評点</th>  
-                <th>判定</th>  
-                <th>追加進達</th>  
-                <th>審査課</th>  
-                <th>関係課</th>  
-                <th>入賞区分</th>  
-                <th>提案書</th>  
-            </tr>  
-        </thead>  
-        <tbody>  
-            @foreach (var p in Model)  
-            {  
-                <tr>  
-                    <td>@p.ProposalYear</td>  
-                    <td>@p.Id</td>  
-                    <td>@p.StatusDisplay</td>  
-                    <td>@p.PdName</td>  
-                    <td>@p.UserName</td>
-                    <td>@p.FromDisplay</td>
-                    <td>@p.SubmittedAt?.ToString("yyyy-MM-dd")</td>  
-                    <td>@p.Point</td>
-                    <td>@p.DecisionDisplay</td>
-                    <td>@p.Resubmission</td>  
-                    <td>@p.ReviewSection</td>  
-                    <td>@p.RelatedSections</td>  
-                    <td>@p.AwardDivision</td>  
-                    <td>  
-                        <a href="#">@p.PdName</a>  
-                    </td>  
-                </tr>  
-            }  
-        </tbody>  
-    </table>  
-</div>
+﻿@model List<Proposal.Models.TeProposal>
+@using Proposal.Models
+@{
+    ViewData["Title"] = "提案書一覧";
+    var years = ViewBag.Years as List<int> ?? new List<int>();
+    var statuses = ViewBag.Statuses as List<ProposalStatus> ?? new List<ProposalStatus>();
+    int? selectedYear = ViewBag.SelectedYear as int?;
+    int? selectedStatus = ViewBag.SelectedStatus as int?;
+}
+<body style="background-color: #E9E9E9;">
+    <h4 style="margin-top: 3%; margin-bottom: 3%;">提案書一覧 【提案書作成メニュー】</h4>
+    <div>
+        <div id="search-list-top" style="background-color: #FFFFFF; border-radius: 8px;">
+            <div style="padding-top: 3%;padding-left: 3%;padding-bottom: 3%;padding-right: 3%;">
+            <div>
+            <form method="get" asp-controller="Proposal" asp-action="List">
+                <div style="display: flex; flex-direction: column; padding: 1rem;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <label style="margin-right: 10px; color: #333; min-width: 70px;">提案年度</label>
+                        <select name="year" style="width: 200px; border: 1px solid #CACACA; padding: 5px; border-radius: 8px;">
+                            <option value="">すべて</option>
+                            @foreach (var y in years)
+                            {
+                                <option value="@y" selected="@(selectedYear == y ? "selected" : null)">@y 提案年度</option>
+                            }
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <label style="margin-right: 10px; color: #333; min-width: 70px;">提出日</label>
+                        <input type="date" name="date" style="width: 200px; border: 1px solid #CACACA; padding: 5px; border-radius: 8px;">
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <label style="margin-right: 10px; color: #333; min-width: 70px;">状態</label>
+                        <select name="status" style="width: 200px; border: 1px solid #CACACA; padding: 5px; border-radius: 8px;">
+                            <option value="">すべて</option>
+                            @foreach (var s in statuses)
+                            {
+                                <option value="@((int)s)" selected="@(selectedStatus == (int)s ? "selected" : null)">@s.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1rem;">
+                            <button type="submit" style="background: transparent; border: 1px solid #CACACA; color: #333; padding: 5px 10px; border-radius: 8px;width: 80px">検索</button>
+                            <button type="button" style="background: transparent; border: 1px solid #CACACA; color: #333; padding: 5px 10px; border-radius: 8px;width: 80px" onclick="location.href='@Url.Action("List", "Proposal")'">クリア</button>
+                            <button type="button" style="background: transparent; border: 1px solid #CACACA; color: #333; padding: 5px 10px; border-radius: 8px;width: 80px" onclick="history.back();">戻る</button>
+                </div>
+            </form>
+            </div>
+                <hr style="border: none; border-top: 2px solid #7E7E7E; margin-bottom: 1.5rem; margin-top: 1rem;" />
+                <h5 style="margin-top: 2%; margin-bottom: 2%;">提案書一覧</h5>
+            <div>
+                <table style="border-collapse: collapse; width: 100%; background: #fff; border: 1px solid #CACACA;">
+                    <thead style="background: #136AA8; color: #ffffff;">
+                        <tr>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提案年度</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提案番号</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">状態</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提案題名</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提案者氏名・グループ名</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">所属</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提出日</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">評点</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">判定</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">追加進達</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">審査課</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">関係課</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">入賞区分</th>
+                            <th style="border: 1px solid #CACACA; padding: 5px;">提案書</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
+                            <tr>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.ProposalYear</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.Id</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.StatusDisplay</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.PdName</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.UserName</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.FromDisplay</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.SubmittedAt?.ToString("yyyy-MM-dd")</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.Point</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.DecisionDisplay</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.Resubmission</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.ReviewSection</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.RelatedSections</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">@p.AwardDivision</td>
+                                <td style="border: 1px solid #CACACA; padding: 5px;">
+                                    <a href="#">@p.PdName</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
