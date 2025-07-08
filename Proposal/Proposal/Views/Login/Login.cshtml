@@ -3,6 +3,11 @@
     ViewData["Title"] = "ログイン";
 }
 
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+
 <div class="container" style="max-width:400px;margin-top:80px;">
     <h2 class="text-center mb-4">提案書作成提出システム<br>ログイン</h2>
 

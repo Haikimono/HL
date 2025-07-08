@@ -29,11 +29,10 @@ namespace Proposal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            // 检查是否已经登录
+            // Sessionで登録したことを確認
             var userId = HttpContext.Session.GetString("UserId");
             if (!string.IsNullOrEmpty(userId))
             {
-                // 已登录，直接跳转到菜单
                 return RedirectToAction("Menu");
             }
             return View(new LoginModel());
@@ -131,7 +130,7 @@ namespace Proposal.Controllers
                 // 未登录，跳转到登录页面
                 return RedirectToAction("Login");
             }
-            
+
             ViewBag.UserName = HttpContext.Session.GetString("UserName");
             ViewBag.UserKbn = HttpContext.Session.GetString("UserKbn");
             return View("~/Views/Menu/Menu.cshtml");
