@@ -23,12 +23,12 @@ namespace Proposal.Controllers
             return View("~/Views/Login/Login.cshtml");
         }
 
-        //申請書一覧
-        [Route("proposal/list")]
-        public IActionResult List()
-        {
-            return View("~/Views/List/List.cshtml");
-        }
+        ////申請書一覧
+        //[Route("proposal/list")]
+        //public IActionResult List()
+        //{
+        //    return View("~/Views/List/List.cshtml");
+        //}
 
         //申請書作成
         [Route("proposal/create")]
