@@ -2,39 +2,107 @@
 @{
     ViewData["Title"] = "ログイン";
 }
+<head>
+    <link rel="stylesheet" href="~/Proposal.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #E9E9E9;
+        }
 
-<link rel="stylesheet" href="~/Proposal.styles.css" asp-append-version="true" />
-<body class="body_style" style="background-color: #E9E9E9; ">
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-success">@ViewBag.Message</div>
-}
-    <div style="display: grid; place-items: center; padding-top: 10%;">
-        <div style="background-color: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); text-align: left;">
-            <div class="container" style="height: 100%;">
-                <h2 class="text-center mb-4">提案書作成提出 システム<br>ログイン</h2>
-                <form asp-action="Login" asp-controller="Login" method="post">
-                    <div class="mb-3">
-                        @Html.LabelFor(m => m.UserId, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.UserId, new { @class = "form-control", required = "required", minlength = "4", maxlength = "20" })
-                        @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="mb-3">
-                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", required = "required", minlength = "8", maxlength = "32" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" name="action" value="login" class="btn btn-primary" style="background-color: #136AA8;margin-top: 10%; padding-top: 10px;padding-bottom: 10px;margin-bottom: 10%;">
-                            ログイン
-                        </button>
-                        @if (ViewBag.Error != null)
-                        {
-                            <div class="alert alert-danger mt-3 text-center">@ViewBag.Error</div>
-                        }
-                    </div>
-                </form>
-            </div>
+        .login-container {
+            display: grid;
+            place-items: center;
+            padding-top: 5%;
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            text-align: left;   
+        }
+
+        .form-field {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .login-header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            padding: 10px 0;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            display: block;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-login {
+            background-color: #136AA8;
+            margin-top: 10%;
+            margin-bottom: 10%;
+            padding: 12px 0;
+            width: 100%;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .error-message {
+            text-align: center;
+            background-color: pink;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    @if (ViewBag.Message != null)
+    {
+        <div>@ViewBag.Message</div>
+    }
+    <div class="login-container">
+        <div class="login-box">
+            <h2 class="login-header">
+                提案書作成提出システム<br>
+                ログイン
+            </h2>
+            @if (ViewBag.Error != null)
+            {
+                <div class="error-message">@ViewBag.Error</div>
+            }
+            <form asp-action="Login" asp-controller="Login" method="post">
+                <div class="form-field">
+                    @Html.LabelFor(m => m.UserId)
+                    @Html.TextBoxFor(m => m.UserId)
+                    @Html.ValidationMessageFor(m => m.UserId, "")
+                </div>
+                <div class="form-field">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password)
+                    @Html.ValidationMessageFor(m => m.Password, "")
+                </div>
+                <div>
+                    <button type="submit" name="action" value="login" class="btn-login">
+                        ログイン
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

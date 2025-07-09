@@ -55,9 +55,9 @@ namespace Proposal.Models
         public int ProposalYear { get; set; }
         public int BusinessYear { get; set; }
         public int Status { get; set; }
-        public string PdName { get; set; }
-        public string UserName { get; set; }
-        public int? From { get; set; } // 修改为枚举类型
+        public string? PdName { get; set; }
+        public string? UserName { get; set; }
+        public int? From { get; set; } 
         public DateTime? SubmittedAt { get; set; }
         public int? Point { get; set; }
         public int? Decision { get; set; }
@@ -93,8 +93,7 @@ namespace Proposal.Models
                3 => "税務署・センター ",
                4 => "税大",
                5 => "審判所",
-
-
+               _ => "不明"
             };
          
         public string DecisionDisplay =>
@@ -102,6 +101,7 @@ namespace Proposal.Models
             {
                 1 => "○",
                 0 => "×",
+                _ => "不明"
             };
 
     }
