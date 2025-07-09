@@ -48,7 +48,7 @@
                         提案年度
                     </div>
                     <div class="col-1">
-                        @Html.TextBoxFor(m => m.TeianYear, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBoxFor(m => m.TeianYear, new { @class = "form-control", @readonly = "readonly", id = "teianYear" })
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -66,16 +66,7 @@
                         <label for="TeianShurui" class="col-form-label">提案の種類</label>
                     </div>
                     <div class="col-5">
-                        @Html.DropDownListFor(m => m.TeianShurui,
-                        new SelectList(new[]
-                        {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "適正な事務の管理に関する提案" },
-                                                new { Value = "2", Text = "事務の効率化に関する提案（内部事務の改善）" },
-                                                new { Value = "3", Text = "事務の効率化に関する提案（外部事務の改善）" },
-                                                new { Value = "4", Text = "その他提案" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                        @Html.DropDownListFor(m => m.TeianShurui, CreateModel.TeianShuruiOptions, htmlAttributes: new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.TeianShurui, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -90,14 +81,7 @@
                             提案の区分
                         </div>
                         <div class="col-5">
-                            @Html.DropDownListFor(m => m.TeianKbn,
-                                                    new SelectList(new[]
-                                                    {
-                                                    new { Value = "0", Text = "選択してください" },
-                                                    new { Value = "1", Text = "個人提案" },
-                                                    new { Value = "2", Text = "グループ提案" }
-                                                    }, "Value", "Text"),
-                                                    htmlAttributes: new { @class = "form-select" })
+                            @Html.DropDownListFor(m => m.TeianKbn, CreateModel.TeianKbnOptions, htmlAttributes: new { @class = "form-select" })
                             @Html.ValidationMessageFor(m => m.TeianKbn, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -108,17 +92,7 @@
                             所属
                         </div>
                         <div class="col-5">
-                            @Html.DropDownListFor(m => m.Shozoku,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "国税庁" },
-                                                new { Value = "2", Text = "国税局" },
-                                                new { Value = "3", Text = "税務署・センター" },
-                                                new { Value = "4", Text = "税大" },
-                                                new { Value = "5", Text = "審判所" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                            @Html.DropDownListFor(m => m.Shozoku, CreateModel.ShozokuOptions, htmlAttributes: new { @class = "form-select" })
                             @Html.ValidationMessageFor(m => m.Shozoku, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -169,17 +143,7 @@
                             グループの全員
                         </div>
                         <div class="col-2">
-                            @Html.DropDownListFor(m => m.GroupZenin1,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "国税庁" },
-                                                new { Value = "2", Text = "国税局" },
-                                                new { Value = "3", Text = "税務署・センター" },
-                                                new { Value = "4", Text = "税大" },
-                                                new { Value = "5", Text = "審判所" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                            @Html.DropDownListFor(m => m.GroupZenin1, CreateModel.ShozokuOptions, htmlAttributes: new { @class = "form-select" })
                             @Html.ValidationMessageFor(m => m.GroupZenin1, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-1"></div>
@@ -209,17 +173,7 @@
                             （代表者を除く）
                         </div>
                         <div class="col-2">
-                            @Html.DropDownListFor(m => m.GroupZenin2,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "国税庁" },
-                                                new { Value = "2", Text = "国税局" },
-                                                new { Value = "3", Text = "税務署・センター" },
-                                                new { Value = "4", Text = "税大" },
-                                                new { Value = "5", Text = "審判所" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                            @Html.DropDownListFor(m => m.GroupZenin2, CreateModel.ShozokuOptions, htmlAttributes: new { @class = "form-select" })
                             @Html.ValidationMessageFor(m => m.GroupZenin2, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-1"></div>
@@ -249,17 +203,7 @@
                             の所属及び氏名等
                         </div>
                         <div class="col-2">
-                            @Html.DropDownListFor(m => m.GroupZenin3,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "国税庁" },
-                                                new { Value = "2", Text = "国税局" },
-                                                new { Value = "3", Text = "税務署・センター" },
-                                                new { Value = "4", Text = "税大" },
-                                                new { Value = "5", Text = "審判所" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                            @Html.DropDownListFor(m => m.GroupZenin3, CreateModel.ShozokuOptions, htmlAttributes: new { @class = "form-select" })
                             @Html.ValidationMessageFor(m => m.GroupZenin3, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-1"></div>
@@ -301,17 +245,7 @@
                             所属
                         </div>
                         <div class="col-3">
-                                @Html.DropDownListFor(m => m.DaiijishinsashaShozoku,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "国税庁" },
-                                                new { Value = "2", Text = "国税局" },
-                                                new { Value = "3", Text = "税務署・センター" },
-                                                new { Value = "4", Text = "税大" },
-                                                new { Value = "5", Text = "審判所" }
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                                @Html.DropDownListFor(m => m.DaiijishinsashaShozoku, CreateModel.ShozokuOptions, htmlAttributes: new { @class = "form-select" })
                                 @Html.ValidationMessageFor(m => m.DaiijishinsashaShozoku, "", new { @class = "text-danger" })
                         </div>
                         <div class="row mt-2">
@@ -367,13 +301,7 @@
                         主務課
                     </div>
                     <div class="col-5">
-                        @Html.DropDownListFor(m => m.ShumuKa,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "主務課" },
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                        @Html.DropDownListFor(m => m.ShumuKa, CreateModel.ShumuKaOptions, htmlAttributes: new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.ShumuKa, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -384,13 +312,7 @@
                         関係課
                     </div>
                     <div class="col-5">
-                        @Html.DropDownListFor(m => m.KankeiKa,
-                                                new SelectList(new[]
-                                                {
-                                                new { Value = "0", Text = "選択してください" },
-                                                new { Value = "1", Text = "関係課" },
-                                                }, "Value", "Text"),
-                                                htmlAttributes: new { @class = "form-select" })
+                        @Html.DropDownListFor(m => m.KankeiKa, CreateModel.KankeiKaOptions, htmlAttributes: new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.KankeiKa, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -437,14 +359,7 @@
                         効果
                     </div>
                     <div class="col-2">
-                        @Html.DropDownListFor(m => m.KoukaJishi,
-                                    new SelectList(new[]
-                                    {
-                                    new { Value = "0", Text = "選択してください" },
-                                    new { Value = "1", Text = "実施済" },
-                                    new { Value = "2", Text = "未実施（予想効果）" }
-                                    }, "Value", "Text"),
-                                    htmlAttributes: new { @class = "form-select" })
+                        @Html.DropDownListFor(m => m.KoukaJishi, CreateModel.KoukaJishiOptions, htmlAttributes: new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.KoukaJishi, "", new { @class = "text-danger" })
                     </div>
                 </div>

@@ -1,122 +1,251 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Reflection;
 
 namespace Proposal.Models
 {
+    // ææ¡ˆã®ç¨®é¡ã®enum
+    public enum TeianShurui
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("é©æ­£ãªäº‹å‹™ã®ç®¡ç†ã«é–¢ã™ã‚‹ææ¡ˆ")]
+        TeiseiJimuKanri = 1,
+        [Description("äº‹å‹™ã®åŠ¹ç‡åŒ–ã«é–¢ã™ã‚‹ææ¡ˆï¼ˆå†…éƒ¨äº‹å‹™ã®æ”¹å–„ï¼‰")]
+        JimuKoritsukaNaibu = 2,
+        [Description("äº‹å‹™ã®åŠ¹ç‡åŒ–ã«é–¢ã™ã‚‹ææ¡ˆï¼ˆå¤–éƒ¨äº‹å‹™ã®æ”¹å–„ï¼‰")]
+        JimuKoritsukaGaibu = 3,
+        [Description("ãã®ä»–ææ¡ˆ")]
+        Sonota = 4
+    }
+
+    // ææ¡ˆã®åŒºåˆ†ã®enum
+    public enum TeianKbn
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("å€‹äººææ¡ˆ")]
+        Kojin = 1,
+        [Description("ã‚°ãƒ«ãƒ¼ãƒ—ææ¡ˆ")]
+        Group = 2
+    }
+
+    // æ‰€å±ã®enum
+    public enum Shozoku
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("å›½ç¨åº")]
+        KokuzaiCho = 1,
+        [Description("å›½ç¨å±€")]
+        KokuzaiKyoku = 2,
+        [Description("ç¨å‹™ç½²ãƒ»ã‚»ãƒ³ã‚¿ãƒ¼")]
+        ZeimuShoCenter = 3,
+        [Description("ç¨å¤§")]
+        ZeiDai = 4,
+        [Description("å¯©åˆ¤æ‰€")]
+        ShinpanSho = 5
+    }
+
+    // ä¸»å‹™èª²ã®enum
+    public enum ShumuKa
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("ä¸»å‹™èª²")]
+        ShumuKa = 1
+    }
+
+    // é–¢ä¿‚èª²ã®enum
+    public enum KankeiKa
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("é–¢ä¿‚èª²")]
+        KankeiKa = 1
+    }
+
+    // åŠ¹æœï¼ˆå®Ÿæ–½ï¼‰ã®enum
+    public enum KoukaJishi
+    {
+        [Description("é¸æŠã—ã¦ãã ã•ã„")]
+        Select = 0,
+        [Description("å®Ÿæ–½æ¸ˆ")]
+        JisshiZumi = 1,
+        [Description("æœªå®Ÿæ–½ï¼ˆäºˆæƒ³åŠ¹æœï¼‰")]
+        MiJisshiYosoKouka = 2
+    }
+
+    // Enumæ‰©å±•æ–¹æ³•
+    public static class EnumExtensions
+    {
+        public static string GetDescription(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field?.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .FirstOrDefault() as DescriptionAttribute;
+            return attribute?.Description ?? value.ToString();
+        }
+    }
+
     public class CreateModel
     {
-        //’ñˆÄ”N“x
+        // ææ¡ˆå¹´åº¦
         public string? TeianYear { get; set; }
 
-        //’ñˆÄ‘è–¼
-        [Required(ErrorMessage = "’ñˆÄ‘è–¼‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
-        [MaxLength(20, ErrorMessage = "20•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        // ææ¡ˆé¡Œå
+        [Required(ErrorMessage = "ææ¡ˆé¡Œåã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
+        [MaxLength(20, ErrorMessage = "20æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? TeianDaimei { get; set; }
 
-        //’ñˆÄ‚Ìí—Ş
-        [Required(ErrorMessage = "’ñˆÄ‚Ìí—Ş‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B")]
-        public string? TeianShurui { get; set; }
+        // ææ¡ˆã®ç¨®é¡
+        [Required(ErrorMessage = "ææ¡ˆã®ç¨®é¡ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚")]
+        public TeianShurui TeianShurui { get; set; } = TeianShurui.Select;
 
-        //’ñˆÄ‚Ì‹æ•ª
-        [Required(ErrorMessage = "’ñˆÄ‚Ì‹æ•ª‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B")]
-        public string? TeianKbn { get; set; }
+        public static SelectList TeianShuruiOptions => new SelectList(
+            Enum.GetValues(typeof(TeianShurui))
+                .Cast<TeianShurui>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                "Value", "Text");
 
-        //Š‘®
-        [Required(ErrorMessage = "Š‘®‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B")]
-        public string? Shozoku { get; set; }
+        // ææ¡ˆã®åŒºåˆ†
+        [Required(ErrorMessage = "ææ¡ˆã®åŒºåˆ†ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚")]
+        public TeianKbn TeianKbn { get; set; } = TeianKbn.Select;
 
-        //•”E
+        public static SelectList TeianKbnOptions => new SelectList(
+            Enum.GetValues(typeof(TeianKbn))
+                .Cast<TeianKbn>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                 "Value", "Text");
+
+        // æ‰€å±
+        [Required(ErrorMessage = "æ‰€å±ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚")]
+        public Shozoku Shozoku { get; set; } = Shozoku.Select;
+
+        public static SelectList ShozokuOptions => new SelectList(
+            Enum.GetValues(typeof(Shozoku))
+                .Cast<Shozoku>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                "Value", "Text");
+
+        // éƒ¨ãƒ»ç½²
         public string? BuSho { get; set; }
 
-        //‰ÛE•”–å
+        // èª²ãƒ»éƒ¨é–€
         public string? KaBumon { get; set; }
 
-        //ŒWE’S“–
+        // ä¿‚ãƒ»æ‹…å½“
         public string? KakariTantou { get; set; }
 
-        //–¼–”‚Í‘ã•\–¼
-        [Required(ErrorMessage = "–¼–”‚Í‘ã•\–¼‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
-        [MaxLength(6, ErrorMessage = "6•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        // æ°ååˆã¯ä»£è¡¨å
+        [Required(ErrorMessage = "æ°ååˆã¯ä»£è¡¨åã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
+        [MaxLength(6, ErrorMessage = "6æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? ShimeiOrDaihyoumei { get; set; }
 
-        //ƒOƒ‹[ƒv–¼
-        [MaxLength(10, ErrorMessage = "10•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        // ã‚°ãƒ«ãƒ¼ãƒ—å
+        [MaxLength(10, ErrorMessage = "10æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? GroupMei { get; set; }
 
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‡@
-        public string? GroupZenin1 { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ•”E‡@
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘ 
+        public Shozoku GroupZenin1 { get; set; } = Shozoku.Select;
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘ éƒ¨ãƒ»ç½²
         public string? GroupZenin1BuSho { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‰ÛE•”–å‡@
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘ èª²ãƒ»éƒ¨é–€
         public string? GroupZenin1KaBumon { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘SˆõŒWE’S“–‡@
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘ ä¿‚ãƒ»æ‹…å½“
         public string? GroupZenin1KakariTantou { get; set; }
 
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‡A
-        public string? GroupZenin2 { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ•”E‡A
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¡
+        public Shozoku GroupZenin2 { get; set; } = Shozoku.Select;
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¡éƒ¨ãƒ»ç½²
         public string? GroupZenin2BuSho { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‰ÛE•”–å‡A
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¡èª²ãƒ»éƒ¨é–€
         public string? GroupZenin2KaBumon { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘SˆõŒWE’S“–‡A
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¡ä¿‚ãƒ»æ‹…å½“
         public string? GroupZenin2KakariTantou { get; set; }
 
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‡B
-        public string? GroupZenin3 { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ•”E‡B
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¢
+        public Shozoku GroupZenin3 { get; set; } = Shozoku.Select;
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¢éƒ¨ãƒ»ç½²
         public string? GroupZenin3BuSho { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘Sˆõ‰ÛE•”–å‡B
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¢èª²ãƒ»éƒ¨é–€
         public string? GroupZenin3KaBumon { get; set; }
-        //ƒOƒ‹[ƒv‚Ì‘SˆõŒWE’S“–‡B
+        // ã‚°ãƒ«ãƒ¼ãƒ—ã®å…¨å“¡â‘¢ä¿‚ãƒ»æ‹…å½“
         public string? GroupZenin3KakariTantou { get; set; }
 
-        //‘æˆêŸR¸Ò‚ğŒo‚¸‚É’ño‚·‚é
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…ã‚’çµŒãšã«æå‡ºã™ã‚‹
         public bool DaiijishinsashaHezuIsChecked { get; set; }
 
-        //‘æˆêŸR¸ÒŠ‘®
-        [Required(ErrorMessage = "Š‘®‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢B")]
-        public string? DaiijishinsashaShozoku { get; set; }
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…æ‰€å±
+        [Required(ErrorMessage = "æ‰€å±ã‚’é¸æŠã—ã¦ãã ã•ã„ã€‚")]
+        public Shozoku DaiijishinsashaShozoku { get; set; } = Shozoku.Select;
 
-        //‘æˆêŸR¸Ò•”E
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…éƒ¨ãƒ»ç½²
         public string? DaiijishinsashaBuSho { get; set; }
 
-        //‘æˆêŸR¸Ò‰ÛE•”–å
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…èª²ãƒ»éƒ¨é–€
         public string? DaiijishinsashaKaBumon { get; set; }
 
-        //‘æˆêŸR¸Ò–¼
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…æ°å
         public string? DaiijishinsashaShimei { get; set; }
 
-        //‘æˆêŸR¸ÒŠ¯E
+        // ç¬¬ä¸€æ¬¡å¯©æŸ»è€…å®˜è·
         public string? DaiijishinsashaKanshokun { get; set; }
 
-        //å–±‰Û
-        public string? ShumuKa { get; set; }
+        // ä¸»å‹™èª²
+        public ShumuKa ShumuKa { get; set; } = ShumuKa.Select;
 
-        //ŠÖŒW‰Û
-        public string? KankeiKa { get; set; }
+        public static SelectList ShumuKaOptions => new SelectList(
+            Enum.GetValues(typeof(ShumuKa))
+                .Cast<ShumuKa>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                "Value", "Text");
 
-        //Œ»óE–â‘è“_
-        [Required(ErrorMessage = "Œ»óE–â‘è“_‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
-        [MaxLength(2000, ErrorMessage = "2,000•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        // é–¢ä¿‚èª²
+        public KankeiKa KankeiKa { get; set; } = KankeiKa.Select;
+
+        public static SelectList KankeiKaOptions => new SelectList(
+            Enum.GetValues(typeof(KankeiKa))
+                .Cast<KankeiKa>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                "Value", "Text");
+
+        // ç¾çŠ¶ãƒ»å•é¡Œç‚¹
+        [Required(ErrorMessage = "ç¾çŠ¶ãƒ»å•é¡Œç‚¹ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
+        [MaxLength(2000, ErrorMessage = "2,000æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? GenjyoMondaiten { get; set; }
 
-        //‰ü‘PˆÄ
-        [Required(ErrorMessage = "‰ü‘PˆÄ‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
-        [MaxLength(2000, ErrorMessage = "2,000•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        // æ”¹å–„æ¡ˆ
+        [Required(ErrorMessage = "æ”¹å–„æ¡ˆã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
+        [MaxLength(2000, ErrorMessage = "2,000æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? Kaizenan { get; set; }
 
-        //Œø‰ÊiÀ{j
-        public string? KoukaJishi { get; set; }
+        // åŠ¹æœï¼ˆå®Ÿæ–½ï¼‰
+        public KoukaJishi KoukaJishi { get; set; } = KoukaJishi.Select;
 
-        //Œø‰Ê
-        [Required(ErrorMessage = "Œø‰Ê‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
-        [MaxLength(2000, ErrorMessage = "2,000•¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B")]
+        public static SelectList KoukaJishiOptions => new SelectList(
+            Enum.GetValues(typeof(KoukaJishi))
+                .Cast<KoukaJishi>()
+                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                "Value", "Text");
+
+        // åŠ¹æœ
+        [Required(ErrorMessage = "åŠ¹æœã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
+        [MaxLength(2000, ErrorMessage = "2,000æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚")]
         public string? Kouka { get; set; }
 
-        //“Y•t‘—Ş
+        // æ·»ä»˜æ›¸é¡
         public IFormFile? TenpuFile1 { get; set; }
         public IFormFile? TenpuFile2 { get; set; }
         public IFormFile? TenpuFile3 { get; set; }
         public IFormFile? TenpuFile4 { get; set; }
         public IFormFile? TenpuFile5 { get; set; }
+
+        //  CSVå‡ºåŠ›ç”¨ã«enumã®èª¬æ˜ã‚’å–å¾—ã™ã‚‹æ–¹æ³•
+        public static string GetEnumDescriptionForCsv(Enum value)
+        {
+            return value.GetDescription();
+        }
     }
 }

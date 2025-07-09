@@ -43,7 +43,11 @@ function showDiv(target) {
 
 //初期化
 function initializeForm() {
-    document.querySelectorAll("input[type='text'], textarea").forEach(e => e.value = "");
+    document.querySelectorAll("input[type='text'], textarea").forEach(e => {
+        if (e.id !== "teianYear") { 
+            e.value = "";
+        }
+    });
 
     document.querySelectorAll("select").forEach(e => e.selectedIndex = 0);
 

@@ -7,10 +7,6 @@ namespace Proposal.BL
     {
         private readonly LoginDAC _LoginDAC;
 
-        public LoginBL()
-        {
-        }
-
         public LoginBL(string connectionString)
         {
             _LoginDAC = new LoginDAC(connectionString);

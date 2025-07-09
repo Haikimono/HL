@@ -1,16 +1,24 @@
-﻿using Proposal.DAC;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Proposal.DAC;
 using Proposal.Models;
 
 namespace Proposal.BL
 {
     public class CreateBL
     {
-        private readonly LoginDAC _LoginDAC;
+        private readonly CreateDAC _createDAC;
 
+        public CreateBL(string connectionString)
+        {
+            _createDAC = new CreateDAC(connectionString);
+        }
 
-        //public CreateBL(string connectionString)
-        //{
-        //    _LoginDAC = new CreateDAC(connectionString);
-        //}
+        /// <summary>
+        /// 登録処理
+        /// </summary>
+        public void TeianshoTeishutsu(CreateModel pModel)
+        {
+            _createDAC.TeianshoTeishutsu(pModel);
+        }
     }
 }
