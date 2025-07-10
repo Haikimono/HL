@@ -136,6 +136,9 @@
                             <button type="button" class="form-btn" onclick="location.href='@Url.Action("List", "Proposal")'">クリア</button>
                             <button type="button" class="form-btn" onclick="history.back();">戻る</button>
                         </div>
+                        <div class="text-end mt-3">
+                            <a class="btn btn-success" asp-controller="Proposal" asp-action="GoCreate">作成</a>
+                        </div>                       
                     </form>
                 </div>
                 <hr class="custom-hr" />
@@ -178,7 +181,9 @@
                                     <td>@p.RelatedSections</td>
                                     <td>@p.AwardDivision</td>
                                     <td>
-                                        <a href="#">@p.PdName</a>
+                                        <a class="btn　btn-primary" asp-controller="Proposal" asp-action="SetIdAndGoCreate" asp-route-id="@p.Id">
+                                            表示
+                                        </a>
                                     </td>
                                 </tr>
                             }

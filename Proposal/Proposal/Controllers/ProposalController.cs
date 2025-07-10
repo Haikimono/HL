@@ -40,5 +40,19 @@ namespace Proposal.Controllers
 
             return View("~/Views/List/List.cshtml", proposals);
         }
+
+        [HttpGet("setid")]
+        public IActionResult SetIdAndGoCreate(string id)
+        {
+            HttpContext.Session.SetString("Id", id);
+            return RedirectToAction("Create", "Create");
+        }
+
+        [HttpGet("gocreate")]
+        public IActionResult GoCreate()
+        {
+            HttpContext.Session.Remove("Id");
+            return RedirectToAction("Create", "Create");
+        }
     }
 }
