@@ -34,35 +34,21 @@ namespace Proposal.DAC
                     {
                         proposals.Add(new TeProposal
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")), // int
-                            UserId = reader.GetInt32(reader.GetOrdinal("user_id")), // int
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            UserId = reader.GetString(reader.GetOrdinal("user_id")), // int
                             ProposalYear = reader.GetString(reader.GetOrdinal("proposal_year")), // nvarchar(10)
-                            BusinessYear = reader.GetInt32(reader.GetOrdinal("business_year")), // int
+                            BusinessYear = reader.GetString(reader.GetOrdinal("business_year")), // nvarchar(10)
                             Status = reader.GetInt32(reader.GetOrdinal("status")), // int
                             PdName = reader.GetString(reader.GetOrdinal("pd_name")), // nvarchar(255)
                             UserName = reader.GetString(reader.GetOrdinal("user_name")), // nvarchar(255)
-                            From = reader.IsDBNull(reader.GetOrdinal("from"))
-                                   ? null
-                                   : reader.GetInt32(reader.GetOrdinal("from")), // int?
-                            SubmittedAt = reader.IsDBNull(reader.GetOrdinal("submitted_at"))
-                                          ? null
-                                          : reader.GetDateTime(reader.GetOrdinal("submitted_at")), // datetime2?
-                            Point = reader.IsDBNull(reader.GetOrdinal("point"))
-                                    ? null
-                                    : reader.GetInt32(reader.GetOrdinal("point")), // int?
-                            Decision = reader.IsDBNull(reader.GetOrdinal("decision"))
-                                       ? null
-                                       : reader.GetInt32(reader.GetOrdinal("decision")), // int?
+                            From = reader.IsDBNull(reader.GetOrdinal("from"))? null : reader.GetInt32(reader.GetOrdinal("from")), // int?
+                            SubmittedAt = reader.IsDBNull(reader.GetOrdinal("submitted_at")) ? null : reader.GetDateTime(reader.GetOrdinal("submitted_at")), // datetime2?
+                            Point = reader.IsDBNull(reader.GetOrdinal("point"))? null: reader.GetInt32(reader.GetOrdinal("point")), // int?
+                            Decision = reader.IsDBNull(reader.GetOrdinal("decision"))? null : reader.GetInt32(reader.GetOrdinal("decision")), // int?
                             Resubmission = reader.GetBoolean(reader.GetOrdinal("resubmission")), // bit
-                            ReviewSection = reader.IsDBNull(reader.GetOrdinal("review_section"))
-                                            ? null
-                                            : reader.GetInt32(reader.GetOrdinal("review_section")), // int?
-                            RelatedSections = reader.IsDBNull(reader.GetOrdinal("related_sections"))
-                                              ? null
-                                              : reader.GetInt32(reader.GetOrdinal("related_sections")), // int?
-                            AwardDivision = reader.IsDBNull(reader.GetOrdinal("award_division"))
-                                            ? null
-                                            : reader.GetInt32(reader.GetOrdinal("award_division")), // int?
+                            ReviewSection = reader.IsDBNull(reader.GetOrdinal("review_section")) ? null: reader.GetInt32(reader.GetOrdinal("review_section")), // int?
+                            RelatedSections = reader.IsDBNull(reader.GetOrdinal("related_sections")) ? null : reader.GetInt32(reader.GetOrdinal("related_sections")), // int?
+                            AwardDivision = reader.IsDBNull(reader.GetOrdinal("award_division")) ? null : reader.GetInt32(reader.GetOrdinal("award_division")), // int?
                             UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at")), // datetime2
                             CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")), // datetime2
                             Delete = reader.GetBoolean(reader.GetOrdinal("delete")) // bit

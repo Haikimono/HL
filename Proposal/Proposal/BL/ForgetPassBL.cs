@@ -49,17 +49,18 @@ namespace Proposal.BL
             }
 
             // 生成随机密码
-            var newPassword = GenerateRandomPassword(10);
+            var newPassword = GenerateRandomPassword(8);
 
             // 更新密码
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var updateCmd = new SqlCommand("UPDATE M_user SET password = @Password WHERE user_id = @UserId", conn);
+                var updateCmd = new SqlCommand("UPDATE M_user SET password = @Password, reset_pass = 1 WHERE user_id = @UserId", conn);
                 updateCmd.Parameters.AddWithValue("@Password", newPassword);
                 updateCmd.Parameters.AddWithValue("@UserId", user.UserId);
                 updateCmd.ExecuteNonQuery();
             }
+
 
             // 发邮件
             try

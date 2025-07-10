@@ -51,9 +51,9 @@ namespace Proposal.Models
     public class TeProposal
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string? ProposalYear { get; set; }
-        public int BusinessYear { get; set; }
+        public string? BusinessYear { get; set; }
         public int Status { get; set; }
         public string? PdName { get; set; }
         public string? UserName { get; set; }

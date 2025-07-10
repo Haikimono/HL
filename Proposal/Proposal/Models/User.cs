@@ -7,5 +7,6 @@ namespace Proposal.Models
         public string Password { get; set; }
         public string UserKbn { get; set; }
         public string UserEmail { get; set; }
+        public bool ReSetPass { get; set; }
     }
 } 

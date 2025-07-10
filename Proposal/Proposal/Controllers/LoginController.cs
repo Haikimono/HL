@@ -57,6 +57,11 @@ namespace Proposal.Controllers
             HttpContext.Session.SetString("UserId", user.UserId);
             HttpContext.Session.SetString("UserKbn", user.UserKbn);
 
+            if (user.ReSetPass)
+            {
+                return RedirectToAction("ChangePassword");
+            }
+
             return RedirectToAction("Menu");
             
         }

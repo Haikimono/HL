@@ -17,7 +17,7 @@ namespace Proposal.DAC
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
-            string sql = "SELECT user_id, user_name, password, user_kbn FROM M_User WHERE user_id=@userId";
+            string sql = "SELECT user_id, user_name, password, user_kbn, reset_pass FROM M_User WHERE user_id=@userId";
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@userId", pModel.UserId);
             using var reader = cmd.ExecuteReader();
@@ -28,7 +28,8 @@ namespace Proposal.DAC
                     UserId = reader["user_id"].ToString(),
                     UserName = reader["user_name"].ToString(),
                     Password = reader["password"].ToString(),
-                    UserKbn = reader["user_kbn"].ToString()
+                    UserKbn = reader["user_kbn"].ToString(),
+                    ReSetPass = reader.GetBoolean(reader.GetOrdinal("reset_pass"))
                 };
             }
             return null;
