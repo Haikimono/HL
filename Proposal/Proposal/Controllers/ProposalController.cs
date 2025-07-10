@@ -23,7 +23,7 @@ namespace Proposal.Controllers
 
             if (year.HasValue)
             {
-                proposals = proposals.Where(p => p.ProposalYear == year.Value).ToList();
+                proposals = proposals.Where(p => p.ProposalYear == year.Value.ToString()).ToList();
             }
             if (status.HasValue)
             {

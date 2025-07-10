@@ -2,9 +2,9 @@
 @using Proposal.Models
 @{
     ViewData["Title"] = "提案書一覧";
-    var years = ViewBag.Years as List<int> ?? new List<int>();
+    var years = ViewBag.Years as List<string> ?? new List<string>();
     var statuses = ViewBag.Statuses as List<ProposalStatus> ?? new List<ProposalStatus>();
-    int? selectedYear = ViewBag.SelectedYear as int?;
+    string? selectedYear = ViewBag.SelectedYear as string;
     int? selectedStatus = ViewBag.SelectedStatus as int?;
 }
 <head>
@@ -14,7 +14,6 @@
         }
 
         .main-title {
-            margin-top: 3%;
             margin-bottom: 3%;
         }
 
@@ -100,10 +99,10 @@
     </style>
 </head>
 <body class="page-bg">
-    <h4 class="main-title">提案書一覧 【提案書作成メニュー】</h4>
     <div>
         <div id="search-list-top">
             <div class="search-list-inner">
+                <h4 class="main-title">提案書一覧 【提案書作成メニュー】</h4>
                 <div>
                     <form method="get" asp-controller="Proposal" asp-action="List">
                         <div class="search-form">
@@ -113,7 +112,7 @@
                                     <option value="">すべて</option>
                                     @foreach (var y in years)
                                     {
-                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">@y 提案年度</option>
+                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y</option>
                                     }
                                 </select>
                             </div>

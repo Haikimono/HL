@@ -52,7 +52,7 @@ namespace Proposal.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int ProposalYear { get; set; }
+        public string? ProposalYear { get; set; }
         public int BusinessYear { get; set; }
         public int Status { get; set; }
         public string? PdName { get; set; }

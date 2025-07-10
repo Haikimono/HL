@@ -12,9 +12,8 @@
 
 .container-common {
     background: #ffffff;
-    padding-right: 10%;
-    padding-left: 10%;
-    padding-top: 10%;
+    padding: 3%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     padding-bottom: 10%;
 }
 

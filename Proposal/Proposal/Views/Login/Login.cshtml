@@ -53,7 +53,6 @@
         .btn-login {
             background-color: #136AA8;
             margin-top: 10%;
-            margin-bottom: 10%;
             padding: 12px 0;
             width: 100%;
             color: white;
@@ -69,6 +68,27 @@
             border-radius: 8px;
             margin-top: 8px;
         }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 3rem;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
     </style>
 </head>
 <body>
@@ -90,17 +110,22 @@
                 <div class="form-field">
                     @Html.LabelFor(m => m.UserId)
                     @Html.TextBoxFor(m => m.UserId)
-                    @Html.ValidationMessageFor(m => m.UserId, "")
+                    @Html.ValidationMessageFor(m => m.UserId, "", new { @style = "color:red" })
                 </div>
                 <div class="form-field">
                     @Html.LabelFor(m => m.Password)
                     @Html.PasswordFor(m => m.Password)
-                    @Html.ValidationMessageFor(m => m.Password, "")
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @style = "color:red" })
                 </div>
                 <div>
                     <button type="submit" name="action" value="login" class="btn-login">
                         ログイン
                     </button>
+                    <div class="text-center mt-3">
+                    <a href="/ForgetPass/ForgetPass">
+                        パスワードをお忘れですか？
+                    </a>
+                    </div>
                 </div>
             </form>
         </div>
