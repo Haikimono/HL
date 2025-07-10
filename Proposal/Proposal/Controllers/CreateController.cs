@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
 using Proposal.Models;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 
@@ -12,18 +15,42 @@ namespace Proposal.Controllers
 {
     public class CreateController : Controller
     {
-        private readonly CreateBL _createBL;
+        private readonly CreateBL _createBL = new CreateBL();
+        private readonly IConfiguration _configuration;
 
-
+        public CreateController(ILogger<LoginController> logger, IConfiguration configuration)
+        {
+            _configuration = configuration;
+            var connStr = _configuration.GetConnectionString("ProposalDB");
+            _createBL = new CreateBL(connStr);
+        }
 
         [HttpGet]
         [Route("proposal/Create")]
         public IActionResult Create()
         {
+
             var model = new CreateModel
             {
-                TeianYear = DateTime.Now.Year.ToString()
+                //提案書ID
+                Id = HttpContext.Session.GetString("Id"),
+
+                //ユーザーID取得
+                UserId = HttpContext.Session.GetString("UserId")
             };
+
+            //作成の場合
+            if (String.IsNullOrEmpty(model.Id))
+            {
+                //年度取得
+                model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
+            }
+            //修正・確認の場合
+            else
+            {
+                _createBL.GetProposalDetailById(model);
+            }
+
             return View(model);
         }
 
@@ -40,11 +67,13 @@ namespace Proposal.Controllers
             //一時保存
             if (action == "Ichijihozon")
             {
-                //登録と更新処理判断
+                //提案状態を作成中に設定
+                model.Status = 1;
 
-                //登録処理
-                 _createBL.TeianshoTeishutsu(model);
+                //登録又は更新処理
+                this.InsertOrUpdate(model);
 
+                return RedirectToAction("List", "Proposal");
             }
 
             //出力
@@ -72,7 +101,7 @@ namespace Proposal.Controllers
                                "グループの全員②,グループの全員②部・署,グループの全員②課・部門,グループの全員②係・担当," +
                                "グループの全員③,グループの全員③部・署,グループの全員③課・部門,グループの全員③係・担当," +
                                "第一次審査者を経ずに提出する,第一次審査者所属," +
-                               "第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職," + 
+                               "第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職," +
                                "主務課,関係課," +
                                "現状・問題点,改善案,効果（実施）,効果");
 
@@ -97,12 +126,42 @@ namespace Proposal.Controllers
             //提出
             if (action == "Submit")
             {
-                return View("~/Views/Menu/Menu.cshtml");
+                //提案状態を審査中に設定
+                model.Status = 11;
+
+                //登録又は更新処理
+                this.InsertOrUpdate(model);
+
+                return RedirectToAction("List", "Proposal");
             }
 
             return View(model);
         }
 
+        public void InsertOrUpdate(CreateModel model)
+        {
+            //ユーザーID
+            model.UserId = HttpContext.Session.GetString("UserId");
 
+            //登録と更新処理判断
+            if (string.IsNullOrEmpty(model.Id))
+            {
+                //登録処理
+                //提案書詳細登録
+                model.Id = _createBL.Insertproposals_detail(model).ToString();
+
+                //提案書一覧登録
+                _createBL.Insertproposals(model);
+            }
+            else
+            {
+                //更新処理
+                //提案書詳細更新
+                _createBL.Updateproposals_detail(model);
+
+                //提案書一覧更新
+                _createBL.Updateproposals(model);
+            }
+        }
     }
 }
