@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
 using Proposal.Models;
 using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 
 namespace Proposal.Controllers
 {
@@ -29,10 +32,15 @@ namespace Proposal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            // Sessionで登録したことを確認
             var userId = HttpContext.Session.GetString("UserId");
+            var reSetPass = HttpContext.Session.GetString("ReSetPass");
+
             if (!string.IsNullOrEmpty(userId))
             {
+                if (reSetPass == "1")
+                {
+                    return RedirectToAction("ChangePassword");
+                }
                 return RedirectToAction("Menu");
             }
             return View(new LoginModel());
@@ -56,6 +64,7 @@ namespace Proposal.Controllers
             // 登录成功，设置 session
             HttpContext.Session.SetString("UserId", user.UserId);
             HttpContext.Session.SetString("UserKbn", user.UserKbn);
+            HttpContext.Session.SetString("ReSetPass", user.ReSetPass ? "1" : "0");
 
             if (user.ReSetPass)
             {
@@ -65,6 +74,8 @@ namespace Proposal.Controllers
             return RedirectToAction("Menu");
             
         }
+
+
 
 
         [Route("proposal/menu")]
@@ -79,7 +90,7 @@ namespace Proposal.Controllers
             }
 
             ViewBag.UserKbn = HttpContext.Session.GetString("UserKbn");
-            return View("~/Views/Menu/Menu.cshtml");
+            return View("~/Views/ForgetPass/ChangePassword.cshtml"); 
         }
     }
 }
