@@ -91,6 +91,15 @@ namespace Proposal.Models
 
     public class CreateModel
     {
+        //ユーザーID
+        public string? UserId { get; set; }
+
+        //提案書番号
+        public string? Id { get; set; }
+
+        //提案状態
+        public int? Status { get; set; }
+        
         // 提案年度
         public string? TeianYear { get; set; }
 
@@ -241,6 +250,28 @@ namespace Proposal.Models
         public IFormFile? TenpuFile3 { get; set; }
         public IFormFile? TenpuFile4 { get; set; }
         public IFormFile? TenpuFile5 { get; set; }
+
+        // 添付ファイル名
+        public string? TenpuFileName1 { get; set; }
+        public string? TenpuFileName2 { get; set; }
+        public string? TenpuFileName3 { get; set; }
+        public string? TenpuFileName4 { get; set; }
+        public string? TenpuFileName5 { get; set; }
+
+        // 添付ファイルパス
+        public string? TenpuFilePath1 { get; set; }
+        public string? TenpuFilePath2 { get; set; }
+        public string? TenpuFilePath3 { get; set; }
+        public string? TenpuFilePath4 { get; set; }
+        public string? TenpuFilePath5 { get; set; }
+
+
+        //作成日
+        public string Createddate { get; set; }
+
+
+        //提出日
+        public string Submissiondate { get; set; }
 
         //  CSV出力用にenumの説明を取得する方法
         public static string GetEnumDescriptionForCsv(Enum value)
