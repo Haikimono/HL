@@ -12,12 +12,11 @@ namespace Proposal.DAC
         {
             _connectionString = connectionString;
         }
-
         public User GetUserById(LoginModel pModel)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
-            string sql = "SELECT user_id, user_name, password, user_kbn, reset_pass FROM M_User WHERE user_id=@userId";
+            string sql = "SELECT user_id,  password, registration_status FROM M_user WHERE user_id=@userId";
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@userId", pModel.UserId);
             using var reader = cmd.ExecuteReader();
@@ -26,10 +25,8 @@ namespace Proposal.DAC
                 return new User
                 {
                     UserId = reader["user_id"].ToString(),
-                    UserName = reader["user_name"].ToString(),
                     Password = reader["password"].ToString(),
-                    UserKbn = reader["user_kbn"].ToString(),
-                    ReSetPass = reader.GetBoolean(reader.GetOrdinal("reset_pass"))
+                    ReSetPass = reader.GetBoolean(reader.GetOrdinal("registration_status"))
                 };
             }
             return null;

@@ -63,7 +63,6 @@ namespace Proposal.Controllers
             }
             // 登录成功，设置 session
             HttpContext.Session.SetString("UserId", user.UserId);
-            HttpContext.Session.SetString("UserKbn", user.UserKbn);
             HttpContext.Session.SetString("ReSetPass", user.ReSetPass ? "1" : "0");
 
             if (user.ReSetPass)
