@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
 using Proposal.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -39,19 +40,38 @@ namespace Proposal.Controllers
                 UserId = HttpContext.Session.GetString("UserId")
             };
 
-            //作成の場合
-            if (String.IsNullOrEmpty(model.Id))
-            {
-                //年度取得
-                model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
-            }
             //修正・確認の場合
-            else
+            if (!String.IsNullOrEmpty(model.Id))
             {
                 _createBL.GetProposalDetailById(model);
             }
 
+            //新規又は一時保存の場合
+            if(model.Status == null || model.Status == 1)
+            {
+                //年度取得
+                model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
+            }
+
             return View(model);
+        }
+
+        //基本情報のチェックと提案内容のチェック
+        private bool ValidateAndSetTab(CreateModel model)
+        {
+            //基本情報のチェック
+            if (!ValidateBasicInfo(model))
+            {
+                ViewBag.ShowProposalContent = false;
+                return false;
+            }
+            //提案内容のチェック
+            if (!ValidateProposalContent(model))
+            {
+                ViewBag.ShowProposalContent = true;
+                return false;
+            }
+            return true;
         }
 
         [HttpPost]
@@ -67,18 +87,23 @@ namespace Proposal.Controllers
             //一時保存
             if (action == "Ichijihozon")
             {
+                if (!ValidateAndSetTab(model))
+                {
+                    return View(model);
+                }
                 //提案状態を作成中に設定
                 model.Status = 1;
-
-                //登録又は更新処理
                 this.InsertOrUpdate(model);
-
                 return RedirectToAction("List", "Proposal");
             }
 
             //出力
             if (action == "Deryoku")
             {
+                if (!ValidateAndSetTab(model))
+                {
+                    return View(model);
+                }
                 // 使用enum的Description属性来获取CSV值
                 string teianShurui = CreateModel.GetEnumDescriptionForCsv(model.TeianShurui);
                 string teianKbn = CreateModel.GetEnumDescriptionForCsv(model.TeianKbn);
@@ -122,22 +147,216 @@ namespace Proposal.Controllers
                 return File(bytes, "text/csv", filename);
             }
 
-
             //提出
             if (action == "Submit")
             {
+                if (!ValidateAndSetTab(model))
+                {
+                    return View(model);
+                }
                 //提案状態を審査中に設定
                 model.Status = 11;
-
-                //登録又は更新処理
                 this.InsertOrUpdate(model);
-
                 return RedirectToAction("List", "Proposal");
             }
 
             return View(model);
         }
+       
+        // 基本情報のバリデーション実行
+        private bool ValidateBasicInfo(CreateModel model)
+        {
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(model, null, null);
+            
+            // 基本情報のプロパティのみを検証
+            var basicInfoProperties = new[]
+            {
+                nameof(model.TeianDaimei),
+                nameof(model.TeianShurui),
+                nameof(model.TeianKbn),
+                nameof(model.Shozoku),
+                nameof(model.ShimeiOrDaihyoumei),
+                nameof(model.GroupMei),
+                nameof(model.GroupZenin1),
+                nameof(model.GroupZenin1BuSho),
+                nameof(model.GroupZenin1KaBumon),
+                nameof(model.GroupZenin1KakariTantou),
+                nameof(model.GroupZenin2),
+                nameof(model.GroupZenin2BuSho),
+                nameof(model.GroupZenin2KaBumon),
+                nameof(model.GroupZenin2KakariTantou),
+                nameof(model.GroupZenin3),
+                nameof(model.GroupZenin3BuSho),
+                nameof(model.GroupZenin3KaBumon),
+                nameof(model.GroupZenin3KakariTantou),
+                nameof(model.DaiijishinsashaHezuIsChecked),
+                nameof(model.DaiijishinsashaShozoku),
+                nameof(model.DaiijishinsashaBuSho),
+                nameof(model.DaiijishinsashaKaBumon),
+                nameof(model.DaiijishinsashaShimei),
+                nameof(model.DaiijishinsashaKanshokun),
+                nameof(model.ShumuKa),
+                nameof(model.KankeiKa)
+            };
 
+            // 基本情報のプロパティのみを検証
+            foreach (var propertyName in basicInfoProperties)
+            {
+                var property = typeof(CreateModel).GetProperty(propertyName);
+                if (property != null)
+                {
+                    var value = property.GetValue(model);
+                    var propertyContext = new ValidationContext(model, null, null) { MemberName = propertyName };
+                    
+                    // プロパティの属性を検証
+                    var attributes = property.GetCustomAttributes(typeof(ValidationAttribute), true);
+                    foreach (ValidationAttribute attribute in attributes)
+                    {
+                        var result = attribute.GetValidationResult(value, propertyContext);
+                        if (result != null)
+                        {
+                            validationResults.Add(result);
+                        }
+                    }
+                }
+            }
+
+            // 基本情報のカスタムバリデーション
+            var basicInfoValidationResults = ValidateBasicInfoCustom(model);
+            validationResults.AddRange(basicInfoValidationResults);
+
+            // 基本情報のバリデーション結果をModelStateに追加
+            foreach (var validationResult in validationResults)
+            {
+                foreach (var memberName in validationResult.MemberNames)
+                {
+                    ModelState.AddModelError(memberName, validationResult.ErrorMessage);
+                }
+            }
+
+            return validationResults.Count == 0;
+        }
+
+        // 提案内容のバリデーション実行
+        private bool ValidateProposalContent(CreateModel model)
+        {
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(model, null, null);
+            
+            // 提案内容のプロパティのみを検証
+            var proposalContentProperties = new[]
+            {
+                nameof(model.GenjyoMondaiten),
+                nameof(model.Kaizenan),
+                nameof(model.KoukaJishi),
+                nameof(model.Kouka)
+            };
+
+            // 提案内容のプロパティのみを検証
+            foreach (var propertyName in proposalContentProperties)
+            {
+                var property = typeof(CreateModel).GetProperty(propertyName);
+                if (property != null)
+                {
+                    var value = property.GetValue(model);
+                    var propertyContext = new ValidationContext(model, null, null) { MemberName = propertyName };
+                    
+                    // プロパティの属性を検証
+                    var attributes = property.GetCustomAttributes(typeof(ValidationAttribute), true);
+                    foreach (ValidationAttribute attribute in attributes)
+                    {
+                        var result = attribute.GetValidationResult(value, propertyContext);
+                        if (result != null)
+                        {
+                            validationResults.Add(result);
+                        }
+                    }
+                }
+            }
+
+            // 提案内容のバリデーション結果をModelStateに追加
+            foreach (var validationResult in validationResults)
+            {
+                foreach (var memberName in validationResult.MemberNames)
+                {
+                    ModelState.AddModelError(memberName, validationResult.ErrorMessage);
+                }
+            }
+
+            return validationResults.Count == 0;
+        }
+
+        // 基本情報のカスタムバリデーション
+        private IEnumerable<ValidationResult> ValidateBasicInfoCustom(CreateModel model)
+        {
+            var results = new List<ValidationResult>();
+
+            //提案区分はグループの場合、
+            if (model.TeianKbn.HasValue && model.TeianKbn.Value == Models.TeianKbn.Group)
+            {
+                //グループ名は必須項目
+                if (String.IsNullOrEmpty(model.GroupMei))
+                {                    
+                    results.Add(new ValidationResult("提案区分はグループの場合、グループ名を入力してください。", new[] { nameof(model.GroupMei) }));
+                }
+
+                //グループの全員①は必須項目
+                if (model.GroupZenin1 == Proposal.Models.Shozoku.Select || 
+                    String.IsNullOrEmpty(model.GroupZenin1BuSho) || String.IsNullOrEmpty(model.GroupZenin1KaBumon) || String.IsNullOrEmpty(model.GroupZenin1KakariTantou))
+                {
+                    results.Add(new ValidationResult("グループメンバー①の情報を入力してください。", new[] { nameof(model.GroupZenin1) }));
+                }
+
+                //グループの全員②の所属はNULLではないの場合
+                if ((model.GroupZenin2.HasValue && model.GroupZenin2.Value != Proposal.Models.Shozoku.Select) &&
+                    (String.IsNullOrEmpty(model.GroupZenin2BuSho) || String.IsNullOrEmpty(model.GroupZenin2KaBumon) || String.IsNullOrEmpty(model.GroupZenin2KakariTantou)))
+                {
+                    results.Add(new ValidationResult("グループメンバー②の情報を入力してください。", new[] { nameof(model.GroupZenin2) }));
+                }
+
+                //グループの全員③の所属はNULLではないの場合
+                if ((model.GroupZenin3.HasValue && model.GroupZenin3.Value != Proposal.Models.Shozoku.Select) &&
+                    (String.IsNullOrEmpty(model.GroupZenin3BuSho) || String.IsNullOrEmpty(model.GroupZenin3KaBumon) || String.IsNullOrEmpty(model.GroupZenin3KakariTantou)))
+                {
+                    results.Add(new ValidationResult("グループメンバー③の情報を入力してください。", new[] { nameof(model.GroupZenin3) }));
+                }
+            }
+
+            //第一次審査者を経ずに提出する
+            if (!model.DaiijishinsashaHezuIsChecked)
+            {
+                //第一次審査者所属は必須項目
+                if (!model.DaiijishinsashaShozoku.HasValue || model.DaiijishinsashaShozoku.Value == Models.Shozoku.Select)
+                {
+                    results.Add(new ValidationResult("第一次審査者所属を選択してください。", new[] { nameof(model.DaiijishinsashaShozoku) }));
+                }
+                //第一次審査者部・署は必須項目
+                if (String.IsNullOrEmpty(model.DaiijishinsashaBuSho)) 
+                {
+                    results.Add(new ValidationResult("第一次審査者部・署を入力してください。", new[] { nameof(model.DaiijishinsashaBuSho) }));
+                }
+                //第一次審査者課・部門は必須項目
+                if (String.IsNullOrEmpty(model.DaiijishinsashaKaBumon))
+                {
+                    results.Add(new ValidationResult("第一次審査者課・部門を入力してください。", new[] { nameof(model.DaiijishinsashaKaBumon) }));
+                }
+                //第一次審査者氏名は必須項目
+                if (String.IsNullOrEmpty(model.DaiijishinsashaShimei))
+                {
+                    results.Add(new ValidationResult("第一次審査者氏名を入力してください。", new[] { nameof(model.DaiijishinsashaShimei) }));
+                }
+                //第一次審査者官職は必須項目
+                if (String.IsNullOrEmpty(model.DaiijishinsashaKanshokun))
+                {
+                    results.Add(new ValidationResult("第一次審査者官職を入力してください。", new[] { nameof(model.DaiijishinsashaKanshokun) }));
+                }
+            }
+
+            return results;
+        }
+
+        //登録と更新処理
         public void InsertOrUpdate(CreateModel model)
         {
             //ユーザーID

@@ -22,6 +22,20 @@
             }
         });
     }
+
+    // 画面初期表示時にViewBagの値に基づいて画面を切り替え
+    // ページ初期表示時、ViewBagの値によりタブを自動で切り替える
+    var flagElem = document.getElementById('showProposalContentFlag'); // id='showProposalContentFlag'の要素（サーバーからのタブ表示フラグ）を取得
+    var showProposalContent = flagElem && flagElem.textContent.trim() === 'true'; // flagElemが存在すれば、その内容をtrimして'true'かどうか判定
+    setTimeout(function() {
+        var btnTeian = document.getElementById('btnTeian'); // 'btnTeian'（提案内容タブボタン）の要素を取得
+        var btnBase = document.getElementById('btnBase');   // 'btnBase'（基本情報タブボタン）の要素を取得
+        if (showProposalContent) { // showProposalContentがtrueなら（提案内容タブを表示したい場合）
+            if (btnTeian) btnTeian.click(); // btnTeianが存在すれば、クリックをシミュレート
+        } else { // それ以外（基本情報タブを表示したい場合）
+            if (btnBase) btnBase.click(); // btnBaseが存在すれば、クリックをシミュレート
+        }
+    }, 0); // 0ミリ秒遅延で実行し、ボタンが描画済みであることを保証
 });
 
 //基本情報と提案内容
@@ -60,6 +74,5 @@ function initializeForm() {
         if (fileNameBox) fileNameBox.value = "";
     }
 }
-
 
 

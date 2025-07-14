@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Reflection;
+using Proposal.Models;
 
 namespace Proposal.Models
 {
@@ -89,7 +90,7 @@ namespace Proposal.Models
         }
     }
 
-    public class CreateModel
+    public class CreateModel : IValidatableObject
     {
         //ユーザーID
         public string? UserId { get; set; }
@@ -110,32 +111,38 @@ namespace Proposal.Models
 
         // 提案の種類
         [Required(ErrorMessage = "提案の種類を選択してください。")]
-        public TeianShurui TeianShurui { get; set; } = TeianShurui.Select;
+        public TeianShurui? TeianShurui { get; set; }
 
         public static SelectList TeianShuruiOptions => new SelectList(
-            Enum.GetValues(typeof(TeianShurui))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(TeianShurui))
                 .Cast<TeianShurui>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                .Where(e => e != Models.TeianShurui.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
                 "Value", "Text");
 
         // 提案の区分
         [Required(ErrorMessage = "提案の区分を選択してください。")]
-        public TeianKbn TeianKbn { get; set; } = TeianKbn.Select;
+        public TeianKbn? TeianKbn { get; set; }
 
         public static SelectList TeianKbnOptions => new SelectList(
-            Enum.GetValues(typeof(TeianKbn))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(TeianKbn))
                 .Cast<TeianKbn>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
-                 "Value", "Text");
+                .Where(e => e != Models.TeianKbn.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
+                "Value", "Text");
 
         // 所属
         [Required(ErrorMessage = "所属を選択してください。")]
-        public Shozoku Shozoku { get; set; } = Shozoku.Select;
+        public Shozoku? Shozoku { get; set; }
 
         public static SelectList ShozokuOptions => new SelectList(
-            Enum.GetValues(typeof(Shozoku))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(Shozoku))
                 .Cast<Shozoku>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                .Where(e => e != Models.Shozoku.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
                 "Value", "Text");
 
         // 部・署
@@ -157,67 +164,85 @@ namespace Proposal.Models
         public string? GroupMei { get; set; }
 
         // グループの全員①
-        public Shozoku GroupZenin1 { get; set; } = Shozoku.Select;
+        public Shozoku? GroupZenin1 { get; set; }
         // グループの全員①部・署
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin1BuSho { get; set; }
         // グループの全員①課・部門
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin1KaBumon { get; set; }
         // グループの全員①係・担当
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin1KakariTantou { get; set; }
 
         // グループの全員②
-        public Shozoku GroupZenin2 { get; set; } = Shozoku.Select;
+        public Shozoku? GroupZenin2 { get; set; }
         // グループの全員②部・署
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin2BuSho { get; set; }
         // グループの全員②課・部門
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin2KaBumon { get; set; }
         // グループの全員②係・担当
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin2KakariTantou { get; set; }
 
         // グループの全員③
-        public Shozoku GroupZenin3 { get; set; } = Shozoku.Select;
+        public Shozoku? GroupZenin3 { get; set; }
         // グループの全員③部・署
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin3BuSho { get; set; }
         // グループの全員③課・部門
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin3KaBumon { get; set; }
         // グループの全員③係・担当
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin3KakariTantou { get; set; }
 
         // 第一次審査者を経ずに提出する
         public bool DaiijishinsashaHezuIsChecked { get; set; }
 
         // 第一次審査者所属
-        [Required(ErrorMessage = "所属を選択してください。")]
-        public Shozoku DaiijishinsashaShozoku { get; set; } = Shozoku.Select;
+        public Shozoku? DaiijishinsashaShozoku { get; set; }
 
         // 第一次審査者部・署
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? DaiijishinsashaBuSho { get; set; }
 
         // 第一次審査者課・部門
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? DaiijishinsashaKaBumon { get; set; }
 
         // 第一次審査者氏名
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? DaiijishinsashaShimei { get; set; }
 
         // 第一次審査者官職
+        [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? DaiijishinsashaKanshokun { get; set; }
 
         // 主務課
-        public ShumuKa ShumuKa { get; set; } = ShumuKa.Select;
+        [Required(ErrorMessage = "主務課を選択してください。")]
+        public ShumuKa? ShumuKa { get; set; }
 
         public static SelectList ShumuKaOptions => new SelectList(
-            Enum.GetValues(typeof(ShumuKa))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(ShumuKa))
                 .Cast<ShumuKa>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                .Where(e => e != Models.ShumuKa.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
                 "Value", "Text");
 
         // 関係課
-        public KankeiKa KankeiKa { get; set; } = KankeiKa.Select;
+        [Required(ErrorMessage = "関係課を選択してください。")]
+        public KankeiKa? KankeiKa { get; set; }
 
         public static SelectList KankeiKaOptions => new SelectList(
-            Enum.GetValues(typeof(KankeiKa))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(KankeiKa))
                 .Cast<KankeiKa>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                .Where(e => e != Models.KankeiKa.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
                 "Value", "Text");
 
         // 現状・問題点
@@ -231,12 +256,15 @@ namespace Proposal.Models
         public string? Kaizenan { get; set; }
 
         // 効果（実施）
-        public KoukaJishi KoukaJishi { get; set; } = KoukaJishi.Select;
+        [Required(ErrorMessage = "実施を選択してください。")]
+        public KoukaJishi? KoukaJishi { get; set; }
 
         public static SelectList KoukaJishiOptions => new SelectList(
-            Enum.GetValues(typeof(KoukaJishi))
+            new[] { new { Value = "", Text = "選択してください" } }
+            .Concat(Enum.GetValues(typeof(KoukaJishi))
                 .Cast<KoukaJishi>()
-                .Select(e => new { Value = (int)e, Text = e.GetDescription() }),
+                .Where(e => e != Models.KoukaJishi.Select)
+                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
                 "Value", "Text");
 
         // 効果
@@ -265,18 +293,80 @@ namespace Proposal.Models
         public string? TenpuFilePath4 { get; set; }
         public string? TenpuFilePath5 { get; set; }
 
-
         //作成日
         public string Createddate { get; set; }
-
 
         //提出日
         public string Submissiondate { get; set; }
 
         //  CSV出力用にenumの説明を取得する方法
-        public static string GetEnumDescriptionForCsv(Enum value)
+        public static string GetEnumDescriptionForCsv(Enum? value)
         {
-            return value.GetDescription();
+            return value?.GetDescription() ?? "";
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            //提案区分はグループの場合、
+            if (TeianKbn.HasValue && TeianKbn.Value == Models.TeianKbn.Group)
+            {
+                //グループ名は必須項目
+                if (String.IsNullOrEmpty(GroupMei))
+                {                    
+                    yield return new ValidationResult("提案区分はグループの場合、グループ名を入力してください。", new[] { nameof(GroupMei) });
+                }
+
+                //グループの全員①は必須項目
+                if (GroupZenin1 == Proposal.Models.Shozoku.Select || 
+                    String.IsNullOrEmpty(GroupZenin1BuSho) || String.IsNullOrEmpty(GroupZenin1KaBumon) || String.IsNullOrEmpty(GroupZenin1KakariTantou))
+                {
+                    yield return new ValidationResult("グループメンバー①の情報を入力してください。", new[] { nameof(GroupZenin1) });
+                }
+
+                //グループの全員②の所属はNULLではないの場合
+                if ((GroupZenin2.HasValue && GroupZenin2.Value != Proposal.Models.Shozoku.Select) &&
+                    (String.IsNullOrEmpty(GroupZenin2BuSho) || String.IsNullOrEmpty(GroupZenin2KaBumon) || String.IsNullOrEmpty(GroupZenin2KakariTantou)))
+                {
+                    yield return new ValidationResult("グループメンバー②の情報を入力してください。", new[] { nameof(GroupZenin2) });
+                }
+
+                //グループの全員③の所属はNULLではないの場合
+                if ((GroupZenin3.HasValue && GroupZenin3.Value != Proposal.Models.Shozoku.Select) &&
+                    (String.IsNullOrEmpty(GroupZenin3BuSho) || String.IsNullOrEmpty(GroupZenin3KaBumon) || String.IsNullOrEmpty(GroupZenin3KakariTantou)))
+                {
+                    yield return new ValidationResult("グループメンバー③の情報を入力してください。", new[] { nameof(GroupZenin3) });
+                }
+            }
+
+            //第一次審査者を経ずに提出する
+            if (!DaiijishinsashaHezuIsChecked)
+            {
+                //第一次審査者所属は必須項目
+                if (!DaiijishinsashaShozoku.HasValue || DaiijishinsashaShozoku.Value == Models.Shozoku.Select)
+                {
+                    yield return new ValidationResult("第一次審査者所属を選択してください。", new[] { nameof(DaiijishinsashaShozoku) });
+                }
+                //第一次審査者部・署は必須項目
+                if (String.IsNullOrEmpty(DaiijishinsashaBuSho)) 
+                {
+                    yield return new ValidationResult("第一次審査者部・署を入力してください。", new[] { nameof(DaiijishinsashaBuSho) });
+                }
+                //第一次審査者課・部門は必須項目
+                if (String.IsNullOrEmpty(DaiijishinsashaKaBumon))
+                {
+                    yield return new ValidationResult("第一次審査者課・部門を入力してください。", new[] { nameof(DaiijishinsashaKaBumon) });
+                }
+                //第一次審査者氏名は必須項目
+                if (String.IsNullOrEmpty(DaiijishinsashaShimei))
+                {
+                    yield return new ValidationResult("第一次審査者氏名を入力してください。", new[] { nameof(DaiijishinsashaShimei) });
+                }
+                //第一次審査者官職は必須項目
+                if (String.IsNullOrEmpty(DaiijishinsashaKanshokun))
+                {
+                    yield return new ValidationResult("第一次審査者官職を入力してください。", new[] { nameof(DaiijishinsashaKanshokun) });
+                }
+            }
         }
     }
 }
