@@ -36,6 +36,16 @@
             if (btnBase) btnBase.click(); // btnBaseが存在すれば、クリックをシミュレート
         }
     }, 0); // 0ミリ秒遅延で実行し、ボタンが描画済みであることを保証
+
+    // コントロールを読み取り専用にする関数
+    //function setControlsReadonly(isReadOnly) {
+    //    document.querySelectorAll("input[type='text'], textarea").forEach(el => el.readOnly = isReadOnly);
+    //    document.querySelectorAll("select, input[type='radio'], input[type='checkbox'], input[type='file'], button").forEach(el => el.disabled = isReadOnly);
+    //}
+
+    //// サーバーからの状態値に応じて画面を制御
+    //const readOnly = (@Model.SomeProperty === 11);
+    //setControlsReadonly(readOnly);
 });
 
 //基本情報と提案内容
