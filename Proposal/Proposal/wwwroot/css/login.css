@@ -39,33 +39,7 @@
      margin-bottom: 0;
      font-size: 0.9rem;
  }
- /* ログインボタンの基本スタイル */
- .btn-login {
-     background: linear-gradient(135deg,rgba(61, 117, 202, 0.86) 0%,rgb(66, 127, 220) 100%);
-     border: none;
-     border-radius: 10px;
-     padding: 15px 0;
-     font-size: 1rem;
-     font-weight: 500;
-     width: 100%;
-     transition: all 0.3s ease;
-     margin-top: 20px;
-     position: relative;
-     overflow: hidden;
-     text-transform: uppercase;
-     letter-spacing: 0.5px;
- }
- /* ログインボタンのホバー効果 */
- .btn-login:hover {
-     background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
-     transform: translateY(-2px);
-     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
- }
- /* ログインボタンのアクティブ状態 */
- .btn-login:active {
-     transform: translateY(0);
-     box-shadow: 0 2px 8px rgba(32, 121, 254, 0.3);
- }
+
  /* パスワード忘れリンク領域 */
  .forgot-password {
      text-align: center;
