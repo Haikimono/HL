@@ -2,130 +2,81 @@
 @{
     ViewData["Title"] = "ログイン";
 }
+
 <head>
-    <link rel="stylesheet" href="~/Proposal.styles.css" asp-append-version="true" />
-    <style>
-        body {
-            background-color: #E9E9E9;
-        }
-
-        .login-container {
-            display: grid;
-            place-items: center;
-            padding-top: 5%;
-        }
-
-        .login-box {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-            text-align: left;   
-        }
-
-        .form-field {
-            width: 100%;
-            margin-bottom: 16px;
-        }
-
-        .login-header {
-            text-align: center;
-            width: 100%;
-            margin-bottom: 24px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 4px;
-            padding: 10px 0;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            display: block;
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        .btn-login {
-            background-color: #136AA8;
-            margin-top: 10%;
-            padding: 12px 0;
-            width: 100%;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .error-message {
-            text-align: center;
-            background-color: pink;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 8px;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-3 {
-            margin-top: 1rem;
-        }
-
-        .mt-5 {
-            margin-top: 3rem;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-            a:hover {
-                text-decoration: underline;
-            }
-    </style>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
-    @if (ViewBag.Message != null)
-    {
-        <div>@ViewBag.Message</div>
-    }
-    <div class="login-container">
-        <div class="login-box">
-            <h2 class="login-header">
-                提案書作成提出システム<br>
-                ログイン
-            </h2>
+    <!-- ログインページメインコンテナ -->
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- ログインヘッダー部分 -->
+            <div class="login-header">
+                <h2>提案書作成提出システム</h2>
+                <p>ログイン</p>
+            </div>
+            
+            <!-- 成功メッセージ表示 -->
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-info alert-custom" role="alert">
+                    @ViewBag.Message
+                </div>
+            }
+            
+            <!-- エラーメッセージ表示 -->
             @if (ViewBag.Error != null)
             {
-                <div class="error-message">@ViewBag.Error</div>
+                <div class="alert alert-danger alert-custom" role="alert">
+                    @ViewBag.Error
+                </div>
             }
+            
+            <!-- ログインフォーム -->
             <form asp-action="Login" asp-controller="Login" method="post">
-                <div class="form-field">
-                    @Html.LabelFor(m => m.UserId)
-                    @Html.TextBoxFor(m => m.UserId)
-                    @Html.ValidationMessageFor(m => m.UserId, "", new { @style = "color:red" })
+                <!-- ユーザーID入力欄 -->
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        @Html.TextBoxFor(m => m.UserId, new { 
+                            @class = "form-control", 
+                            placeholder = "ユーザーID"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "validation-message" })
                 </div>
-                <div class="form-field">
-                    @Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password)
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @style = "color:red" })
+                
+                <!-- パスワード入力欄 -->
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        @Html.PasswordFor(m => m.Password, new { 
+                            @class = "form-control", 
+                            placeholder = "パスワード"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-message" })
                 </div>
-                <div>
-                    <button type="submit" name="action" value="login" class="btn-login">
-                        ログイン
-                    </button>
-                    <div class="text-center mt-3">
+                
+                <!-- ログインボタン -->
+                <button type="submit" name="action" value="login" class="btn btn-primary btn-login">
+                    ログイン
+                </button>
+                
+                <!-- パスワード忘れリンク -->
+                <div class="forgot-password">
                     <a href="/ForgetPass/ForgetPass">
                         パスワードをお忘れですか？
                     </a>
-                    </div>
                 </div>
             </form>
         </div>

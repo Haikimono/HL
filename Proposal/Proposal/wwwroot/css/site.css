@@ -1,0 +1,102 @@
+ /* ベーススタイル設定 */
+ body {
+    background-color:rgb(231, 231, 231);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* フォームグループの間隔調整 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* 統一された入力グループのスタイル */
+.input-group {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+}
+
+/* 入力グループのホバー効果 */
+.input-group:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #ced4da;
+}
+
+/* 入力グループのフォーカス効果 */
+.input-group:focus-within {
+    border-color:rgb(109, 159, 209);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15), 0 4px 12px rgba(13, 110, 253, 0.1);
+    transform: translateY(-1px);
+}
+
+/* アイコン表示領域のスタイル */
+.input-group-text {
+    background: transparent;
+    border: none;
+    padding: 15px 18px;
+    color: #6c757d;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    min-width: 50px;
+}
+
+/* フォーカス時のアイコンスタイル */
+.input-group:focus-within .input-group-text {
+    color: #0d6efd;
+    transform: scale(1.1);
+}
+
+ /* 入力フィールドの基本スタイル */
+ .form-control {
+     border: none;
+     background: transparent;
+     padding: 15px 18px 15px 0;
+     font-size: 1rem;
+     color: #495057;
+     outline: none;
+     box-shadow: none;
+     transition: all 0.3s ease;
+     flex: 1;
+ }
+ /* 入力フィールドのフォーカススタイル */
+ .form-control:focus {
+     border: none;
+     box-shadow: none;
+     background: transparent;
+     color: #212529;
+ }
+ /* プレースホルダーテキストのスタイル */
+ .form-control::placeholder {
+     color: #adb5bd;
+     opacity: 1;
+     transition: all 0.3s ease;
+ }
+
+
+ /* カスタムアラートメッセージのスタイル */
+ .alert-custom {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+    padding: 15px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* バリデーションエラーメッセージのスタイル */
+.validation-message {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    display: block;
+    padding-left: 5px;
+    font-weight: 500;
+}

@@ -51,7 +51,6 @@ namespace Proposal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Error = "入力内容に誤りがあります。";
                 return View(model);
             }
 
