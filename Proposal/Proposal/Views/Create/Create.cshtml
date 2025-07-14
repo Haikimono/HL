@@ -21,32 +21,31 @@
                 <button type="submit" name="action" value="Menu" class="backtomenu" method="post">メニューに戻る</button>
             </div>
         </div>
-            <div class="row">
-                <div class="btn-group mb-3 col-3" role="group" aria-label="基本情報・提案内容切替">
-                    <button type="button" id="btnBase" class="btn btn-primary" onclick="showDiv('base')">基本情報</button>
-                    <button type="button" id="btnTeian" class="btn btn-outline-primary" onclick="showDiv('teian')">提案内容</button>
-                </div>
-                <div class="col-3"></div>
-                <div class="col-auto">
-                    <button type="submit" name="action" value="Menu" class="btn btn-outline-primary" method="post">戻る</button>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" name="action" value="Ichijihozon" class="btn btn-outline-success" method="post">一時保存</button>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" name="action" value="Deryoku" class="btn 	btn-outline-primary" method="post">出力</button>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" name="action" onclick="initializeForm()" class="btn btn-outline-secondary">初期化</button>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" name="action" value="Submit" class="btn btn-outline-success" method="post">提出</button>
-                </div>
-            </div>
+            <div class="btn-group mb-3" role="group" aria-label="基本情報・提案内容切替">
+                <button type="button" id="btnBase" class="btn btn-primary" onclick="showDiv('base')">基本情報</button>
+                <button type="button" id="btnTeian" class="btn btn-outline-primary" onclick="showDiv('teian')">提案内容</button>
+        </div>
             <div id="baseDiv" class="row">
                 <div class="row mb-3">
-                    <div class=""></div>
-                   
+                    <div class="col-3 border text-center bg-light py-1 fw-bold fs-3">
+                        基本情報
+                    </div>
+                    <div class="col-3"></div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Menu" class="btn btn-outline-primary" method="post">戻る</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Ichijihozon" class="btn btn-outline-success" method="post">一時保存</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Deryoku" class="btn 	btn-outline-primary" method="post">出力</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" onclick="initializeForm()" class="btn btn-outline-secondary">初期化</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Submit" class="btn btn-outline-success" method="post">提出</button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-1"></div>
@@ -325,6 +324,11 @@
             </div>
             </div>
             <div id="teianDiv" style="display: none;">
+                <div class="row mb-3">
+                    <div class="col-3 border text-center bg-light py-1 fw-bold fs-3">
+                        提案内容
+                    </div>          
+                </div>
                 <div class="row">
                     <div class="col-1">
                     </div>
@@ -393,6 +397,24 @@
                         <input type="file" id="file@(i)" class="d-none" />
                     </div>
                 }
+                <div class="row mt-4">
+                    <div class="col-6"></div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Menu" class="btn btn-outline-primary" method="post">戻る</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Ichijihozon" class="btn btn-outline-success" method="post">一時保存</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Deryoku" class="btn 	btn-outline-primary" method="post">出力</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" onclick="initializeForm()" class="btn btn-outline-secondary">初期化</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" name="action" value="Submit" class="btn btn-outline-success" method="post">提出</button>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
