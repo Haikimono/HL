@@ -10,15 +10,10 @@
 }
 <form asp-action="Menu" asp-controller="Menu" method="post">
     <h2 class="text-center mb-4">提案書作成提出システム メニュー</h2>
-    @if (!string.IsNullOrEmpty(userName)) {
-        <div class="mb-3 text-end">
-            <span>ユーザー名：@userName</span>　
-            <span>区分：@kbnNames[int.TryParse(userKbn, out var kbn) ? kbn : 0]</span>
-            <div class="mt-2">
-                <a href="/proposal/logout" class="btn btn-outline-danger btn-sm">ログアウト</a>
-            </div>
-        </div>
-    }
+    <div class="mb-3 mt-2 text-end">
+        <a href="/proposal/logout" class="btn btn-outline-danger btn-sm">ログアウト</a>
+    </div>
+
     <div class="d-grid gap-3">
         <button id="teianshosakuseiMenu" class="btn btn-outline-primary btn-lg">提案書作成 メニュー</button>
         <div id="teianshosakuseiMenu-submenu" class="ms-4 d-grid gap-2" style="display: none;">
