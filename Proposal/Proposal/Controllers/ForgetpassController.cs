@@ -76,7 +76,7 @@ namespace Proposal.Controllers
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("UPDATE M_user SET password = @Password, reset_pass = 0 WHERE user_id = @UserId", conn);
+                var cmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 0 WHERE user_id = @UserId", conn);
                 cmd.Parameters.AddWithValue("@Password", newPassword);  // 可替换为加密处理
                 cmd.Parameters.AddWithValue("@UserId", userId);
                 cmd.ExecuteNonQuery();

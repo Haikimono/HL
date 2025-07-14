@@ -1,9 +1,9 @@
 ﻿using Proposal.Models;
 using System;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Proposal.BL
@@ -24,8 +24,8 @@ namespace Proposal.BL
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT user_id, user_name, password, user_kbn, email FROM [user] WHERE email = @Email", conn);
-                cmd.Parameters.AddWithValue("@Email", email);
+                var cmd = new SqlCommand("SELECT user_id, user_name, password, email_adress FROM [user] WHERE email_adress = @Email", conn);
+                cmd.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 100).Value = email;
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -36,8 +36,7 @@ namespace Proposal.BL
                             UserId = reader["user_id"].ToString(),
                             UserName = reader["user_name"].ToString(),
                             Password = reader["password"].ToString(),
-                            UserKbn = reader["user_kbn"].ToString(),
-                            UserEmail = reader["email"].ToString()
+                            UserEmail = reader["email_adress"].ToString()
                         };
                     }
                 }
@@ -48,24 +47,24 @@ namespace Proposal.BL
                 return "該当するユーザーが見つかりませんでした。";
             }
 
-            // 生成随机密码
-            var newPassword = GenerateRandomPassword(8);
+            // 生成随机密码（原文）并加密保存
+            var plainPassword = GenerateRandomPassword(8);
+            var hashedPassword = HashPasswordSHA256(plainPassword);
 
-            // 更新密码
+            // 更新数据库中的加密密码
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var updateCmd = new SqlCommand("UPDATE M_user SET password = @Password, reset_pass = 1 WHERE user_id = @UserId", conn);
-                updateCmd.Parameters.AddWithValue("@Password", newPassword);
-                updateCmd.Parameters.AddWithValue("@UserId", user.UserId);
+                var updateCmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 0 WHERE user_id = @UserId", conn);
+                updateCmd.Parameters.Add("@Password", System.Data.SqlDbType.VarChar, 256).Value = hashedPassword;
+                updateCmd.Parameters.Add("@UserId", System.Data.SqlDbType.VarChar, 50).Value = user.UserId;
                 updateCmd.ExecuteNonQuery();
             }
 
-
-            // 发邮件
+            // 发送邮件（使用原文密码）
             try
             {
-                SendEmail(user.UserEmail, user.UserName, newPassword);
+                SendEmail(user.UserEmail, user.UserName, plainPassword);
                 return $"新しいパスワードを {user.UserEmail} に送信しました。";
             }
             catch (Exception ex)
@@ -74,12 +73,30 @@ namespace Proposal.BL
             }
         }
 
+        /// <summary>
+        /// 安全なランダムパスワードを生成します。
+        /// </summary>
         private string GenerateRandomPassword(int length)
         {
-            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
-            var rand = new Random();
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[rand.Next(s.Length)]).ToArray());
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            var data = new byte[length];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(data);
+
+            var result = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = chars[data[i] % chars.Length];
+            }
+            return new string(result);
+        }
+
+        private string HashPasswordSHA256(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
 
         private void SendEmail(string toEmail, string userName, string newPassword)

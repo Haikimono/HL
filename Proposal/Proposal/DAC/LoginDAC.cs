@@ -26,7 +26,7 @@ namespace Proposal.DAC
                 {
                     UserId = reader["user_id"].ToString(),
                     Password = reader["password"].ToString(),
-                    ReSetPass = reader.GetBoolean(reader.GetOrdinal("registration_status"))
+                    Registration_status = reader.GetBoolean(reader.GetOrdinal("registration_status"))
                 };
             }
             return null;
