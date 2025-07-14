@@ -24,7 +24,7 @@ namespace Proposal.BL
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT user_id, user_name, password, user_kbn, email FROM M_user WHERE email = @Email", conn);
+                var cmd = new SqlCommand("SELECT user_id, user_name, password, user_kbn, email FROM [user] WHERE email = @Email", conn);
                 cmd.Parameters.AddWithValue("@Email", email);
 
                 using (var reader = cmd.ExecuteReader())
