@@ -47,7 +47,7 @@ namespace Proposal.BL
             {
                 // メール送信内容の作成
                 var subject = "【提案システム】パスワード再設定";
-                var body = $@"ユーザー {user.UserName} 様\n\n新しいパスワード: {plainPassword}\n\nログイン後、すぐにパスワードを変更してください。";
+                var body = $"ユーザー {user.UserName} 様\n\n新しいパスワード: {plainPassword}\n\nログイン後、すぐにパスワードを変更してください。";
 
                 // メール送信
                 _emailSender.Send(user.UserEmail, subject, body);
