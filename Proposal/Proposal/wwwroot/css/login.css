@@ -7,6 +7,10 @@
      padding-top: 100px;
  }
 
+ .login-card {
+    max-width: 380px;
+}
+
  /* ログインヘッダー領域 */
  .login-header {
      text-align: center;
