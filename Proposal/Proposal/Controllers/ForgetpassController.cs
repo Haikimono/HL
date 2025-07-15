@@ -2,8 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Proposal.BL;
+using Proposal.DAL;
 using Proposal.Models;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
+using System.Text;
+
 
 namespace Proposal.Controllers
 {
@@ -14,13 +19,15 @@ namespace Proposal.Controllers
         private readonly ForgetPassBL _forgetPassBL;
         private readonly string _connectionString;
 
+        
         public ForgetPassController(ILogger<ForgetPassController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
-            var connStr = _configuration.GetConnectionString("ProposalDB");
-            _forgetPassBL = new ForgetPassBL(connStr);
+            _connectionString = _configuration.GetConnectionString("ProposalDB");
+            _forgetPassBL = new ForgetPassBL(_connectionString);
         }
+
 
         [HttpGet]
         public IActionResult ForgetPass()
@@ -51,39 +58,26 @@ namespace Proposal.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ChangePassword(string newPassword, string confirmPassword)
         {
             var userId = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Login");
             }
 
-            // 验证输入
-            if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            var success = _forgetPassBL.ChangeUserPassword(userId, newPassword, confirmPassword, out string error);
+
+            if (!success)
             {
-                ViewBag.Error = "すべての項目を入力してください。";
+                ViewBag.Error = error;
                 return View();
             }
 
-            if (newPassword != confirmPassword)
-            {
-                ViewBag.Error = "パスワードが一致しません。";
-                return View();
-            }
-
-            // 更新密码并清除 reset_pass 标志
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 0 WHERE user_id = @UserId", conn);
-                cmd.Parameters.AddWithValue("@Password", newPassword);  // 可替换为加密处理
-                cmd.Parameters.AddWithValue("@UserId", userId);
-                cmd.ExecuteNonQuery();
-            }
-
-            TempData["Message"] = "パスワードが変更されました。ログインしてください。";
-            return RedirectToAction("Login");
+            // 设置标志 Session
+            HttpContext.Session.SetString("SetPass", "1");
+            return RedirectToAction("Login", "Login");
         }
     }
 }

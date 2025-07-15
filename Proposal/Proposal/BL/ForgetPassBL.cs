@@ -1,6 +1,6 @@
-﻿using Proposal.Models;
+﻿using Proposal.DAL;
+using Proposal.Models;
 using System;
-using System.Data.SqlClient;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -10,58 +10,25 @@ namespace Proposal.BL
 {
     public class ForgetPassBL
     {
-        private readonly string _connectionString;
+        private readonly UserDAC _userDAC;
 
         public ForgetPassBL(string connectionString)
         {
-            _connectionString = connectionString;
+            _userDAC = new UserDAC(connectionString);
         }
 
         public string ResetPasswordByEmail(string email)
         {
-            User user = null;
-
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand("SELECT user_id, user_name, password, email_adress FROM [user] WHERE email_adress = @Email", conn);
-                cmd.Parameters.Add("@Email", System.Data.SqlDbType.VarChar, 100).Value = email;
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        user = new User
-                        {
-                            UserId = reader["user_id"].ToString(),
-                            UserName = reader["user_name"].ToString(),
-                            Password = reader["password"].ToString(),
-                            UserEmail = reader["email_adress"].ToString()
-                        };
-                    }
-                }
-            }
-
+            var user = _userDAC.GetUserByEmail(email);
             if (user == null)
-            {
                 return "該当するユーザーが見つかりませんでした。";
-            }
 
-            // 生成随机密码（原文）并加密保存
             var plainPassword = GenerateRandomPassword(8);
-            var hashedPassword = HashPasswordSHA256(plainPassword);
+            //暂时禁用
+            //var hashedPassword = HashPasswordSHA256(plainPassword);
+            //_userDAC.UpdateUserPassword(user.UserId, hashedPassword);
+            _userDAC.UpdateUserPassword(user.UserId, plainPassword);
 
-            // 更新数据库中的加密密码
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                var updateCmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 0 WHERE user_id = @UserId", conn);
-                updateCmd.Parameters.Add("@Password", System.Data.SqlDbType.VarChar, 256).Value = hashedPassword;
-                updateCmd.Parameters.Add("@UserId", System.Data.SqlDbType.VarChar, 50).Value = user.UserId;
-                updateCmd.ExecuteNonQuery();
-            }
-
-            // 发送邮件（使用原文密码）
             try
             {
                 SendEmail(user.UserEmail, user.UserName, plainPassword);
@@ -73,33 +40,21 @@ namespace Proposal.BL
             }
         }
 
-        /// <summary>
-        /// 安全なランダムパスワードを生成します。
-        /// </summary>
-        private string GenerateRandomPassword(int length)
+        public string GenerateRandomPassword(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var data = new byte[length];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(data);
 
             var result = new char[length];
             for (int i = 0; i < length; i++)
-            {
                 result[i] = chars[data[i] % chars.Length];
-            }
+
             return new string(result);
         }
 
-        private string HashPasswordSHA256(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
-
-        private void SendEmail(string toEmail, string userName, string newPassword)
+        public void SendEmail(string toEmail, string userName, string newPassword)
         {
             var fromEmail = "your-email@example.com";
             var fromPassword = "your-email-password";
@@ -119,6 +74,38 @@ namespace Proposal.BL
             };
 
             smtp.Send(mail);
+        }
+
+
+        public bool ChangeUserPassword(string userId, string newPassword, string confirmPassword, out string error)
+        {
+            error = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                error = "すべての項目を入力してください。";
+                return false;
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                error = "パスワードが一致しません。";
+                return false;
+            }
+            //暂时禁用
+            //string hashedPassword = HashPasswordSHA256(newPassword);
+            //_userDAC.UpdatePasswordAndActivate(userId, hashedPassword);
+            _userDAC.UpdatePasswordAndActivate(userId, newPassword);
+            return true;
+        }
+
+
+        public string HashPasswordSHA256(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }
