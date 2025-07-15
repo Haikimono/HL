@@ -10,6 +10,22 @@
     margin-bottom: 20px;
 }
 
+ /* ログインカードのスタイル */
+.content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 380px;
+    padding: 40px;
+    animation: fadeInUp 0.6s ease-out;
+    transition: box-shadow 0.3s ease;
+}
+/* ログインカードのホバー効果 */
+.content-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
 /* 統一された入力グループのスタイル */
 .input-group {
     position: relative;
@@ -127,4 +143,26 @@
 .btn-register:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(32, 121, 254, 0.3);
+}
+
+ /* リンク領域 */
+.link-area {
+    text-align: center;
+    margin-top: 25px;
+}
+/* リンクのスタイル */
+.link-area a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+/* リンクのホバー効果 */
+.link-area a:hover {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0b5ed7;
+    transform: translateY(-1px);
 }
