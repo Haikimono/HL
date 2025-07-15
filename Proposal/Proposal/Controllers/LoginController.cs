@@ -85,9 +85,7 @@ namespace Proposal.Controllers
             {
                 return RedirectToAction("ChangePassword");
             }
-
             return RedirectToAction("Menu");
-
         }
 
 
