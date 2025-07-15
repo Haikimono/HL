@@ -1,5 +1,10 @@
 /* ログインページ全体のラッパー */
- .login-wrapper {
+/* フォームグループの間隔調整 */
+.form-group {
+    margin-bottom: 20px;
+}
+ 
+.login-wrapper {
      min-height: 100vh;
      display: flex;
      align-items: flex-start;

@@ -5,11 +5,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* フォームグループの間隔調整 */
-.form-group {
-    margin-bottom: 20px;
-}
-
  /* ログインカードのスタイル */
 .content-card {
     background: white;
