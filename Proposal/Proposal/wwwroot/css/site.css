@@ -5,18 +5,12 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* フォームグループの間隔調整 */
-.form-group {
-    margin-bottom: 20px;
-}
-
  /* ログインカードのスタイル */
 .content-card {
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 380px;
     padding: 40px;
     animation: fadeInUp 0.6s ease-out;
     transition: box-shadow 0.3s ease;
@@ -28,13 +22,13 @@
 
 /* 統一された入力グループのスタイル */
 .input-group {
-    position: relative;
+    width: 100%;
     border-radius: 10px;
-    overflow: hidden;
+    border: 1px solid #cbd5e0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
     transition: all 0.3s ease;
-    background: #ffffff;
-    border: 2px solid #e9ecef;
+    background: white;
 }
 
 /* 入力グループのホバー効果 */
@@ -45,9 +39,9 @@
 
 /* 入力グループのフォーカス効果 */
 .input-group:focus-within {
-    border-color:rgb(109, 159, 209);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15), 0 4px 12px rgba(13, 110, 253, 0.1);
-    transform: translateY(-1px);
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* アイコン表示領域のスタイル */

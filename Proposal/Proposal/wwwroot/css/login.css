@@ -1,11 +1,20 @@
 /* ログインページ全体のラッパー */
- .login-wrapper {
+/* フォームグループの間隔調整 */
+.form-group {
+    margin-bottom: 20px;
+}
+ 
+.login-wrapper {
      min-height: 100vh;
      display: flex;
      align-items: flex-start;
      justify-content: center;
      padding-top: 100px;
  }
+
+ .login-card {
+    max-width: 380px;
+}
 
  /* ログインヘッダー領域 */
  .login-header {
