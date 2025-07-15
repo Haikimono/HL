@@ -163,8 +163,12 @@ namespace Proposal.Models
         [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupMei { get; set; }
 
-        // グループの全員①
+        // グループの全員①所属
         public Shozoku? GroupZenin1 { get; set; }
+
+        // グループの全員①氏名
+        [MaxLength(6, ErrorMessage = "6文字以内で入力してください。")]
+        public string? GroupZenin1Name { get; set; }
         // グループの全員①部・署
         [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin1BuSho { get; set; }
@@ -177,6 +181,9 @@ namespace Proposal.Models
 
         // グループの全員②
         public Shozoku? GroupZenin2 { get; set; }
+        // グループの全員②氏名
+        [MaxLength(6, ErrorMessage = "6文字以内で入力してください。")]
+        public string? GroupZenin2Name { get; set; }
         // グループの全員②部・署
         [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin2BuSho { get; set; }
@@ -189,6 +196,9 @@ namespace Proposal.Models
 
         // グループの全員③
         public Shozoku? GroupZenin3 { get; set; }
+        // グループの全員③氏名
+        [MaxLength(6, ErrorMessage = "6文字以内で入力してください。")]
+        public string? GroupZenin3Name { get; set; }
         // グループの全員③部・署
         [MaxLength(10, ErrorMessage = "10文字以内で入力してください。")]
         public string? GroupZenin3BuSho { get; set; }
