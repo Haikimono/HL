@@ -36,6 +36,81 @@
             if (btnBase) btnBase.click(); // btnBaseが存在すれば、クリックをシミュレート
         }
     }, 0); // 0ミリ秒遅延で実行し、ボタンが描画済みであることを保証
+
+    // 編集権限の制御
+    // statusがnullまたは1以外の場合は編集不可
+    var statusElement = document.getElementById('proposalStatus');
+    if (statusElement) {
+        var status = parseInt(statusElement.textContent.trim());
+        var isEditable = isNaN(status) || status === 1;
+        
+        if (!isEditable) {
+            // 基本情報区域のすべてのコントロールを無効化
+            var baseDiv = document.getElementById('baseDiv');
+            if (baseDiv) {
+                var controls = baseDiv.querySelectorAll('input, select, textarea, button[type="button"]');
+                controls.forEach(function(control) {
+                    if (control.type !== 'submit' && control.type !== 'button') {
+                        control.disabled = true;
+                    }
+                });
+            }
+            
+            // 提案内容区域のすべてのコントロールを無効化
+            var teianDiv = document.getElementById('teianDiv');
+            if (teianDiv) {
+                var controls = teianDiv.querySelectorAll('input, select, textarea, button[type="button"]');
+                controls.forEach(function(control) {
+                    if (control.type !== 'submit' && control.type !== 'button') {
+                        control.disabled = true;
+                    }
+                });
+            }
+            
+            // 提出ボタンを無効化（戻るボタンは除く）
+            var submitButtons = document.querySelectorAll('button[type="submit"]');
+            submitButtons.forEach(function(button) {
+                if (button.value !== 'Menu') {
+                    button.disabled = true;
+                }
+            });
+        }
+    }
+
+    // 提案の区分によるグループ情報表示切替
+    function toggleGroupSection() {
+        var teianKbn = document.getElementById('teianKbn');
+        var groupSection = document.getElementById('groupSection');
+        if (!teianKbn || !groupSection) return;
+        // "グループ"の値（enum値2）で表示、それ以外で非表示
+        if (teianKbn.value == "2") {
+            groupSection.style.display = '';
+        } else {
+            groupSection.style.display = 'none';
+        }
+    }
+    var teianKbn = document.getElementById('teianKbn');
+    if (teianKbn) {
+        teianKbn.addEventListener('change', toggleGroupSection);
+        toggleGroupSection(); // 初期表示時も実行
+    }
+
+    // 「第一次審査者を経ずに提出する」チェック時、下の入力欄を無効化
+    function toggleDaiichishinsashaInputs() {
+        var checkbox = document.getElementById('check');
+        var target = document.getElementById('daiichishinsashaInputs');
+        if (!checkbox || !target) return;
+        var disabled = checkbox.checked;
+        var controls = target.querySelectorAll('input, select, textarea');
+        controls.forEach(function(ctrl) {
+            ctrl.disabled = disabled;
+        });
+    }
+    var daiichiCheckbox = document.getElementById('check');
+    if (daiichiCheckbox) {
+        daiichiCheckbox.addEventListener('change', toggleDaiichishinsashaInputs);
+        toggleDaiichishinsashaInputs(); // 初期表示時も実行
+    }
 });
 
 //基本情報と提案内容
@@ -50,9 +125,12 @@ function showDiv(target) {
 
     btnBase.classList.toggle('btn-primary', target === 'base');
     btnBase.classList.toggle('btn-outline-primary', target !== 'base');
-
     btnTeian.classList.toggle('btn-primary', target === 'teian');
     btnTeian.classList.toggle('btn-outline-primary', target !== 'teian');
+
+    // 追加: tab-btnのactiveクラス制御
+    btnBase.classList.toggle('active', target === 'base');
+    btnTeian.classList.toggle('active', target === 'teian');
 }
 
 //初期化
