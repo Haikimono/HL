@@ -15,6 +15,7 @@ namespace Proposal.Controllers
         private readonly IConfiguration _configuration;
         private readonly LoginBL _loginBL;
 
+        
         public LoginController(ILogger<LoginController> logger, IConfiguration configuration)
         {
             _logger = logger;
@@ -50,7 +51,7 @@ namespace Proposal.Controllers
                 {
                      return RedirectToAction("Menu");
                 }
-                return RedirectToAction("ChangePass");
+                return RedirectToAction("ChangePassword");
             }
             return View(new LoginModel());
         }
@@ -83,7 +84,7 @@ namespace Proposal.Controllers
 
             if (!user.Registration_status)
             {
-                return RedirectToAction("ChangePass");
+                return RedirectToAction("ChangePassword");
             }
             return RedirectToAction("Menu");
         }

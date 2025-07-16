@@ -29,10 +29,10 @@ namespace Proposal.Controllers
 
         // パスワード変更画面の表示
         [HttpGet]
-        [Route("/Login/ChangePass")]
+        [Route("/Login/ChangePassword")]
         public IActionResult ChangePassword()
         {
-            return View("ChangePass");
+            return View("ChangePassword");
         }
 
         // 新しいパスワードの更新処理

@@ -29,7 +29,7 @@ namespace Proposal.Controllers
 
         // パスワード忘れ画面の表示
         [HttpGet]
-        public IActionResult ForgetPass()
+        public IActionResult ForgetPassword()
         {
             return View(new ForgetPassModel());
         }
@@ -41,13 +41,13 @@ namespace Proposal.Controllers
             if (string.IsNullOrWhiteSpace(model.Email))
             {
                 ViewBag.Message = "メールアドレスを入力してください。";
-                return View("ForgetPass", model);
+                return View("ForgetPassword", model);
             }
 
             // パスワード再設定処理の呼び出し
             var resultMessage = _forgetPassBL.ResetPasswordByEmail(model.Email);
             ViewBag.Message = resultMessage;
-            return View("ForgetPass", model);
+            return View("ForgetPassword", model);
         }
     }
 }
