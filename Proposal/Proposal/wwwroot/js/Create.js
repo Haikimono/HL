@@ -104,6 +104,15 @@
         var controls = target.querySelectorAll('input, select, textarea');
         controls.forEach(function(ctrl) {
             ctrl.disabled = disabled;
+            if (disabled) {
+                if (ctrl.tagName === 'SELECT') {
+                    ctrl.selectedIndex = 0;
+                } else if (ctrl.type === 'checkbox' || ctrl.type === 'radio') {
+                    ctrl.checked = false;
+                } else {
+                    ctrl.value = '';
+                }
+            }
         });
     }
     var daiichiCheckbox = document.getElementById('check');
