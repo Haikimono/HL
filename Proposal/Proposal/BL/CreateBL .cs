@@ -2,6 +2,10 @@
 using Proposal.DAC;
 using Proposal.Models;
 using System.Reflection;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Proposal.BL
 {
@@ -95,7 +99,7 @@ namespace Proposal.BL
                 model.Status = row["status"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["status"]);
                 model.TeianYear = row["proposal_year"].ToString();
                 model.TeianDaimei = row["pd_name"].ToString();
-                model.TeianShurui = row["proposal_type"] == DBNull.Value ? TeianShurui.Select : (TeianShurui)Convert.ToInt32(row["proposal_type"]);
+                model.ProposalTypeId = row["proposal_type"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["proposal_type"]);
                 model.TeianKbn = row["proposal_kbn"] == DBNull.Value ? TeianKbn.Select : (TeianKbn)Convert.ToInt32(row["proposal_kbn"]);
                 model.Shozoku = row["from"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["from"]);
                 model.ShimeiOrDaihyoumei = row["nameOrrepresentativename"].ToString();
@@ -155,6 +159,99 @@ namespace Proposal.BL
             }
         }
 
+        //// 提案種類の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
+        public List<ProposalType> GetProposalTypes()
+        {
+            // DAC（Data Access Component）層から提案種類の一覧を取得して返す
+            return _createDAC.GetProposalTypes();
+        }
 
+        //// 提案区分の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
+
+
+        //// 提案所属の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
+
+
+
+        /// <summary>
+        /// 任意のリストをSelectListItemのリストに変換するプライベートメソッド
+        /// </summary>
+        /// <typeparam name="T">変換元の型</typeparam>
+        /// <param name="items">変換元リスト</param>
+        /// <param name="getValue">値を取得するFunc</param>
+        /// <param name="getText">表示テキストを取得するFunc</param>
+        /// <param name="addDefault">先頭に「選択してください」を追加するか</param>
+        /// <returns>SelectListItemのリスト</returns>
+        private List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetSelectListItems<T>(List<T> items, Func<T, string> getValue, Func<T, string> getText, bool addDefault = true)
+        {
+            var list = items.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = getValue(x),
+                Text = getText(x)
+            }).ToList();
+            if (addDefault)
+            {
+                list.Insert(0, new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "", Text = "選択してください" });
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 提案種類のSelectListItemリストを取得
+        /// </summary>
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetProposalTypeSelectList()
+        {
+            // 提案種類のリストを取得（データベースなどから）
+            var types = GetProposalTypes();
+
+            // 提案種類のリストを <select> 用の SelectListItem に変換して返す
+            // 第1引数：値（value）にするプロパティ（Id）
+            // 第2引数：表示名（text）にするプロパティ（Type）
+            return GetSelectListItems(types, x => x.Id.ToString(), x => x.Type);
+        }
+
+        /// <summary>
+        /// 提案区分のSelectListItemリストを取得
+        /// </summary>
+        /// 
+
+        /// <summary>
+        /// 提案所属のSelectListItemリストを取得
+        /// </summary>
+
+
+
+
+
+        /// <summary>
+        /// すべてのドロップダウンリストをまとめて取得するメソッド
+        /// </summary>
+        public DropdownsViewModel GetDropdowns()
+        {
+            return new DropdownsViewModel
+            {
+                //提案種類
+                ProposalTypes = GetProposalTypeSelectList()
+                // 他のドロップダウンもここに追加可能
+
+                //提案区分
+
+                //提案所属
+            };
+        }
+    }
+
+    /// <summary>
+    /// すべてのドロップダウンリストを格納するViewModel
+    /// </summary>
+    public class DropdownsViewModel
+    {
+        //提案種類
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ProposalTypes { get; set; }
+        // 他のドロップダウンもここに追加可能
+
+        //提案区分
+
+        //提案所属
     }
 }

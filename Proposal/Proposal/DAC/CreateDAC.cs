@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using Proposal.Models;
+using System.Collections.Generic;
 
 
 namespace Proposal.DAC
@@ -130,7 +131,7 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@status", pModel.Status ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalType", pModel.TeianShurui.HasValue ? (int)pModel.TeianShurui.Value : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposalType", pModel.ProposalTypeId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposalKbn", pModel.TeianKbn.HasValue ? (int)pModel.TeianKbn.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@from", pModel.Shozoku.HasValue ? (int)pModel.Shozoku.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
@@ -299,7 +300,7 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@status", pModel.Status ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalType", (int)pModel.TeianShurui);
+            cmd.Parameters.AddWithValue("@proposalType", (int)pModel.ProposalTypeId);
             cmd.Parameters.AddWithValue("@proposalKbn", (int)pModel.TeianKbn);
             cmd.Parameters.AddWithValue("@from", (int)pModel.Shozoku);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
@@ -337,7 +338,7 @@ namespace Proposal.DAC
 
             cmd.ExecuteNonQuery();
         }
-        
+
         //// 提案書一覧登録
         //public void SqlInsertproposals(CreateModel pModel)
         //{
@@ -427,5 +428,41 @@ namespace Proposal.DAC
 
         //    cmd.ExecuteNonQuery();
         //}
+
+        // 提案種類（ProposalType）の一覧をデータベースから取得するメソッド
+        public List<ProposalType> GetProposalTypes()
+        {
+            // 結果を格納するリストを初期化
+            var result = new List<ProposalType>();
+            // データベース接続のための SqlConnection を作成
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                // 接続を開く
+                conn.Open();
+                // 提案種類テーブルから id と type を取得する SQL コマンドを作成
+                var cmd = new SqlCommand("SELECT id, type FROM proposal_type", conn);
+                // SQL コマンドを実行して、結果をリーダーで読み込む
+                using (var reader = cmd.ExecuteReader())
+                {
+                    // 1行ずつ読み込む
+                    while (reader.Read())
+                    {
+                        // 取得したデータを ProposalType オブジェクトにマッピングしてリストに追加
+                        result.Add(new ProposalType
+                        {
+                            Id = reader.GetInt32(0),// 0列目（id）を取得
+                            Type = reader.GetString(1)// 1列目（type）を取得
+                        });
+                    }
+                }
+            }
+            // 結果のリストを返す
+            return result;
+        }
+
+        // 提案区分（）の一覧をデータベースから取得するメソッド
+
+
+        // 提案所属（）の一覧をデータベースから取得するメソッド
     }
 }

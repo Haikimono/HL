@@ -6,21 +6,6 @@ using Proposal.Models;
 
 namespace Proposal.Models
 {
-    // 提案の種類のenum
-    public enum TeianShurui
-    {
-        [Description("選択してください")]
-        Select = 0,
-        [Description("適正な事務の管理に関する提案")]
-        TeiseiJimuKanri = 1,
-        [Description("事務の効率化に関する提案（内部事務の改善）")]
-        JimuKoritsukaNaibu = 2,
-        [Description("事務の効率化に関する提案（外部事務の改善）")]
-        JimuKoritsukaGaibu = 3,
-        [Description("その他提案")]
-        Sonota = 4
-    }
-
     // 提案の区分のenum
     public enum TeianKbn
     {
@@ -90,6 +75,17 @@ namespace Proposal.Models
         }
     }
 
+    // 提案種類
+    public class ProposalType
+    {
+        public int Id { get; set; }
+        public string Type { get; set; }
+    }
+
+    // 提案区分
+
+    //　提案所属
+
     public class CreateModel : IValidatableObject
     {
         //ユーザーID
@@ -109,17 +105,9 @@ namespace Proposal.Models
         [MaxLength(20, ErrorMessage = "20文字以内で入力してください。")]
         public string? TeianDaimei { get; set; }
 
-        // 提案の種類
+        // 提案の種類ID
         [Required(ErrorMessage = "提案の種類を選択してください。")]
-        public TeianShurui? TeianShurui { get; set; }
-
-        public static SelectList TeianShuruiOptions => new SelectList(
-            new[] { new { Value = "", Text = "選択してください" } }
-            .Concat(Enum.GetValues(typeof(TeianShurui))
-                .Cast<TeianShurui>()
-                .Where(e => e != Models.TeianShurui.Select)
-                .Select(e => new { Value = ((int)e).ToString(), Text = e.GetDescription() })),
-                "Value", "Text");
+        public int? ProposalTypeId { get; set; }
 
         // 提案の区分
         [Required(ErrorMessage = "提案の区分を選択してください。")]
@@ -313,6 +301,14 @@ namespace Proposal.Models
         public static string GetEnumDescriptionForCsv(Enum? value)
         {
             return value?.GetDescription() ?? "";
+        }
+
+        // ProposalTypeIdから名称を取得
+        public static string GetProposalTypeName(int? id, List<SelectListItem> proposalTypes)
+        {
+            if (id == null) return "";
+            var item = proposalTypes?.FirstOrDefault(x => x.Value == id.ToString());
+            return item?.Text ?? "";
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

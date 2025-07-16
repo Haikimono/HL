@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
@@ -30,6 +31,8 @@ namespace Proposal.Controllers
         [Route("proposal/Create")]
         public IActionResult Create()
         {
+            // すべてのドロップダウンリストをBL層の共通メソッドで取得
+            ViewBag.Dropdowns = _createBL.GetDropdowns();
 
             var model = new CreateModel
             {
@@ -92,8 +95,9 @@ namespace Proposal.Controllers
                     return View(model);
                 }
 
-                // 使用enum的Description属性来获取CSV值
-                string teianShurui = CreateModel.GetEnumDescriptionForCsv(model.TeianShurui);
+                // ドロップダウンリストから提案種類名を取得
+                var dropdowns = (Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns;
+                string teianShurui = CreateModel.GetProposalTypeName(model.ProposalTypeId, dropdowns.ProposalTypes);
                 string teianKbn = CreateModel.GetEnumDescriptionForCsv(model.TeianKbn);
                 string shozoku = CreateModel.GetEnumDescriptionForCsv(model.Shozoku);
                 string groupZenin1 = CreateModel.GetEnumDescriptionForCsv(model.GroupZenin1);
