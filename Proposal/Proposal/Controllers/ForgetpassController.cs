@@ -49,44 +49,5 @@ namespace Proposal.Controllers
             ViewBag.Message = resultMessage;
             return View("ForgetPass", model);
         }
-
-        // パスワード変更画面の表示
-        [HttpGet]
-        [Route("/Login/ChangePassword")]
-        public IActionResult ChangePassword()
-        {
-            return View("ChangePassword");
-        }
-
-        // 新しいパスワードの更新処理
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult ChangePassword(string newPassword, string confirmPassword)
-        {
-            // セッションからログイン中のユーザーIDを取得
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                // セッションが切れていたらログイン画面へリダイレクト
-                return RedirectToAction("Login", "Login");
-            }
-
-            // パスワード変更のビジネスロジックを実行
-            var success = _forgetPassBL.ChangeUserPassword(userId, newPassword, confirmPassword, out string error);
-
-            if (!success)
-            {
-                // エラーがあれば画面に表示
-                ViewBag.Error = error;
-                return View();
-            }
-
-            // セッションに「パスワード変更済み」のフラグをセット
-            HttpContext.Session.SetString("SetPass", "1");
-
-            // ログイン画面へ遷移
-            TempData["Message"] = "パスワードが変更されました。ログインしてください。";
-            return RedirectToAction("Login", "Login");
-        }
     }
 }

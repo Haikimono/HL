@@ -4,11 +4,11 @@ using System.Data.SqlClient;
 
 namespace Proposal.DAL
 {
-    public class UserDAC
+    public class ForgetPassDAC
     {
         private readonly string _connectionString;
 
-        public UserDAC(string connectionString)
+        public ForgetPassDAC(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -42,18 +42,6 @@ namespace Proposal.DAL
             conn.Open();
 
             var cmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 0 WHERE user_id = @UserId", conn);
-            cmd.Parameters.AddWithValue("@Password", hashedPassword);
-            cmd.Parameters.AddWithValue("@UserId", userId);
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public void UpdatePasswordAndActivate(string userId, string hashedPassword)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
-
-            var cmd = new SqlCommand("UPDATE [user] SET password = @Password, registration_status = 1 WHERE user_id = @UserId", conn);
             cmd.Parameters.AddWithValue("@Password", hashedPassword);
             cmd.Parameters.AddWithValue("@UserId", userId);
 

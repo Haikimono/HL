@@ -50,7 +50,7 @@ namespace Proposal.Controllers
                 {
                      return RedirectToAction("Menu");
                 }
-                return RedirectToAction("ChangePassword");
+                return RedirectToAction("ChangePass");
             }
             return View(new LoginModel());
         }
@@ -83,7 +83,7 @@ namespace Proposal.Controllers
 
             if (!user.Registration_status)
             {
-                return RedirectToAction("ChangePassword");
+                return RedirectToAction("ChangePass");
             }
             return RedirectToAction("Menu");
         }
