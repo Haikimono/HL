@@ -23,12 +23,12 @@
 /* 統一された入力グループのスタイル */
 .input-group {
     width: 100%;
-    border-radius: 10px;
-    border: 1px solid #cbd5e0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
     font-size: 14px;
     transition: all 0.3s ease;
     background: white;
+    color: #1f2937;
 }
 
 /* 入力グループのホバー効果 */
@@ -40,8 +40,9 @@
 /* 入力グループのフォーカス効果 */
 .input-group:focus-within {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #136AA8;
+    box-shadow: 0 0 0 4px rgba(19, 106, 168, 0.1);
+    background: #fefefe;
 }
 
 /* アイコン表示領域のスタイル */
@@ -60,7 +61,7 @@
 
 /* フォーカス時のアイコンスタイル */
 .input-group:focus-within .input-group-text {
-    color: #0d6efd;
+    color: #136AA8;
     transform: scale(1.1);
 }
 
@@ -113,30 +114,32 @@
 
  /* レジスタボタンの基本スタイル */
  .btn-register {
-    background: linear-gradient(135deg,rgba(61, 117, 202, 0.86) 0%,rgb(66, 127, 220) 100%);
+    background: #136AA8;
+    color: white;
     border: none;
     border-radius: 10px;
     padding: 15px 0;
-    font-size: 1rem;
-    font-weight: 500;
-    width: 100%;
-    transition: all 0.3s ease;
     margin-top: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
 }
+
 /* レジスタボタンのホバー効果 */
 .btn-register:hover {
-    background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+    background: #0f5a94;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(19, 106, 168, 0.3);
 }
 /* レジスタボタンのアクティブ状態 */
 .btn-register:active {
+    background: #0f5a94;
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(32, 121, 254, 0.3);
+    box-shadow: 0 2px 8px rgba(19, 106, 168, 0.3);
 }
 
  /* リンク領域 */
