@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace Proposal.Controllers
 {
-    [Route("proposal")]
-    public class ProposalController : Controller
+
+    public class ProposalListController : Controller
     {
         private readonly string _connectionString;
 
-        public ProposalController(IConfiguration configuration)
+        public ProposalListController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("ProposalDB");
         }
 
-        [HttpGet("list")]
-        public IActionResult List(int? year, int? status)
+        [HttpGet]
+        public IActionResult ProposalList(int? year, int? status)
         {
             var bl = new ProposalBL(_connectionString);
             var proposals = bl.GetProposalList();
@@ -38,21 +38,7 @@ namespace Proposal.Controllers
             ViewBag.Years = proposals.Select(p => p.ProposalYear).Distinct().OrderByDescending(y => y).ToList();
             ViewBag.Statuses = System.Enum.GetValues(typeof(ProposalStatus)).Cast<ProposalStatus>().ToList();
 
-            return View("~/Views/List/List.cshtml", proposals);
-        }
-
-        [HttpGet("setid")]
-        public IActionResult SetIdAndGoCreate(string id)
-        {
-            HttpContext.Session.SetString("Id", id);
-            return RedirectToAction("Create", "Create");
-        }
-
-        [HttpGet("gocreate")]
-        public IActionResult GoCreate()
-        {
-            HttpContext.Session.Remove("Id");
-            return RedirectToAction("Create", "Create");
+            return View("~/Views/ProposalList/ProposalList.cshtml", proposals);
         }
     }
 }
