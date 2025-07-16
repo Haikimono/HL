@@ -40,16 +40,18 @@ namespace Proposal.Controllers
                 UserId = HttpContext.Session.GetString("UserId")
             };
 
-            //作成の場合
-            if (String.IsNullOrEmpty(model.Id))
+            //修正・確認の場合
+            if (!String.IsNullOrEmpty(model.Id))
+            {
+                _createBL.GetProposalDetailById(model);
+
+            }
+
+            //新規又は一時保存の場合
+            if(model.Status == null || model.Status == 1)
             {
                 //年度取得
                 model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
-            }
-            //修正・確認の場合
-            else
-            {
-                _createBL.GetProposalDetailById(model);
             }
 
             return View(model);
@@ -187,8 +189,8 @@ namespace Proposal.Controllers
                 //提案書詳細登録
                 model.Id = _createBL.Insertproposals_detail(model).ToString();
 
-                //提案書一覧登録
-                _createBL.Insertproposals(model);
+                ////提案書一覧登録
+                //_createBL.Insertproposals(model);
             }
             else
             {
@@ -196,8 +198,8 @@ namespace Proposal.Controllers
                 //提案書詳細更新
                 _createBL.Updateproposals_detail(model);
 
-                //提案書一覧更新
-                _createBL.Updateproposals(model);
+                ////提案書一覧更新
+                //_createBL.Updateproposals(model);
             }
         }
     }

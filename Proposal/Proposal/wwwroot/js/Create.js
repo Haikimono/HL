@@ -120,17 +120,24 @@ function showDiv(target) {
     const btnBase = document.getElementById('btnBase');
     const btnTeian = document.getElementById('btnTeian');
 
-    baseDiv.style.display = target === 'base' ? 'block' : 'none';
-    teianDiv.style.display = target === 'teian' ? 'block' : 'none';
+    // 新しいcssクラスを使用してコンテンツ表示を制御
+    if (target === 'base') {
+        baseDiv.classList.add('active');
+        teianDiv.classList.remove('active');
+    } else {
+        baseDiv.classList.remove('active');
+        teianDiv.classList.add('active');
+    }
 
+    // 新しいnavタブのactiveクラス制御
+    btnBase.classList.toggle('active', target === 'base');
+    btnTeian.classList.toggle('active', target === 'teian');
+
+    // 古いBootstrapボタンクラスも維持（互換性のため）
     btnBase.classList.toggle('btn-primary', target === 'base');
     btnBase.classList.toggle('btn-outline-primary', target !== 'base');
     btnTeian.classList.toggle('btn-primary', target === 'teian');
     btnTeian.classList.toggle('btn-outline-primary', target !== 'teian');
-
-    // 追加: tab-btnのactiveクラス制御
-    btnBase.classList.toggle('active', target === 'base');
-    btnTeian.classList.toggle('active', target === 'teian');
 }
 
 //初期化

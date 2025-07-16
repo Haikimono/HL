@@ -1,6 +1,6 @@
  /* ベーススタイル設定 */
  body {
-    background-color:rgb(240, 240, 240);
+    background-color:rgb(250, 250, 250);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
