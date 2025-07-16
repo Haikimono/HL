@@ -40,14 +40,17 @@ namespace Proposal.DAC
                 groupmember1_department,
                 groupmember1_section,
                 groupmember1_subsection,
+                groupmember1_name,
                 groupmember2_affiliation,
                 groupmember2_department,
                 groupmember2_section,
                 groupmember2_subsection,
+                groupmember2_name,
                 groupmember3_affiliation,
                 groupmember3_department,
                 groupmember3_section,
                 groupmember3_subsection,
+                groupmember3_name,
                 daiijishinsashaHezuIsChecked,
                 firstevieweraffiliation,
                 firsteviewerdepartment,
@@ -88,14 +91,17 @@ namespace Proposal.DAC
                 @group1BuSho,
                 @group1KaBumon,
                 @group1Kakari,
+                @group1Name,
                 @group2,
                 @group2BuSho,
                 @group2KaBumon,
                 @group2Kakari,
+                @group2Name,
                 @group3,
                 @group3BuSho,
                 @group3KaBumon,
                 @group3Kakari,
+                @group3Name,
                 @hezuChecked,
                 @hezuShozoku,
                 @hezuBuSho,
@@ -133,16 +139,19 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2.HasValue ? (int)pModel.GroupZenin2.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3.HasValue ? (int)pModel.GroupZenin3.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuChecked", pModel.DaiijishinsashaHezuIsChecked);
-            cmd.Parameters.AddWithValue("@hezuShozoku", (int)pModel.DaiijishinsashaShozoku);
+            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.DaiijishinsashaShozoku.HasValue ? (int)pModel.DaiijishinsashaShozoku.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuBuSho", pModel.DaiijishinsashaBuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.DaiijishinsashaKaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShimei", pModel.DaiijishinsashaShimei ?? (object)DBNull.Value);
@@ -185,13 +194,16 @@ namespace Proposal.DAC
                     groupmember1_department,
                     groupmember1_section,
                     groupmember1_subsection,
+                    groupmember1_name,
                     groupmember2_affiliation,
                     groupmember2_department,
                     groupmember2_section,
                     groupmember2_subsection,
+                    groupmember2_name,
                     groupmember3_affiliation,
                     groupmember3_department,
                     groupmember3_section,
+                    groupmember3_name,
                     groupmember3_subsection,
                     daiijishinsashaHezuIsChecked,
                     firstevieweraffiliation,
@@ -252,14 +264,17 @@ namespace Proposal.DAC
                 groupmember1_department = @group1BuSho,
                 groupmember1_section = @group1KaBumon,
                 groupmember1_subsection = @group1Kakari,
+                groupmember1_name = @group1Name,
                 groupmember2_affiliation = @group2,
                 groupmember2_department = @group2BuSho,
                 groupmember2_section = @group2KaBumon,
                 groupmember2_subsection = @group2Kakari,
+                groupmember2_name = @group2Name,
                 groupmember3_affiliation = @group3,
                 groupmember3_department = @group3BuSho,
                 groupmember3_section = @group3KaBumon,
                 groupmember3_subsection = @group3Kakari,
+                groupmember3_name = @group3Name,
                 daiijishinsashaHezuIsChecked = @hezuChecked,
                 firstevieweraffiliation = @hezuShozoku,
                 firsteviewerdepartment = @hezuBuSho,
@@ -293,16 +308,19 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2", (int)pModel.GroupZenin2);
             cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3", (int)pModel.GroupZenin3);
             cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3BuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3KaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuChecked", pModel.DaiijishinsashaHezuIsChecked);
-            cmd.Parameters.AddWithValue("@hezuShozoku", (int)pModel.DaiijishinsashaShozoku);
+            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.DaiijishinsashaShozoku.HasValue ? (int)pModel.DaiijishinsashaShozoku.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuBuSho", pModel.DaiijishinsashaBuSho ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.DaiijishinsashaKaBumon ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShimei", pModel.DaiijishinsashaShimei ?? (object)DBNull.Value);
@@ -320,94 +338,94 @@ namespace Proposal.DAC
             cmd.ExecuteNonQuery();
         }
         
-        // 提案書一覧登録
-        public void SqlInsertproposals(CreateModel pModel)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
+        //// 提案書一覧登録
+        //public void SqlInsertproposals(CreateModel pModel)
+        //{
+        //    using var conn = new SqlConnection(_connectionString);
+        //    conn.Open();
 
-            string sql = @"
-            INSERT INTO Te_proposals (
-                id,
-                user_id,
-                proposal_year,
-                business_year,
-                status,
-                pd_name,
-                user_name,
-                [from],
-                submitted_at,
-                point,
-                decision,
-                resubmission,
-                review_section,
-                related_sections,
-                award_division,
-                updated_at,
-                created_at,
-                [delete]
-            )
-            SELECT 
-                id,
-                user_id,
-                proposal_year,
-                proposal_year,
-                status,
-                pd_name,
-                nameOrrepresentativename,
-                [from],
-                submissiondate,
-                NULL,
-                NULL,
-                1,
-                NULL,
-                relatedsection,
-                NULL,
-                updatedate,
-                createddate,
-                0
-            FROM
-                Te_proposals_detail
-            WHERE
-                Te_proposals_detail.id = @id
-                ";
+        //    string sql = @"
+        //    INSERT INTO Te_proposals (
+        //        id,
+        //        user_id,
+        //        proposal_year,
+        //        business_year,
+        //        status,
+        //        pd_name,
+        //        user_name,
+        //        [from],
+        //        submitted_at,
+        //        point,
+        //        decision,
+        //        resubmission,
+        //        review_section,
+        //        related_sections,
+        //        award_division,
+        //        updated_at,
+        //        created_at,
+        //        [delete]
+        //    )
+        //    SELECT 
+        //        id,
+        //        user_id,
+        //        proposal_year,
+        //        proposal_year,
+        //        status,
+        //        pd_name,
+        //        nameOrrepresentativename,
+        //        [from],
+        //        submissiondate,
+        //        NULL,
+        //        NULL,
+        //        1,
+        //        NULL,
+        //        relatedsection,
+        //        NULL,
+        //        updatedate,
+        //        createddate,
+        //        0
+        //    FROM
+        //        Te_proposals_detail
+        //    WHERE
+        //        Te_proposals_detail.id = @id
+        //        ";
 
-            using var cmd = new SqlCommand(sql, conn);
+        //    using var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
+        //    cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
 
-            cmd.ExecuteNonQuery();
+        //    cmd.ExecuteNonQuery();
 
-        }
+        //}
 
-        // 提案書一覧更新
-        public void SqlUpdateproposals(CreateModel pModel)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
+        //// 提案書一覧更新
+        //public void SqlUpdateproposals(CreateModel pModel)
+        //{
+        //    using var conn = new SqlConnection(_connectionString);
+        //    conn.Open();
 
-            string sql = @"
-                        UPDATE T
-                        SET
-                            T.user_id = D.user_id,
-                            T.proposal_year = D.proposal_year,
-                            T.status = D.status,
-                            T.pd_name = D.pd_name,
-                            T.user_name = D.nameOrrepresentativename,
-                            T.[from] = D.[from],
-                            T.submitted_at = D.submissiondate,
-                            T.related_sections = D.relatedsection,
-                            T.updated_at = D.updatedate
-                        FROM Te_proposals T
-                        JOIN Te_proposals_detail D ON T.id = D.id
-                        WHERE T.id = @id;
-                         ";
+        //    string sql = @"
+        //                UPDATE T
+        //                SET
+        //                    T.user_id = D.user_id,
+        //                    T.proposal_year = D.proposal_year,
+        //                    T.status = D.status,
+        //                    T.pd_name = D.pd_name,
+        //                    T.user_name = D.nameOrrepresentativename,
+        //                    T.[from] = D.[from],
+        //                    T.submitted_at = D.submissiondate,
+        //                    T.related_sections = D.relatedsection,
+        //                    T.updated_at = D.updatedate
+        //                FROM Te_proposals T
+        //                JOIN Te_proposals_detail D ON T.id = D.id
+        //                WHERE T.id = @id;
+        //                 ";
 
-            using var cmd = new SqlCommand(sql, conn);
+        //    using var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
+        //    cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
 
-            cmd.ExecuteNonQuery();
-        }
+        //    cmd.ExecuteNonQuery();
+        //}
     }
 }

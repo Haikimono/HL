@@ -64,21 +64,21 @@ namespace Proposal.BL
         }
         
 
-        /// <summary>
-        /// 提案書一覧登録
-        /// </summary>
-        public void Insertproposals(CreateModel pModel)
-        {
-            _createDAC.SqlInsertproposals(pModel);
-        }
+        ///// <summary>
+        ///// 提案書一覧登録
+        ///// </summary>
+        //public void Insertproposals(CreateModel pModel)
+        //{
+        //    _createDAC.SqlInsertproposals(pModel);
+        //}
 
-        /// <summary>
-        /// 提案書一覧更新
-        /// </summary>
-        public void Updateproposals(CreateModel pModel)
-        {
-            _createDAC.SqlUpdateproposals(pModel);
-        }
+        ///// <summary>
+        ///// 提案書一覧更新
+        ///// </summary>
+        //public void Updateproposals(CreateModel pModel)
+        //{
+        //    _createDAC.SqlUpdateproposals(pModel);
+        //}
 
         /// <summary>
         /// 提案書の詳細情報を取得し、モデルに設定
