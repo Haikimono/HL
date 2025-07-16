@@ -44,8 +44,18 @@ namespace Proposal.Controllers
             }
 
             var resultMessage = _forgetPassBL.ResetPasswordByEmail(model.Email);
-            ViewBag.Message = resultMessage;
+
+            if (resultMessage == "Success") 
+            {
+                ViewBag.ResetSuccess = true;
+            }
+            else
+            {
+                ViewBag.Message = resultMessage;
+            }
+
             return View("ForgetPassword", model);
         }
+
     }
 }

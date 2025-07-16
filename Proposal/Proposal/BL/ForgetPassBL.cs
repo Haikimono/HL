@@ -41,9 +41,8 @@ namespace Proposal.BL
             var plainPassword = GenerateRandomPassword(8);
 
             // パスワードの更新（※暗号化処理は必要に応じて）
-            // string hashedPassword = HashPasswordSHA256(plainPassword);
-            //_forgetPassDAC.UpdateUserPassword(user.UserId, hashedPassword);
-            _forgetPassDAC.UpdateUserPassword(user.UserId, plainPassword);
+            string hashedPassword = HashPasswordSHA256(plainPassword);
+            _forgetPassDAC.UpdateUserPassword(user.UserId, hashedPassword);
 
             try
             {
@@ -53,7 +52,9 @@ namespace Proposal.BL
 
                 // メール送信
                 _emailSender.Send(user.UserEmail, subject, body);
-                return $"新しいパスワードを {user.UserEmail} に送信しました。";
+
+                // 这里返回特定成功标志字符串
+                return "Success";
             }
             catch (Exception ex)
             {

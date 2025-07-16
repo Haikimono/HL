@@ -41,18 +41,23 @@ namespace Proposal.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            
             var userId = HttpContext.Session.GetString("UserId");
             var SetPass = HttpContext.Session.GetString("SetPass");
+
+            if (TempData["Message"] != null)
+            {
+                ViewBag.Message = TempData["Message"];
+            }
 
             if (!string.IsNullOrEmpty(userId))
             {
                 if (SetPass == "1")
                 {
-                     return RedirectToAction("Menu");
+                    return RedirectToAction("Menu");
                 }
                 return RedirectToAction("ChangePassword");
             }
+
             return View(new LoginModel());
         }
 

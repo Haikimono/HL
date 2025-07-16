@@ -40,9 +40,8 @@ namespace Proposal.BL
             }
 
             // パスワードの更新（※暗号化処理は必要に応じて）
-            // string hashedPassword = HashPasswordSHA256(newPassword);
-            // _userDAC.UpdatePasswordAndActivate(userId, hashedPassword);
-            _changePassDAC.UpdatePasswordAndActivate(userId, newPassword);
+            string hashedPassword = HashPasswordSHA256(newPassword);
+            _changePassDAC.UpdatePasswordAndActivate(userId, hashedPassword);
 
             return true;
         }

@@ -1,5 +1,7 @@
 ﻿using Proposal.DAC;
 using Proposal.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Proposal.BL
 {
@@ -19,14 +21,25 @@ namespace Proposal.BL
         public User ValidateUser(LoginModel pModel)
         {
             var user = _LoginDAC.GetUserById(pModel);
-            if (user != null && user.Password == pModel.Password) 
+            if (user != null)
             {
-                return user;
+                // 把输入的密码做哈希
+                string hashedInputPassword = HashPasswordSHA256(pModel.Password);
+                // 和数据库存的哈希密码比对
+                if (user.Password == hashedInputPassword)
+                {
+                    return user;
+                }
             }
-            else
-            {
-                return null;
-            }
+            return null;
+        }
+
+        public string HashPasswordSHA256(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Proposal.Controllers
             }
 
             // セッション更新
-            HttpContext.Session.SetString("SetPass", "1");
+            HttpContext.Session.Clear();
 
             // ログインへリダイレクト（メッセージ付き）
             TempData["Message"] = "パスワードが変更されました。ログインしてください。";
