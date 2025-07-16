@@ -10,13 +10,13 @@ namespace Proposal.BL
 {
     public class ForgetPassBL
     {
-        private readonly UserDAC _userDAC;
+        private readonly ForgetPassDAC _forgetPassDAC;
         private readonly EmailSender _emailSender;
 
         // コンストラクタ：DB接続とメール送信の設定を初期化
         public ForgetPassBL(string connectionString, IConfiguration configuration)
         {
-            _userDAC = new UserDAC(connectionString);
+            _forgetPassDAC = new ForgetPassDAC(connectionString);
 
             // appsettings.json からメール設定を読み込む
             var emailConfig = configuration.GetSection("EmailSettings");
@@ -33,15 +33,17 @@ namespace Proposal.BL
         public string ResetPasswordByEmail(string email)
         {
             // ユーザー情報を取得
-            var user = _userDAC.GetUserByEmail(email);
+            var user = _forgetPassDAC.GetUserByEmail(email);
             if (user == null)
                 return "該当するユーザーが見つかりませんでした。";
 
             // ランダムな仮パスワードを生成
             var plainPassword = GenerateRandomPassword(8);
 
-            // パスワードを更新（※必要なら暗号化も可能）
-            _userDAC.UpdateUserPassword(user.UserId, plainPassword);
+            // パスワードの更新（※暗号化処理は必要に応じて）
+            // string hashedPassword = HashPasswordSHA256(plainPassword);
+            //_forgetPassDAC.UpdateUserPassword(user.UserId, hashedPassword);
+            _forgetPassDAC.UpdateUserPassword(user.UserId, plainPassword);
 
             try
             {
@@ -57,32 +59,6 @@ namespace Proposal.BL
             {
                 return "メールの送信に失敗しました：" + ex.Message;
             }
-        }
-
-        // パスワード変更処理（本人が設定）
-        public bool ChangeUserPassword(string userId, string newPassword, string confirmPassword, out string error)
-        {
-            error = string.Empty;
-
-            // 入力チェック
-            if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
-            {
-                error = "すべての項目を入力してください。";
-                return false;
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                error = "パスワードが一致しません。";
-                return false;
-            }
-
-            // パスワードの更新（※暗号化処理は必要に応じて）
-            // string hashedPassword = HashPasswordSHA256(newPassword);
-            // _userDAC.UpdatePasswordAndActivate(userId, hashedPassword);
-            _userDAC.UpdatePasswordAndActivate(userId, newPassword);
-
-            return true;
         }
 
         // ランダムなパスワードを生成

@@ -15,6 +15,7 @@ namespace Proposal.Controllers
         private readonly IConfiguration _configuration;
         private readonly LoginBL _loginBL;
 
+        
         public LoginController(ILogger<LoginController> logger, IConfiguration configuration)
         {
             _logger = logger;
