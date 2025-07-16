@@ -35,14 +35,24 @@
     padding: 20px 24px;
     margin-bottom: 30px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    flex-direction: column;
+    gap: 10px;
     position: sticky;
     top: 0;
     z-index: 100;
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 第一行：操作ボタンを右上に配置 */
+.navigation-card .action-buttons {
+    align-self: flex-end;
+    order: 1;
+}
+
+/* 第二行：ナビゲーションタブを左下に配置 */
+.navigation-card .nav-tabs-container {
+    align-self: flex-start;
+    order: 2;
 }
 
 /* ナビゲーションタブ */
@@ -75,6 +85,11 @@
     white-space: nowrap;
     min-width: 120px;
     justify-content: center;
+    outline: none;
+}
+
+.nav-tab:focus {
+    outline: none;
 }
 
 .nav-tab:hover {
@@ -108,7 +123,15 @@
     white-space: nowrap;
     min-width: 95px;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 全てのボタンのoutline効果を削除 */
+button:focus,
+button:active,
+.btn:focus,
+.btn:active {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .btn-action.btn-secondary {
@@ -210,7 +233,6 @@
     display: flex;
     align-items: center;
     color: #2d3748;
-    margin-bottom: 15px;
 }
 
 .card-header i {
@@ -432,6 +454,11 @@
     align-items: center;
     white-space: nowrap;
     font-size: 14px;
+    outline: none;
+}
+
+.btn-file-select:focus {
+    outline: none;
 }
 
 .btn-file-select i {
