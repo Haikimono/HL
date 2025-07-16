@@ -38,13 +38,11 @@ namespace Proposal.Controllers
         [HttpPost]
         public IActionResult SendResetLink(ForgetPassModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.Email))
+            if (!ModelState.IsValid)
             {
-                ViewBag.Message = "メールアドレスを入力してください。";
                 return View("ForgetPassword", model);
             }
 
-            // パスワード再設定処理の呼び出し
             var resultMessage = _forgetPassBL.ResetPasswordByEmail(model.Email);
             ViewBag.Message = resultMessage;
             return View("ForgetPassword", model);

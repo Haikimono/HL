@@ -38,32 +38,35 @@ namespace Proposal.Controllers
         // 新しいパスワードの更新処理
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangePassword(string newPassword, string confirmPassword)
+        public IActionResult ChangePass(ChangePassModel model)
         {
-            // セッションからログイン中のユーザーIDを取得
             var userId = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userId))
             {
-                // セッションが切れていたらログイン画面へリダイレクト
                 return RedirectToAction("Login", "Login");
             }
 
-            // パスワード変更のビジネスロジックを実行
-            var success = _changePassBL.ChangeUserPassword(userId, newPassword, confirmPassword, out string error);
-
-            if (!success)
+            // モデルバリデーション失敗 → エラー表示
+            if (!ModelState.IsValid)
             {
-                // エラーがあれば画面に表示
-                ViewBag.Error = error;
-                return View();
+                return View(model);
             }
 
-            // セッションに「パスワード変更済み」のフラグをセット
+            // ビジネスロジック実行
+            var success = _changePassBL.ChangeUserPassword(userId, model.NewPassword, model.ConfirmPassword, out string error);
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, error); // 共通エラーとして表示
+                return View(model);
+            }
+
+            // セッション更新
             HttpContext.Session.SetString("SetPass", "1");
 
-            // ログイン画面へ遷移
+            // ログインへリダイレクト（メッセージ付き）
             TempData["Message"] = "パスワードが変更されました。ログインしてください。";
             return RedirectToAction("Login", "Login");
         }
+
     }
 }
