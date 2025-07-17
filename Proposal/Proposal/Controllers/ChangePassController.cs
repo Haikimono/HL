@@ -61,12 +61,11 @@ namespace Proposal.Controllers
             }
 
             // セッション更新
-            HttpContext.Session.Clear();
+            HttpContext.Session.SetString("SetPass", "1");
 
             // ログインへリダイレクト（メッセージ付き）
             TempData["Message"] = "パスワードが変更されました。ログインしてください。";
             return RedirectToAction("Login", "Login");
         }
-
     }
 }

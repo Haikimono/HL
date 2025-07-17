@@ -48,26 +48,25 @@ namespace Proposal.Models
         Accept = 1, // Replace "○" with a valid identifier
         Reject = 0  // Replace "×" with a valid identifier
     }
-    public class TeProposal
+    public class ProposalList
     {
-        public int Id { get; set; }
+        public string ProposalId { get; set; }
         public string UserId { get; set; }
         public string? ProposalYear { get; set; }
-        public string? BusinessYear { get; set; }
         public int Status { get; set; }
-        public string? PdName { get; set; }
+        public string? ProposalName { get; set; }
         public string? UserName { get; set; }
-        public int? From { get; set; } 
-        public DateTime? SubmittedAt { get; set; }
-        public int? Point { get; set; }
-        public int? Decision { get; set; }
-        public bool Resubmission { get; set; }
-        public int? ReviewSection { get; set; }
-        public int? RelatedSections { get; set; }
-        public int? AwardDivision { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public bool Delete { get; set; }
+        //public int? From { get; set; } 
+        //public DateTime? SubmittedAt { get; set; }
+        //public int? Point { get; set; }
+        //public int? Decision { get; set; }
+        //public bool Resubmission { get; set; }
+        //public int? ReviewSection { get; set; }
+        //public int? RelatedSections { get; set; }
+        //public int? AwardDivision { get; set; }
+        //public DateTime UpdatedAt { get; set; }
+        //public DateTime CreatedAt { get; set; }
+        //public bool Delete { get; set; }
 
         public string StatusDisplay =>
             Status switch
@@ -85,24 +84,24 @@ namespace Proposal.Models
                 _ => "不明"
             };
 
-        public string FromDisplay =>
-            From switch
-            {
-               1 => "国税庁",
-               2 => "国税局 ",
-               3 => "税務署・センター ",
-               4 => "税大",
-               5 => "審判所",
-               _ => "不明"
-            };
+        //public string FromDisplay =>
+        //    From switch
+        //    {
+        //       1 => "国税庁",
+        //       2 => "国税局 ",
+        //       3 => "税務署・センター ",
+        //       4 => "税大",
+        //       5 => "審判所",
+        //       _ => "不明"
+        //    };
          
-        public string DecisionDisplay =>
-            Decision switch
-            {
-                1 => "○",
-                0 => "×",
-                _ => "不明"
-            };
+        //public string DecisionDisplay =>
+        //    Decision switch
+        //    {
+        //        1 => "○",
+        //        0 => "×",
+        //        _ => "不明"
+        //    };
 
     }
 }

@@ -12,7 +12,7 @@ namespace Proposal.BL
             _dac = new ProposalDAC(connectionString);
         }
 
-        public List<TeProposal> GetProposalList()
+        public List<ProposalList> GetProposalList()
         {
             return _dac.GetProposals();
         }

@@ -1,4 +1,4 @@
-﻿@model List<Proposal.Models.TeProposal>
+﻿@model List<Proposal.Models.ProposalList>
 @using Proposal.Models
 @{
     ViewData["Title"] = "提案書一覧";
@@ -7,191 +7,173 @@
     string? selectedYear = ViewBag.SelectedYear as string;
     int? selectedStatus = ViewBag.SelectedStatus as int?;
 }
-<head>
-    <link rel="stylesheet" href="~/Proposal.styles.css" asp-append-version="true" />
-    <style>
-        body.page-bg {
-            background-color: #E9E9E9;
-        }
 
-        .main-title {
-            margin-bottom: 3%;
-        }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Proposal.css" />
 
-        #search-list-top {
-            background-color: #FFFFFF;
-            border-radius: 8px;
-        }
+<style>
+    .page-container {
+    }
 
-        .search-list-inner {
-            padding: 3%;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
+    .page-title {
+        margin-bottom: 2rem;
+        font-weight: bold;
+        color: #333;
+    }
 
-        .search-form {
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-        }
-        w
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+    .form-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+    }
 
-        .form-label {
-            margin-right: 10px;
-            color: #333;
-            min-width: 70px;
-        }
+    .card-header h5 {
+        margin-bottom: 1rem;
+        font-weight: bold;
+        color: #136AA8;
+    }
 
-        .form-select, .form-input {
-            width: 200px;
-            border: 1px solid #CACACA;
-            padding: 5px;
-            border-radius: 8px;
-        }
+    .form-row-modern {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
 
-        .form-btn-row {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 1rem;
-        }
+    .form-group-modern {
+        flex: 1;
+        min-width: 200px;
+    }
 
-        .form-btn {
-            background: transparent;
-            border: 1px solid #CACACA;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 8px;
-            width: 80px;
-        }
+    .form-label-modern {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #333;
+    }
 
-        .custom-hr {
-            border: none;
-            border-top: 2px solid #7E7E7E;
-            margin-bottom: 1.5rem;
-            margin-top: 1rem;
-        }
+    .form-control-modern {
+        width: 100%;
+        padding: 0.4rem 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
 
-        .sub-title {
-            margin-top: 2%;
-            margin-bottom: 2%;
-        }
+    .btn-action {
+        min-width: 100px;
+    }
 
-        .proposal-table {
-            border-collapse: collapse;
-            width: 100%;
-            background: #fff;
-            border: 1px solid #CACACA;
-        }
+    .proposal-table th {
+        white-space: nowrap;
+    }
+</style>
+<body>
+<div class="page-container">
+    <div class="container">
+        <h2 class="page-title"><i class="fas fa-list me-2"></i>提案書一覧</h2>
 
-            .proposal-table thead {
-                background: #136AA8;
-                color: #ffffff;
-            }
-
-            .proposal-table th, .proposal-table td {
-                border: 1px solid #CACACA;
-                padding: 5px;
-            }
-    </style>
-</head>
-<body class="page-bg">
-    <div>
-        <div id="search-list-top">
-            <div class="search-list-inner">
-                <h4 class="main-title">提案書一覧 【提案書作成メニュー】</h4>
-                <div>
-                    <form method="get" asp-controller="Proposal" asp-action="List">
-                        <div class="search-form">
-                            <div class="form-row">
-                                <label class="form-label">提案年度</label>
-                                <select name="year" class="form-select">
-                                    <option value="">すべて</option>
-                                    @foreach (var y in years)
-                                    {
-                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">提出日</label>
-                                <input type="date" name="date" class="form-input">
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">状態</label>
-                                <select name="status" class="form-select">
-                                    <option value="">すべて</option>
-                                    @foreach (var s in statuses)
-                                    {
-                                        <option value="@((int)s)" selected="@(selectedStatus == (int)s ? "selected" : null)">@s.ToString()</option>
-                                    }
-                                </select>
-                            </div>
+        <div class="form-card">
+            <div class="card-header">
+                <h5><i class="fas fa-search me-2"></i>検索条件</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" asp-controller="Proposal" asp-action="List">
+                    <div class="form-row-modern">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">提案年度</label>
+                            <select name="year" class="form-control-modern">
+                                <option value="">すべて</option>
+                                @foreach (var y in years)
+                                {
+                                    <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y</option>
+                                }
+                            </select>
                         </div>
-                        <div class="form-btn-row">
-                            <button type="submit" class="form-btn">検索</button>
-                            <button type="button" class="form-btn" onclick="location.href='@Url.Action("List", "Proposal")'">クリア</button>
-                            <button type="button" class="form-btn" onclick="history.back();">戻る</button>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">提出日</label>
+                            <input type="date" name="date" class="form-control-modern" />
                         </div>
-                        <div class="text-end mt-3">
-                            <a class="btn btn-success" asp-controller="Proposal" asp-action="GoCreate">作成</a>
-                        </div>                       
-                    </form>
-                </div>
-                <hr class="custom-hr" />
-                <h5 class="sub-title">提案書一覧</h5>
-                <div>
-                    <table class="proposal-table">
-                        <thead>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">状態</label>
+                            <select name="status" class="form-control-modern">
+                                <option value="">すべて</option>
+                                @foreach (var s in statuses)
+                                {
+                                    <option value="@((int)s)" selected="@(selectedStatus == (int)s ? "selected" : null)">
+                                        @s.ToString()
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-btn-row mt-3 d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-action btn-primary"><i class="fas fa-search me-1"></i>検索</button>
+                        <button type="button" class="btn btn-action btn-outline-secondary" onclick="location.href='@Url.Action("List", "Proposal")'">
+                            <i class="fas fa-eraser me-1"></i>クリア
+                        </button>
+                        <button type="button" class="btn btn-action btn-secondary" onclick="history.back();">
+                            <i class="fas fa-arrow-left me-1"></i>戻る
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="form-card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-table me-2"></i>提案書一覧</h5>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-striped table-hover proposal-table">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>提案年度</th>
+                            <th>提案番号</th>
+                            <th>状態</th>
+                            <th>提案題名</th>
+                            <th>提案者氏名・グループ名</th>
+                            <th>所属</th>
+                            <th>提出日</th>
+                            <th>評点</th>
+                            <th>判定</th>
+                            <th>追加進達</th>
+                            <th>審査課</th>
+                            <th>関係課</th>
+                            <th>入賞区分</th>
+                            <th>提案書</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
                             <tr>
-                                <th>提案年度</th>
-                                <th>提案番号</th>
-                                <th>状態</th>
-                                <th>提案題名</th>
-                                <th>提案者氏名・グループ名</th>
-                                <th>所属</th>
-                                <th>提出日</th>
-                                <th>評点</th>
-                                <th>判定</th>
-                                <th>追加進達</th>
-                                <th>審査課</th>
-                                <th>関係課</th>
-                                <th>入賞区分</th>
-                                <th>提案書</th>
+                                <td>@p.ProposalYear</td>
+                                <td>@p.ProposalId</td>
+                                <td>@p.StatusDisplay</td>
+                                <td>@p.ProposalName</td>
+                                <td>@p.UserName</td>
+                                <td>@p.UserName</td> <!-- 所属 -->
+                                <td>@p.UserName</td> <!-- 提出日 -->
+                                <td>@p.UserName</td> <!-- 評点 -->
+                                <td>@p.UserName</td> <!-- 判定 -->
+                                <td>@p.UserName</td> <!-- 追加進達 -->
+                                <td>@p.UserName</td> <!-- 審査課 -->
+                                <td>@p.UserName</td> <!-- 関係課 -->
+                                <td>@p.UserName</td> <!-- 入賞区分 -->
+                                <td>
+                                    <a class="btn btn-action btn-primary btn-sm" asp-controller="Proposal" asp-action="SetIdAndGoCreate" asp-route-id="@p.ProposalId">
+                                        表示
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var p in Model)
-                            {
-                                <tr>
-                                    <td>@p.ProposalYear</td>
-                                    <td>@p.Id</td>
-                                    <td>@p.StatusDisplay</td>
-                                    <td>@p.PdName</td>
-                                    <td>@p.UserName</td>
-                                    <td>@p.FromDisplay</td>
-                                    <td>@p.SubmittedAt?.ToString("yyyy-MM-dd")</td>
-                                    <td>@p.Point</td>
-                                    <td>@p.DecisionDisplay</td>
-                                    <td>@p.Resubmission</td>
-                                    <td>@p.ReviewSection</td>
-                                    <td>@p.RelatedSections</td>
-                                    <td>@p.AwardDivision</td>
-                                    <td>
-                                        <a class="btn　btn-primary" asp-controller="Proposal" asp-action="SetIdAndGoCreate" asp-route-id="@p.Id">
-                                            表示
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</body>
+</div>
+    </body>
