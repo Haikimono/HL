@@ -62,10 +62,10 @@
                             <h5><i class="fas fa-info-circle me-2"></i>基本情報</h5>
                         </div>
                         <div class="card-body">
-                            <div class="form-row-modern single">
+                            <div class="form-row-modern">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">提案年度</label>
-                                    @Html.TextBoxFor(m => m.TeianYear, new { @class = "form-control-modern text-center", @readonly = "readonly", id = "teianYear" })
+                                    @Html.TextBoxFor(m => m.TeianYear, new { @class = "form-control-modern ", @readonly = "readonly", id = "teianYear" })
                                 </div>
                             </div>
 
@@ -110,18 +110,15 @@
                             <div class="form-row-modern three-cols">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">部・署</label>
-                                    @Html.TextBoxFor(m => m.BuSho, new { @class = "form-control-modern", placeholder = "部・署を入力" })
-                                    @Html.ValidationMessageFor(m => m.BuSho, "", new { @class = "validation-message" })
+                                    @Html.TextBoxFor(m => m.BuSho, new { @class = "form-control-modern", @readonly = "readonly"})
                                 </div>
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">課・部門</label>
-                                    @Html.TextBoxFor(m => m.KaBumon, new { @class = "form-control-modern", placeholder = "課・部門を入力" })
-                                    @Html.ValidationMessageFor(m => m.KaBumon, "", new { @class = "validation-message" })
+                                    @Html.TextBoxFor(m => m.KaBumon, new { @class = "form-control-modern", @readonly = "readonly" })
                                 </div>
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">係・担当</label>
-                                    @Html.TextBoxFor(m => m.KakariTantou, new { @class = "form-control-modern", placeholder = "係・担当を入力" })
-                                    @Html.ValidationMessageFor(m => m.KakariTantou, "", new { @class = "validation-message" })
+                                    @Html.TextBoxFor(m => m.KakariTantou, new { @class = "form-control-modern", @readonly = "readonly" })
                                 </div>
                             </div>
 
@@ -172,18 +169,27 @@
                                     <div class="form-row-modern three-cols">
                                         <div class="form-group-modern">
                                             <label class="form-label-modern">部・署</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin1BuSho, new { @class = "form-control-modern", placeholder = "部・署" })
-                                            @Html.ValidationMessageFor(m => m.GroupZenin1BuSho, "", new { @class = "validation-message" })
+                                            @Html.DropDownListFor(
+                                                                    m => m.GroupZenin1BuSho,
+                                                                    ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Busho,
+                                                                    new { @class = "form-control-modern" }
+                                                                    )
                                         </div>
                                         <div class="form-group-modern">
                                             <label class="form-label-modern">課・部門</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin1KaBumon, new { @class = "form-control-modern", placeholder = "課・部門" })
-                                            @Html.ValidationMessageFor(m => m.GroupZenin1KaBumon, "", new { @class = "validation-message" })
+                                            @Html.DropDownListFor(
+                                                                    m => m.GroupZenin1KaBumon,
+                                                                    ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kabumon,
+                                                                    new { @class = "form-control-modern" }
+                                                                    )
                                         </div>
                                         <div class="form-group-modern">
                                             <label class="form-label-modern">係・担当</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin1KakariTantou, new { @class = "form-control-modern", placeholder = "係・担当" })
-                                            @Html.ValidationMessageFor(m => m.GroupZenin1KakariTantou, "", new { @class = "validation-message" })
+                                            @Html.DropDownListFor(
+                                                                    m => m.GroupZenin1KakariTantou,
+                                                                    ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).KakariTantou,
+                                                                    new { @class = "form-control-modern" }
+                                                                    )
                                         </div>
                                     </div>
                                 </div>
@@ -393,13 +399,24 @@
                             @for (int i = 1; i <= 5; i++)
                             {
                                 <div class="file-upload-group">
-                                    <div class="file-input-wrapper">
-                                        <input type="text" id="fileName@(i)" class="form-control-modern file-display" readonly placeholder="ファイルが選択されていません" />
-                                        <button type="button" class="btn-file-select" id="btn@(i)">
-                                            <i class="fas fa-folder-open me-2"></i>参照
-                                        </button>
-                                    </div>
-                                    <input type="file" id="file@(i)" class="d-none" />
+                                    @if (Model.Status == 11) { // 11: 提出済み
+                                        // 提出後はダウンロードリンクのみ表示
+                                        var fileNameProp = "TenpuFileName" + i;
+                                        var fileName = (string)Model.GetType().GetProperty(fileNameProp).GetValue(Model);
+                                        if (!string.IsNullOrEmpty(fileName)) {
+                                            <a href="@Url.Content("~/uploads/" + fileName)" target="_blank" class="btn btn-link">@fileName</a>
+                                        } else {
+                                            <span class="text-muted">ファイルなし</span>
+                                        }
+                                    } else {
+                                        // アップロード可能
+                                        <input type="file" name="TenpuFile@i" class="form-control" />
+                                        var fileNameProp = "TenpuFileName" + i;
+                                        var fileName = (string)Model.GetType().GetProperty(fileNameProp).GetValue(Model);
+                                        if (!string.IsNullOrEmpty(fileName)) {
+                                            <span class="ms-2">現在: <a href="@Url.Content("~/uploads/" + fileName)" target="_blank">@fileName</a></span>
+                                        }
+                                    }
                                 </div>
                             }
                         </div>

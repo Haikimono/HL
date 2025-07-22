@@ -46,8 +46,8 @@ namespace Proposal.Controllers
             //修正・確認の場合
             if (!String.IsNullOrEmpty(model.Id))
             {
+                //提案書情報取得
                 _createBL.GetProposalDetailById(model);
-
             }
 
             //新規又は一時保存の場合
@@ -55,6 +55,13 @@ namespace Proposal.Controllers
             {
                 //年度取得
                 model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
+            }
+
+            //部・署、課・部門、係・担当取得
+            if (!String.IsNullOrEmpty(model.UserId))
+            {
+                //ユーザー情報取得
+                _createBL.GetUserInfoByUserId(model);
             }
 
             return View(model);
@@ -75,8 +82,14 @@ namespace Proposal.Controllers
             {
                 if (!ValidateModel(model))
                 {
+                    SetDropdowns();
+                    SetShowProposalContentFlagForModelStateError();
+
                     return View(model);
                 }
+
+                // ファイル保存処理（最大5つ）
+                SaveUploadedFiles(model);
 
                 //提案状態を作成中に設定
                 model.Status = 1;
@@ -84,7 +97,7 @@ namespace Proposal.Controllers
                 //登録又は更新処理
                 this.InsertOrUpdate(model);
 
-                return RedirectToAction("List", "Proposal");
+                return RedirectToAction("ProposalList", "Proposal");
             }
 
             //出力
@@ -92,6 +105,9 @@ namespace Proposal.Controllers
             {
                 if (!ValidateModel(model))
                 {
+                    SetDropdowns();
+                    SetShowProposalContentFlagForModelStateError();
+
                     return View(model);
                 }
 
@@ -144,8 +160,14 @@ namespace Proposal.Controllers
             {
                 if (!ValidateModel(model))
                 {
+                    SetDropdowns();
+                    SetShowProposalContentFlagForModelStateError();
+
                     return View(model);
                 }
+
+                // ファイル保存処理（最大5つ）
+                SaveUploadedFiles(model);
 
                 //提案状態を審査中に設定
                 model.Status = 11;
@@ -153,10 +175,41 @@ namespace Proposal.Controllers
                 //登録又は更新処理
                 this.InsertOrUpdate(model);
 
-                return RedirectToAction("List", "Proposal");
+                return RedirectToAction("ProposalList", "Proposal");
             }
 
             return View(model);
+        }
+
+        // ドロップダウンリストをViewBagにセット
+        private void SetDropdowns()
+        {
+            ViewBag.Dropdowns = _createBL.GetDropdowns();
+        }
+
+        // ファイル保存処理（最大5つ）
+        private void SaveUploadedFiles(CreateModel model)
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                var fileProp = model.GetType().GetProperty($"TenpuFile{i}");
+                var file = fileProp?.GetValue(model) as IFormFile;
+                if (file != null && file.Length > 0)
+                {
+                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "Proposal/wwwroot/uploads");
+                    if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                    var ext = Path.GetExtension(file.FileName);
+                    var fileName = $"{Guid.NewGuid()}{ext}";
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    // ファイル名をモデルにセット
+                    var nameProp = model.GetType().GetProperty($"TenpuFileName{i}");
+                    nameProp?.SetValue(model, fileName);
+                }
+            }
         }
 
         // モデルバリデーション実行
@@ -178,6 +231,16 @@ namespace Proposal.Controllers
             
             // モデルバリデーション実行
             return ModelState.IsValid;
+        }
+
+        /// <summary>
+        /// ModelStateに提案内容タブのエラーがある場合、ViewBag.ShowProposalContentをtrueにする
+        /// </summary>
+        private void SetShowProposalContentFlagForModelStateError()
+        {
+            // 提案内容tab相关字段
+            var teianNaiyouFields = new[] { "GenjyoMondaiten", "Kaizenan", "KoukaJishi", "Kouka", "TenpuFile1", "TenpuFile2", "TenpuFile3", "TenpuFile4", "TenpuFile5", "TenpuFileName1", "TenpuFileName2", "TenpuFileName3", "TenpuFileName4", "TenpuFileName5", "TenpuFilePath1", "TenpuFilePath2", "TenpuFilePath3", "TenpuFilePath4", "TenpuFilePath5" };
+            ViewBag.ShowProposalContent = ModelState.Keys.Any(k => teianNaiyouFields.Any(f => k.Contains(f)) && ModelState[k].Errors.Count > 0);
         }
 
         //登録と更新処理

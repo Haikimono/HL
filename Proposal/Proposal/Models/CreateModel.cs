@@ -86,6 +86,28 @@ namespace Proposal.Models
 
     //　提案所属
 
+
+    // 部署
+    public class Busho
+    {
+        public string Department_id { get; set; }
+        public string Department_name { get; set; }
+    }
+
+    //課・部門
+    public class Kabumon
+    {
+        public string Section_id { get; set; }
+        public string Section_name { get; set; }
+    }
+
+    //係・担当
+    public class KakariTantou
+    {
+        public string Subsection_id { get; set; }
+        public string Subsection_name { get; set; }
+    }
+
     public class CreateModel : IValidatableObject
     {
         //ユーザーID
@@ -292,10 +314,10 @@ namespace Proposal.Models
         public string? TenpuFilePath5 { get; set; }
 
         //作成日
-        public string Createddate { get; set; }
+        public string? Createddate { get; set; }
 
         //提出日
-        public string Submissiondate { get; set; }
+        public string? Submissiondate { get; set; }
 
         //  CSV出力用にenumの説明を取得する方法
         public static string GetEnumDescriptionForCsv(Enum? value)

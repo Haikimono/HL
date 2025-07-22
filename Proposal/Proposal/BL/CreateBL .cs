@@ -159,6 +159,23 @@ namespace Proposal.BL
             }
         }
 
+        /// <summary>
+        /// ユーザー情報を取得し、モデルに設定
+        /// </summary>     
+        public void GetUserInfoByUserId(CreateModel model)
+        {
+            var dataTable = _createDAC.GetUserInfoByUserId(model.UserId);
+            if (dataTable != null && dataTable.Rows.Count > 0)
+            {
+                var row = dataTable.Rows[0]; // 指定IDのデータを取得
+
+                // モデルに設定
+                model.BuSho = row["department_name"].ToString();
+                model.KaBumon = row["section_name"].ToString();
+                model.KakariTantou = row["subsection_name"].ToString();
+            }
+        }
+
         //// 提案種類の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
         public List<ProposalType> GetProposalTypes()
         {
@@ -166,12 +183,29 @@ namespace Proposal.BL
             return _createDAC.GetProposalTypes();
         }
 
-        //// 提案区分の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
+        // 提案区分の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
 
 
-        //// 提案所属の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
+        // 提案所属の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
 
 
+        //部・署を取得するメソッド
+        public List<Busho> GetBusho()
+        {
+            return _createDAC.GetBusho();
+        }
+
+        //課・部門を取得するメソッド
+        public List<Kabumon> GetKabumon()
+        {
+            return _createDAC.GetKabumon();
+        }
+
+        //係・担当を取得するメソッド
+        public List<KakariTantou> GetKakariTantou()
+        {
+            return _createDAC.GetKakariTantou();
+        }
 
         /// <summary>
         /// 任意のリストをSelectListItemのリストに変換するプライベートメソッド
@@ -222,6 +256,42 @@ namespace Proposal.BL
 
 
 
+        /// <summary>
+        /// 部・署のSelectListItemリストを取得
+        /// </summary>
+
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetBushoSelectList()
+        {
+
+            var departments = GetBusho();
+
+            return GetSelectListItems(departments, x => x.Department_id, x => x.Department_name);
+        }
+
+        /// <summary>
+        /// 課・部門のSelectListItemリストを取得
+        /// </summary>
+
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetKabumonSelectList()
+        {
+
+            var kabumons = GetKabumon();
+
+            return GetSelectListItems(kabumons, x => x.Section_id, x => x.Section_name);
+        }
+
+        /// <summary>
+        /// 係・担当のSelectListItemリストを取得
+        /// </summary>
+
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetKakariTantouSelectList()
+        {
+
+            var kakaritantous = GetKakariTantou();
+
+            return GetSelectListItems(kakaritantous, x => x.Subsection_id, x => x.Subsection_name);
+        }
+
 
         /// <summary>
         /// すべてのドロップダウンリストをまとめて取得するメソッド
@@ -231,12 +301,21 @@ namespace Proposal.BL
             return new DropdownsViewModel
             {
                 //提案種類
-                ProposalTypes = GetProposalTypeSelectList()
+                ProposalTypes = GetProposalTypeSelectList(),
                 // 他のドロップダウンもここに追加可能
 
                 //提案区分
 
                 //提案所属
+
+                //部・署
+                Busho = GetBushoSelectList(),
+
+                //課・部門
+                Kabumon = GetKabumonSelectList(),
+
+                //係・担当
+                KakariTantou = GetKakariTantouSelectList(),
             };
         }
     }
@@ -253,5 +332,14 @@ namespace Proposal.BL
         //提案区分
 
         //提案所属
+
+        //部・署
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Busho { get; set; }
+
+        //課・部門
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Kabumon { get; set; }
+
+        //係・担当
+        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> KakariTantou { get; set; }
     }
 }

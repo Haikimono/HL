@@ -38,20 +38,20 @@ namespace Proposal.DAC
                 nameOrrepresentativename,
                 groupname,
                 groupmember1_affiliation,
+                groupmember1_name,
                 groupmember1_department,
                 groupmember1_section,
                 groupmember1_subsection,
-                groupmember1_name,
                 groupmember2_affiliation,
+                groupmember2_name,
                 groupmember2_department,
                 groupmember2_section,
                 groupmember2_subsection,
-                groupmember2_name,
                 groupmember3_affiliation,
+                groupmember3_name,
                 groupmember3_department,
                 groupmember3_section,
                 groupmember3_subsection,
-                groupmember3_name,
                 daiijishinsashaHezuIsChecked,
                 firstevieweraffiliation,
                 firsteviewerdepartment,
@@ -89,20 +89,20 @@ namespace Proposal.DAC
                 @nameOrRepName,
                 @groupName,
                 @group1,
+                @group1Name,
                 @group1BuSho,
                 @group1KaBumon,
                 @group1Kakari,
-                @group1Name,
                 @group2,
+                @group2Name,
                 @group2BuSho,
                 @group2KaBumon,
                 @group2Kakari,
-                @group2Name,
                 @group3,
+                @group3Name,
                 @group3BuSho,
                 @group3KaBumon,
                 @group3Kakari,
-                @group3Name,
                 @hezuChecked,
                 @hezuShozoku,
                 @hezuBuSho,
@@ -240,6 +240,48 @@ namespace Proposal.DAC
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
             
+            return dataTable;
+        }
+
+
+
+
+        /// <summary>
+        /// ユーザー情報をUserIdで取得
+        /// </summary>
+        public DataTable GetUserInfoByUserId(string UserId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+
+            string sql = @"
+                SELECT 
+                    user_department.department_name,
+                    user_section.section_name,
+                    user_subsection.subsection_name
+                FROM 
+                    [user] u 
+                INNER JOIN
+                    user_department
+                ON
+                    user_department.department_id = u.department_id
+                INNER JOIN
+                    user_section
+                ON
+                    user_section.section_id = u.section_id
+                INNER JOIN
+                    user_subsection
+                ON
+                    user_subsection.subsection_id = u.subsection_id
+                WHERE
+                    u.user_id = @userid";
+
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@userid", UserId);
+            using var adapter = new SqlDataAdapter(cmd);
+            var dataTable = new DataTable();
+            adapter.Fill(dataTable);
+
             return dataTable;
         }
 
@@ -464,5 +506,94 @@ namespace Proposal.DAC
 
 
         // 提案所属（）の一覧をデータベースから取得するメソッド
+
+
+
+        // 部・署（Busho）をデータベースから取得するメソッド
+        public List<Busho> GetBusho()
+        {
+           
+            var result = new List<Busho>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                var cmd = new SqlCommand("SELECT department_id, department_name FROM user_department", conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new Busho
+                        {
+                            Department_id = reader.GetString(0),
+                            Department_name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            // 結果のリストを返す
+            return result;
+        }
+
+        // 課・部門（Kabumon）をデータベースから取得するメソッド
+        public List<Kabumon> GetKabumon()
+        {
+
+            var result = new List<Kabumon>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                var cmd = new SqlCommand("SELECT section_id, section_name FROM user_section", conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new Kabumon
+                        {
+                            Section_id = reader.GetString(0),
+                            Section_name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            // 結果のリストを返す
+            return result;
+        }
+
+
+        // 係・担当（KakariTantou）をデータベースから取得するメソッド
+        public List<KakariTantou> GetKakariTantou()
+        {
+
+            var result = new List<KakariTantou>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM user_subsection", conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new KakariTantou
+                        {
+                            Subsection_id = reader.GetString(0),
+                            Subsection_name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            // 結果のリストを返す
+            return result;
+        }
+
+
     }
 }
