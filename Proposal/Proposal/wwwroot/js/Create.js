@@ -82,17 +82,18 @@
         var teianKbn = document.getElementById('teianKbn');
         var groupSection = document.getElementById('groupSection');
         if (!teianKbn || !groupSection) return;
-        // "グループ"の値（enum値2）で表示、それ以外で非表示
-        if (teianKbn.value == "2") {
-            groupSection.style.display = '';
+        if (teianKbn.value.trim() === "2") {
+            groupSection.style.display = 'block';
+            groupSection.hidden = false;
         } else {
             groupSection.style.display = 'none';
+            groupSection.hidden = true;
         }
     }
     var teianKbn = document.getElementById('teianKbn');
     if (teianKbn) {
         teianKbn.addEventListener('change', toggleGroupSection);
-        toggleGroupSection(); // 初期表示時も実行
+        setTimeout(toggleGroupSection, 0);
     }
 
     // 「第一次審査者を経ずに提出する」チェック時、下の入力欄を無効化

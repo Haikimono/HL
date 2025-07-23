@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
 
 namespace Proposal.BL
 {
@@ -99,47 +100,32 @@ namespace Proposal.BL
                 model.Status = row["status"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["status"]);
                 model.TeianYear = row["proposal_year"].ToString();
                 model.TeianDaimei = row["pd_name"].ToString();
-                model.ProposalTypeId = row["proposal_type"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["proposal_type"]);
-                model.TeianKbn = row["proposal_kbn"] == DBNull.Value ? TeianKbn.Select : (TeianKbn)Convert.ToInt32(row["proposal_kbn"]);
-                model.Shozoku = row["from"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["from"]);
-                model.ShimeiOrDaihyoumei = row["nameOrrepresentativename"].ToString();
-                model.GroupMei = row["groupname"].ToString();
-                
+                model.ProposalTypeId = row["proposal_type"].ToString();
+                model.ProposalKbnId = row["proposal_kbn"].ToString();
+                model.AffiliationId = row["from"].ToString();
                 // グループの全員①
-                model.GroupZenin1 = row["groupmember1_affiliation"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["groupmember1_affiliation"]);
-                model.GroupZenin1BuSho = row["groupmember1_department"].ToString();
-                model.GroupZenin1KaBumon = row["groupmember1_section"].ToString();
-                model.GroupZenin1KakariTantou = row["groupmember1_subsection"].ToString();
-                
+                model.GroupZenin1AffiliationId = row["groupmember1_affiliation"].ToString();
+                model.GroupZenin1DepartmentId = row["groupmember1_department"].ToString();
+                model.GroupZenin1SectionId = row["groupmember1_section"].ToString();
+                model.GroupZenin1SubsectionId = row["groupmember1_subsection"].ToString();
                 // グループの全員②
-                model.GroupZenin2 = row["groupmember2_affiliation"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["groupmember2_affiliation"]);
-                model.GroupZenin2BuSho = row["groupmember2_department"].ToString();
-                model.GroupZenin2KaBumon = row["groupmember2_section"].ToString();
-                model.GroupZenin2KakariTantou = row["groupmember2_subsection"].ToString();
-                
+                model.GroupZenin2AffiliationId = row["groupmember2_affiliation"].ToString();
+                model.GroupZenin2DepartmentId = row["groupmember2_department"].ToString();
+                model.GroupZenin2SectionId = row["groupmember2_section"].ToString();
+                model.GroupZenin2SubsectionId = row["groupmember2_subsection"].ToString();
                 // グループの全員③
-                model.GroupZenin3 = row["groupmember3_affiliation"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["groupmember3_affiliation"]);
-                model.GroupZenin3BuSho = row["groupmember3_department"].ToString();
-                model.GroupZenin3KaBumon = row["groupmember3_section"].ToString();
-                model.GroupZenin3KakariTantou = row["groupmember3_subsection"].ToString();
-                
-                // 第一次審査者
-                model.DaiijishinsashaHezuIsChecked = Convert.ToBoolean(row["daiijishinsashaHezuIsChecked"]);
-                model.DaiijishinsashaShozoku = row["firstevieweraffiliation"] == DBNull.Value ? Shozoku.Select : (Shozoku)Convert.ToInt32(row["firstevieweraffiliation"]);
-                model.DaiijishinsashaBuSho = row["firsteviewerdepartment"].ToString();
-                model.DaiijishinsashaKaBumon = row["firsteviewersection"].ToString();
-                model.DaiijishinsashaShimei = row["firsteviewername"].ToString();
-                model.DaiijishinsashaKanshokun = row["firsteviewertitle"].ToString();
-                
-                // 主務課・関係課
-                model.ShumuKa = row["responsiblesection"] == DBNull.Value ? ShumuKa.Select : (ShumuKa)Convert.ToInt32(row["responsiblesection"]);
-                model.KankeiKa = row["relatedsection"] == DBNull.Value ? KankeiKa.Select : (KankeiKa)Convert.ToInt32(row["relatedsection"]);
-                
-                // 現状・問題点・改善案・効果
-                model.GenjyoMondaiten = row["currentsituation"].ToString();
-                model.Kaizenan = row["improvementproposal"].ToString();
-                model.KoukaJishi = row["isImplemented"] == DBNull.Value ? KoukaJishi.Select : (KoukaJishi)Convert.ToInt32(row["isImplemented"]);
-                model.Kouka = row["effect"].ToString();
+                model.GroupZenin3AffiliationId = row["groupmember3_affiliation"].ToString();
+                model.GroupZenin3DepartmentId = row["groupmember3_department"].ToString();
+                model.GroupZenin3SectionId = row["groupmember3_section"].ToString();
+                model.GroupZenin3SubsectionId = row["groupmember3_subsection"].ToString();
+                model.FirstReviewerAffiliationId = row["firstevieweraffiliation"].ToString();
+                model.FirstReviewerDepartmentId = row["firsteviewerdepartment"].ToString();
+                model.FirstReviewerSectionId = row["firsteviewersection"].ToString();
+                model.FirstReviewerName = row["firsteviewername"].ToString();
+                model.FirstReviewerTitle = row["firsteviewertitle"].ToString();
+                model.ShumuKaId = row["responsiblesection"].ToString();
+                model.KankeiKaId = row["relatedsection"].ToString();
+                model.KoukaJishi = row["isImplemented"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["isImplemented"]);
                 
                 // 添付ファイル
                 model.TenpuFileName1 = row["attachmentfilename1"].ToString();
@@ -169,130 +155,86 @@ namespace Proposal.BL
             {
                 var row = dataTable.Rows[0]; // 指定IDのデータを取得
 
-                // モデルに設定
-                model.BuSho = row["department_name"].ToString();
-                model.KaBumon = row["section_name"].ToString();
-                model.KakariTantou = row["subsection_name"].ToString();
+                model.AffiliationName = row["affiliation_name"].ToString();
+                model.DepartmentName = row["department_name"].ToString();
+                model.SectionName = row["section_name"].ToString();
+                model.SubsectionName = row["subsection_name"].ToString();
             }
-        }
-
-        //// 提案種類の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
-        public List<ProposalType> GetProposalTypes()
-        {
-            // DAC（Data Access Component）層から提案種類の一覧を取得して返す
-            return _createDAC.GetProposalTypes();
         }
 
         // 提案区分の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
 
-
-        // 提案所属の一覧を取得するメソッド（DAC層のメソッドを呼び出すだけ）
-
-
-        //部・署を取得するメソッド
-        public List<Busho> GetBusho()
+        public List<SelectListItem> GetProposalKbnList()
         {
-            return _createDAC.GetBusho();
-        }
-
-        //課・部門を取得するメソッド
-        public List<Kabumon> GetKabumon()
-        {
-            return _createDAC.GetKabumon();
-        }
-
-        //係・担当を取得するメソッド
-        public List<KakariTantou> GetKakariTantou()
-        {
-            return _createDAC.GetKakariTantou();
-        }
-
-        /// <summary>
-        /// 任意のリストをSelectListItemのリストに変換するプライベートメソッド
-        /// </summary>
-        /// <typeparam name="T">変換元の型</typeparam>
-        /// <param name="items">変換元リスト</param>
-        /// <param name="getValue">値を取得するFunc</param>
-        /// <param name="getText">表示テキストを取得するFunc</param>
-        /// <param name="addDefault">先頭に「選択してください」を追加するか</param>
-        /// <returns>SelectListItemのリスト</returns>
-        private List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetSelectListItems<T>(List<T> items, Func<T, string> getValue, Func<T, string> getText, bool addDefault = true)
-        {
-            var list = items.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-            {
-                Value = getValue(x),
-                Text = getText(x)
-            }).ToList();
-            if (addDefault)
-            {
-                list.Insert(0, new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = "", Text = "選択してください" });
-            }
+            var list = _createDAC.GetProposalKbnList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
             return list;
         }
 
         /// <summary>
-        /// 提案種類のSelectListItemリストを取得
+        /// 提案の種類のSelectListItemリストを取得
         /// </summary>
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetProposalTypeSelectList()
+        public List<SelectListItem> GetProposalTypeList()
         {
-            // 提案種類のリストを取得（データベースなどから）
-            var types = GetProposalTypes();
-
-            // 提案種類のリストを <select> 用の SelectListItem に変換して返す
-            // 第1引数：値（value）にするプロパティ（Id）
-            // 第2引数：表示名（text）にするプロパティ（Type）
-            return GetSelectListItems(types, x => x.Id.ToString(), x => x.Type);
+            var list = _createDAC.GetProposalTypeList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
+            return list;
         }
 
-        /// <summary>
-        /// 提案区分のSelectListItemリストを取得
-        /// </summary>
-        /// 
 
         /// <summary>
         /// 提案所属のSelectListItemリストを取得
         /// </summary>
-
-
-
+        public List<SelectListItem> GetAffiliations()
+        {
+            var list = _createDAC.GetAffiliations().Select(a => new SelectListItem { Value = a.Id, Text = a.Shozoku }).ToList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
+            return list;
+        }
 
         /// <summary>
         /// 部・署のSelectListItemリストを取得
         /// </summary>
-
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetBushoSelectList()
+        public List<SelectListItem> GetDepartments()
         {
-
-            var departments = GetBusho();
-
-            return GetSelectListItems(departments, x => x.Department_id, x => x.Department_name);
+            var list = _createDAC.GetDepartments().Select(d => new SelectListItem { Value = d.Department_id, Text = d.Department_name }).ToList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
+            return list;
         }
 
         /// <summary>
         /// 課・部門のSelectListItemリストを取得
         /// </summary>
-
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetKabumonSelectList()
+        public List<SelectListItem> GetSections()
         {
-
-            var kabumons = GetKabumon();
-
-            return GetSelectListItems(kabumons, x => x.Section_id, x => x.Section_name);
+            var list = _createDAC.GetSections().Select(s => new SelectListItem { Value = s.Section_id, Text = s.Section_name }).ToList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
+            return list;
         }
 
         /// <summary>
         /// 係・担当のSelectListItemリストを取得
         /// </summary>
-
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> GetKakariTantouSelectList()
+        public List<SelectListItem> GetSubsections()
         {
-
-            var kakaritantous = GetKakariTantou();
-
-            return GetSelectListItems(kakaritantous, x => x.Subsection_id, x => x.Subsection_name);
+            var list = _createDAC.GetSubsections().Select(s => new SelectListItem { Value = s.Subsection_id, Text = s.Subsection_name }).ToList();
+            list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
+            return list;
         }
 
+        /// <summary>
+        /// 実施のSelectListItemリストを取得
+        /// </summary>
+        public List<SelectListItem> GetKoukaJishiSelectList()
+        {
+            return Enum.GetValues(typeof(KoukaJishi)).Cast<KoukaJishi>().Select(e => new SelectListItem
+            {
+                Value = ((int)e).ToString(),
+                Text = (e.GetType().GetField(e.ToString()).GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description) ?? e.ToString()
+            }).ToList();
+        }
 
+ 
         /// <summary>
         /// すべてのドロップダウンリストをまとめて取得するメソッド
         /// </summary>
@@ -300,22 +242,20 @@ namespace Proposal.BL
         {
             return new DropdownsViewModel
             {
-                //提案種類
-                ProposalTypes = GetProposalTypeSelectList(),
-                // 他のドロップダウンもここに追加可能
-
-                //提案区分
-
                 //提案所属
-
+                Affiliations = GetAffiliations(),
                 //部・署
-                Busho = GetBushoSelectList(),
-
+                Departments = GetDepartments(),
                 //課・部門
-                Kabumon = GetKabumonSelectList(),
-
+                Sections = GetSections(),
                 //係・担当
-                KakariTantou = GetKakariTantouSelectList(),
+                Subsections = GetSubsections(),
+                //提案の種類
+                ProposalTypes = GetProposalTypeList(),
+                //提案区分
+                ProposalKbn = GetProposalKbnList(),
+                //実施
+                KoukaJishiList = GetKoukaJishiSelectList(),
             };
         }
     }
@@ -325,21 +265,25 @@ namespace Proposal.BL
     /// </summary>
     public class DropdownsViewModel
     {
-        //提案種類
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ProposalTypes { get; set; }
-        // 他のドロップダウンもここに追加可能
-
-        //提案区分
-
         //提案所属
+        public List<SelectListItem> Affiliations { get; set; }
 
         //部・署
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Busho { get; set; }
+        public List<SelectListItem> Departments { get; set; }
 
         //課・部門
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Kabumon { get; set; }
+        public List<SelectListItem> Sections { get; set; }
 
         //係・担当
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> KakariTantou { get; set; }
+        public List<SelectListItem> Subsections { get; set; }
+
+        //提案種類
+        public List<SelectListItem> ProposalTypes { get; set; }
+
+        //提案区分
+        public List<SelectListItem> ProposalKbn { get; set; }
+
+        //実施
+        public List<SelectListItem> KoukaJishiList { get; set; }
     }
 }

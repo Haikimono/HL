@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SqlClient;
 using Proposal.Models;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace Proposal.DAC
@@ -27,7 +29,7 @@ namespace Proposal.DAC
             conn.Open();
 
             string sql = @"
-            INSERT INTO Te_proposals_detail (
+            INSERT INTO proposal (
                 user_id,
                 status,
                 proposal_year,
@@ -52,7 +54,6 @@ namespace Proposal.DAC
                 groupmember3_department,
                 groupmember3_section,
                 groupmember3_subsection,
-                daiijishinsashaHezuIsChecked,
                 firstevieweraffiliation,
                 firsteviewerdepartment,
                 firsteviewersection,
@@ -103,7 +104,6 @@ namespace Proposal.DAC
                 @group3BuSho,
                 @group3KaBumon,
                 @group3Kakari,
-                @hezuChecked,
                 @hezuShozoku,
                 @hezuBuSho,
                 @hezuKaBumon,
@@ -122,7 +122,7 @@ namespace Proposal.DAC
                 @createddate
             );
             
-            SELECT TOP 1 id FROM Te_proposals_detail ORDER BY id DESC;
+            SELECT TOP 1 id FROM proposal ORDER BY id DESC;
             ";
 
             using var cmd = new SqlCommand(sql, conn);
@@ -132,36 +132,35 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposalType", pModel.ProposalTypeId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalKbn", pModel.TeianKbn.HasValue ? (int)pModel.TeianKbn.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@from", pModel.Shozoku.HasValue ? (int)pModel.Shozoku.Value : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposalKbn", pModel.ProposalKbnId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1", pModel.GroupZenin1.HasValue ? (int)pModel.GroupZenin1.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1", pModel.GroupZenin1AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2.HasValue ? (int)pModel.GroupZenin2.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3.HasValue ? (int)pModel.GroupZenin3.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuChecked", pModel.DaiijishinsashaHezuIsChecked);
-            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.DaiijishinsashaShozoku.HasValue ? (int)pModel.DaiijishinsashaShozoku.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.DaiijishinsashaBuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.DaiijishinsashaKaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShimei", pModel.DaiijishinsashaShimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.DaiijishinsashaKanshokun ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@shumuKa", (int)pModel.ShumuKa);
-            cmd.Parameters.AddWithValue("@kankeiKa", (int)pModel.KankeiKa);
+            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@shumuKa", pModel.ShumuKaId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@kankeiKa", pModel.KankeiKaId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@koukaJissi", (int)pModel.KoukaJishi);
+            cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
             cmd.Parameters.AddWithValue("@kouka", pModel.Kouka ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@submissiondate", pModel.Submissiondate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@createddate", pModel.Createddate ?? (object)DBNull.Value);
@@ -231,7 +230,7 @@ namespace Proposal.DAC
                     submissiondate,
                     updatedate,
                     createddate
-                FROM Te_proposals_detail 
+                FROM proposal 
                 WHERE id = @id";
 
             using var cmd = new SqlCommand(sql, conn);
@@ -256,23 +255,28 @@ namespace Proposal.DAC
 
             string sql = @"
                 SELECT 
-                    user_department.department_name,
-                    user_section.section_name,
-                    user_subsection.subsection_name
+                    affiliation.affiliation_name,
+                    department.department_name,
+                    section.section_name,
+                    subsection.subsection_name
                 FROM 
                     [user] u 
                 INNER JOIN
-                    user_department
+                    affiliation
                 ON
-                    user_department.department_id = u.department_id
+                    affiliation.affiliation_id = u.shozoku_id
                 INNER JOIN
-                    user_section
+                    department
                 ON
-                    user_section.section_id = u.section_id
+                    department.department_id = u.department_id
                 INNER JOIN
-                    user_subsection
+                    section
                 ON
-                    user_subsection.subsection_id = u.subsection_id
+                    section.section_id = u.section_id
+                INNER JOIN
+                    subsection
+                ON
+                    subsection.subsection_id = u.subsection_id
                 WHERE
                     u.user_id = @userid";
 
@@ -292,7 +296,7 @@ namespace Proposal.DAC
             conn.Open();
 
             string sql = @"
-            UPDATE Te_proposals_detail
+            UPDATE proposal
             SET
                 user_id = @userId,
                 status = @status,
@@ -318,7 +322,6 @@ namespace Proposal.DAC
                 groupmember3_section = @group3KaBumon,
                 groupmember3_subsection = @group3Kakari,
                 groupmember3_name = @group3Name,
-                daiijishinsashaHezuIsChecked = @hezuChecked,
                 firstevieweraffiliation = @hezuShozoku,
                 firsteviewerdepartment = @hezuBuSho,
                 firsteviewersection = @hezuKaBumon,
@@ -342,37 +345,36 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@status", pModel.Status ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalType", (int)pModel.ProposalTypeId);
-            cmd.Parameters.AddWithValue("@proposalKbn", (int)pModel.TeianKbn);
-            cmd.Parameters.AddWithValue("@from", (int)pModel.Shozoku);
+            cmd.Parameters.AddWithValue("@proposalType", pModel.ProposalTypeId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposalKbn", pModel.ProposalKbnId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1", (int)pModel.GroupZenin1);
-            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1", pModel.GroupZenin1AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2", (int)pModel.GroupZenin2);
-            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3", (int)pModel.GroupZenin3);
-            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3BuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3KaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3KakariTantou ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuChecked", pModel.DaiijishinsashaHezuIsChecked);
-            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.DaiijishinsashaShozoku.HasValue ? (int)pModel.DaiijishinsashaShozoku.Value : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.DaiijishinsashaBuSho ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.DaiijishinsashaKaBumon ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShimei", pModel.DaiijishinsashaShimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.DaiijishinsashaKanshokun ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@shumuKa", (int)pModel.ShumuKa);
-            cmd.Parameters.AddWithValue("@kankeiKa", (int)pModel.KankeiKa);
+            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@shumuKa", pModel.ShumuKaId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@kankeiKa", pModel.KankeiKaId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@koukaJissi", (int)pModel.KoukaJishi);
+            cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
             cmd.Parameters.AddWithValue("@kouka", pModel.Kouka ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@submissiondate", pModel.Submissiondate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@createddate", pModel.Createddate ?? (object)DBNull.Value);
@@ -428,9 +430,9 @@ namespace Proposal.DAC
         //        createddate,
         //        0
         //    FROM
-        //        Te_proposals_detail
+        //        proposal
         //    WHERE
-        //        Te_proposals_detail.id = @id
+        //        proposal.id = @id
         //        ";
 
         //    using var cmd = new SqlCommand(sql, conn);
@@ -460,7 +462,7 @@ namespace Proposal.DAC
         //                    T.related_sections = D.relatedsection,
         //                    T.updated_at = D.updatedate
         //                FROM Te_proposals T
-        //                JOIN Te_proposals_detail D ON T.id = D.id
+        //                JOIN proposal D ON T.id = D.id
         //                WHERE T.id = @id;
         //                 ";
 
@@ -474,125 +476,243 @@ namespace Proposal.DAC
         // 提案種類（ProposalType）の一覧をデータベースから取得するメソッド
         public List<ProposalType> GetProposalTypes()
         {
-            // 結果を格納するリストを初期化
-            var result = new List<ProposalType>();
-            // データベース接続のための SqlConnection を作成
+            var list = new List<ProposalType>();
             using (var conn = new SqlConnection(_connectionString))
             {
-                // 接続を開く
                 conn.Open();
-                // 提案種類テーブルから id と type を取得する SQL コマンドを作成
-                var cmd = new SqlCommand("SELECT id, type FROM proposal_type", conn);
-                // SQL コマンドを実行して、結果をリーダーで読み込む
+                var cmd = new SqlCommand("SELECT kbn, kbn_name FROM proposal_kbn", conn);
                 using (var reader = cmd.ExecuteReader())
                 {
-                    // 1行ずつ読み込む
                     while (reader.Read())
                     {
-                        // 取得したデータを ProposalType オブジェクトにマッピングしてリストに追加
-                        result.Add(new ProposalType
+                        list.Add(new ProposalType
                         {
-                            Id = reader.GetInt32(0),// 0列目（id）を取得
-                            Type = reader.GetString(1)// 1列目（type）を取得
+                            Kbn = reader["kbn"].ToString(),
+                            KbnName = reader["kbn_name"].ToString()
                         });
                     }
                 }
             }
-            // 結果のリストを返す
-            return result;
+            return list;
         }
 
-        // 提案区分（）の一覧をデータベースから取得するメソッド
+        // 提案区分の一覧をデータベースから取得するメソッド
+        public List<SelectListItem> GetProposalKbnList()
+        {
+            var list = new List<SelectListItem>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT kbn, kbn_name FROM proposal_kbn", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new SelectListItem
+                        {
+                            Value = reader["kbn"].ToString(),
+                            Text = reader["kbn_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public List<SelectListItem> GetProposalTypeList()
+        {
+            var list = new List<SelectListItem>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT type_id, type_name FROM proposal_type", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new SelectListItem
+                        {
+                            Value = reader["type_id"].ToString(),
+                            Text = reader["type_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
 
 
-        // 提案所属（）の一覧をデータベースから取得するメソッド
-
-
+        // 提案所属の一覧をデータベースから取得するメソッド
+        public List<Affiliation> GetAffiliations()
+        {
+            var list = new List<Affiliation>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT affiliation_id, affiliation_name FROM affiliation", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Affiliation
+                        {
+                            Id = reader["affiliation_id"].ToString(),
+                            Shozoku = reader["affiliation_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        public List<Department> GetDepartments()
+        {
+            var list = new List<Department>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT department_id, department_name FROM department", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Department
+                        {
+                            Department_id = reader["department_id"].ToString(),
+                            Department_name = reader["department_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        public List<Section> GetSections()
+        {
+            var list = new List<Section>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT section_id, section_name FROM section", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Section
+                        {
+                            Section_id = reader["section_id"].ToString(),
+                            Section_name = reader["section_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+        public List<Subsection> GetSubsections()
+        {
+            var list = new List<Subsection>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM subsection", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Subsection
+                        {
+                            Subsection_id = reader["subsection_id"].ToString(),
+                            Subsection_name = reader["subsection_name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
 
         // 部・署（Busho）をデータベースから取得するメソッド
-        public List<Busho> GetBusho()
-        {
-           
-            var result = new List<Busho>();
+        // 注释掉Busho、Kabumon、KakariTantou相关类型和方法
+        // public List<Busho> GetBusho()
+        // {
+        //    
+        //    var result = new List<Busho>();
 
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
+        //    using (var conn = new SqlConnection(_connectionString))
+        //    {
+        //        conn.Open();
 
-                var cmd = new SqlCommand("SELECT department_id, department_name FROM user_department", conn);
+        //        var cmd = new SqlCommand("SELECT department_id, department_name FROM user_department", conn);
 
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(new Busho
-                        {
-                            Department_id = reader.GetString(0),
-                            Department_name = reader.GetString(1)
-                        });
-                    }
-                }
-            }
-            // 結果のリストを返す
-            return result;
-        }
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                result.Add(new Busho
+        //                {
+        //                    Department_id = reader.GetString(0),
+        //                    Department_name = reader.GetString(1)
+        //                });
+        //            }
+        //        }
+        //    }
+        //    // 結果のリストを返す
+        //    return result;
+        //}
 
         // 課・部門（Kabumon）をデータベースから取得するメソッド
-        public List<Kabumon> GetKabumon()
-        {
+        // public List<Kabumon> GetKabumon()
+        // {
 
-            var result = new List<Kabumon>();
+        //    var result = new List<Kabumon>();
 
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
+        //    using (var conn = new SqlConnection(_connectionString))
+        //    {
+        //        conn.Open();
 
-                var cmd = new SqlCommand("SELECT section_id, section_name FROM user_section", conn);
+        //        var cmd = new SqlCommand("SELECT section_id, section_name FROM user_section", conn);
 
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(new Kabumon
-                        {
-                            Section_id = reader.GetString(0),
-                            Section_name = reader.GetString(1)
-                        });
-                    }
-                }
-            }
-            // 結果のリストを返す
-            return result;
-        }
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                result.Add(new Kabumon
+        //                {
+        //                    Section_id = reader.GetString(0),
+        //                    Section_name = reader.GetString(1)
+        //                });
+        //            }
+        //        }
+        //    }
+        //    // 結果のリストを返す
+        //    return result;
+        //}
 
 
         // 係・担当（KakariTantou）をデータベースから取得するメソッド
-        public List<KakariTantou> GetKakariTantou()
-        {
+        // public List<KakariTantou> GetKakariTantou()
+        // {
 
-            var result = new List<KakariTantou>();
+        //    var result = new List<KakariTantou>();
 
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
+        //    using (var conn = new SqlConnection(_connectionString))
+        //    {
+        //        conn.Open();
 
-                var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM user_subsection", conn);
+        //        var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM user_subsection", conn);
 
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(new KakariTantou
-                        {
-                            Subsection_id = reader.GetString(0),
-                            Subsection_name = reader.GetString(1)
-                        });
-                    }
-                }
-            }
-            // 結果のリストを返す
-            return result;
-        }
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                result.Add(new KakariTantou
+        //                {
+        //                    Subsection_id = reader.GetString(0),
+        //                    Subsection_name = reader.GetString(1)
+        //                });
+        //            }
+        //        }
+        //    }
+        //    // 結果のリストを返す
+        //    return result;
+        //}
 
 
     }

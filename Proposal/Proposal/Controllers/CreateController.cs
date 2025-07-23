@@ -55,13 +55,18 @@ namespace Proposal.Controllers
             {
                 //年度取得
                 model.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
-            }
 
-            //部・署、課・部門、係・担当取得
-            if (!String.IsNullOrEmpty(model.UserId))
-            {
-                //ユーザー情報取得
-                _createBL.GetUserInfoByUserId(model);
+                //所属、部・署、課・部門、係・担当取得
+                if (!String.IsNullOrEmpty(model.UserId))
+                {
+                    //ユーザー情報取得
+                    _createBL.GetUserInfoByUserId(model);
+                    // 自动赋值主提案者情报
+                    model.AffiliationName = model.AffiliationName;
+                    model.DepartmentName = model.DepartmentName;
+                    model.SectionName = model.SectionName;
+                    model.SubsectionName = model.SubsectionName;
+                }
             }
 
             return View(model);
@@ -111,44 +116,19 @@ namespace Proposal.Controllers
                     return View(model);
                 }
 
-                // ドロップダウンリストから提案種類名を取得
                 var dropdowns = (Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns;
-                string teianShurui = CreateModel.GetProposalTypeName(model.ProposalTypeId, dropdowns.ProposalTypes);
-                string teianKbn = CreateModel.GetEnumDescriptionForCsv(model.TeianKbn);
-                string shozoku = CreateModel.GetEnumDescriptionForCsv(model.Shozoku);
-                string groupZenin1 = CreateModel.GetEnumDescriptionForCsv(model.GroupZenin1);
-                string groupZenin2 = CreateModel.GetEnumDescriptionForCsv(model.GroupZenin2);
-                string groupZenin3 = CreateModel.GetEnumDescriptionForCsv(model.GroupZenin3);
-                string daiijishinsashaHezuIsChecked = model.DaiijishinsashaHezuIsChecked ? "はい" : "いいえ";
-                string daiijishinsashaShozoku = CreateModel.GetEnumDescriptionForCsv(model.DaiijishinsashaShozoku);
-                string shumuKaMap = CreateModel.GetEnumDescriptionForCsv(model.ShumuKa);
-                string kankeiKaMap = CreateModel.GetEnumDescriptionForCsv(model.KankeiKa);
-                string koukaJishi = CreateModel.GetEnumDescriptionForCsv(model.KoukaJishi);
+                string proposalTypeName = dropdowns.ProposalTypes.FirstOrDefault(x => x.Value == model.ProposalTypeId)?.Text ?? "";
+                string group1Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin1AffiliationId)?.Text ?? "";
+                string group2Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin2AffiliationId)?.Text ?? "";
+                string group3Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin3AffiliationId)?.Text ?? "";
+                string firstReviewerAffiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.FirstReviewerAffiliationId)?.Text ?? "";
+                string firstReviewerDepartment = dropdowns.Departments.FirstOrDefault(x => x.Value == model.FirstReviewerDepartmentId)?.Text ?? "";
+                string firstReviewerSection = dropdowns.Sections.FirstOrDefault(x => x.Value == model.FirstReviewerSectionId)?.Text ?? "";
 
                 var csv = new StringBuilder();
-                csv.AppendLine("提案年度,提案題名,提案の種類," +
-                               "提案の区分,所属," +
-                               "提案者部・署,提案者課・部門,提案者係・担当," +
-                               "氏名又は代表名,グループ名," +
-                               "グループの全員①,グループの全員①部・署,グループの全員①課・部門,グループの全員①係・担当," +
-                               "グループの全員②,グループの全員②部・署,グループの全員②課・部門,グループの全員②係・担当," +
-                               "グループの全員③,グループの全員③部・署,グループの全員③課・部門,グループの全員③係・担当," +
-                               "第一次審査者を経ずに提出する,第一次審査者所属," +
-                               "第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職," +
-                               "主務課,関係課," +
-                               "現状・問題点,改善案,効果（実施）,効果");
-
-                csv.AppendLine($"\"{model.TeianYear}\",\"{model.TeianDaimei}\",\"{teianShurui}\"," +
-                               $"\"{teianKbn}\",\"{shozoku}\"," +
-                               $"\"{model.BuSho}\",\"{model.KaBumon}\",\"{model.KakariTantou}\"," +
-                               $"\"{model.ShimeiOrDaihyoumei}\",\"{model.GroupMei}\"," +
-                               $"\"{groupZenin1}\",\"{model.GroupZenin1BuSho}\",\"{model.GroupZenin1KaBumon}\",\"{model.GroupZenin1KakariTantou}\"," +
-                               $"\"{groupZenin2}\",\"{model.GroupZenin2BuSho}\",\"{model.GroupZenin2KaBumon}\",\"{model.GroupZenin2KakariTantou}\"," +
-                               $"\"{groupZenin3}\",\"{model.GroupZenin3BuSho}\",\"{model.GroupZenin3KaBumon}\",\"{model.GroupZenin3KakariTantou}\"," +
-                               $"\"{daiijishinsashaHezuIsChecked}\",\"{daiijishinsashaShozoku}\"," +
-                               $"\"{model.DaiijishinsashaBuSho}\",\"{model.DaiijishinsashaKaBumon}\",\"{model.DaiijishinsashaShimei}\",\"{model.DaiijishinsashaKanshokun}\"," +
-                               $"\"{shumuKaMap}\",\"{kankeiKaMap}\"," +
-                               $"\"{model.GenjyoMondaiten}\",\"{model.Kaizenan}\",\"{koukaJishi}\",\"{model.Kouka}\"");
+                csv.AppendLine("提案年度,提案題名,提案の種類,提案の区分,氏名又は代表名,グループ名,グループ1所属,グループ1氏名,グループ2所属,グループ2氏名,グループ3所属,グループ3氏名,第一次審査者所属,第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職,主務課,関係課,現状・問題点,改善案,効果の種類,効果");
+                string koukaJishiText = model.KoukaJishi.HasValue ? (model.KoukaJishi.Value.GetType().GetField(model.KoukaJishi.Value.ToString()).GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description ?? model.KoukaJishi.Value.ToString()) : "";
+                csv.AppendLine($"\"{model.TeianYear}\",\"{model.TeianDaimei}\",\"{proposalTypeName}\",\"{model.ProposalKbnId}\",\"{model.ShimeiOrDaihyoumei}\",\"{model.GroupMei}\",\"{group1Affiliation}\",\"{model.GroupZenin1Name}\",\"{group2Affiliation}\",\"{model.GroupZenin2Name}\",\"{group3Affiliation}\",\"{model.GroupZenin3Name}\",\"{firstReviewerAffiliation}\",\"{firstReviewerDepartment}\",\"{firstReviewerSection}\",\"{model.FirstReviewerName}\",\"{model.FirstReviewerTitle}\",\"{model.ShumuKaId}\",\"{model.KankeiKaId}\",\"{model.GenjyoMondaiten}\",\"{model.Kaizenan}\",\"{koukaJishiText}\",\"{model.Kouka}\"");
 
                 var bytes = Encoding.UTF8.GetBytes(csv.ToString());
                 var filename = $"提案内容_{DateTime.Now:yyyyMMddHHmmss}.csv";
