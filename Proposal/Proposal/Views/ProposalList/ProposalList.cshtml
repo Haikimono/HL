@@ -12,168 +12,145 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <link rel="stylesheet" href="~/css/site.css" />
 <link rel="stylesheet" href="~/css/Proposal.css" />
+<link rel="stylesheet" href="~/css/proposalList.css" />
 
-<style>
-    .page-container {
-    }
-
-    .page-title {
-        margin-bottom: 2rem;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .form-card {
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 1.5rem;
-    }
-
-    .card-header h5 {
-        margin-bottom: 1rem;
-        font-weight: bold;
-        color: #136AA8;
-    }
-
-    .form-row-modern {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-    }
-
-    .form-group-modern {
-        flex: 1;
-        min-width: 200px;
-    }
-
-    .form-label-modern {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
-        color: #333;
-    }
-
-    .form-control-modern {
-        width: 100%;
-        padding: 0.4rem 0.6rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
-
-    .btn-action {
-        min-width: 100px;
-    }
-
-    .proposal-table th {
-        white-space: nowrap;
-    }
-</style>
-<body>
 <div class="page-container">
     <div class="container">
-        <h2 class="page-title"><i class="fas fa-list me-2"></i>提案書一覧</h2>
+        <h2 class="page-title"><i class="fas fa-list me-3"></i>提案書一覧</h2>
+    </div>
 
-        <div class="form-card">
-            <div class="card-header">
-                <h5><i class="fas fa-search me-2"></i>検索条件</h5>
-            </div>
-            <div class="card-body">
-                <form method="get" asp-controller="Proposal" asp-action="List">
-                    <div class="form-row-modern">
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">提案年度</label>
-                            <select name="year" class="form-control-modern">
-                                <option value="">すべて</option>
-                                @foreach (var y in years)
-                                {
-                                    <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y</option>
-                                }
-                            </select>
+    <div class="main-content">
+        <div class="container">
+            <!-- 検索条件カード -->
+            <div class="form-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-search me-2"></i>検索条件</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" asp-controller="Proposal" asp-action="List">
+                        <div class="form-row-modern three-cols">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">提案年度</label>
+                                <select name="year" class="form-control-modern">
+                                    <option value="">すべて</option>
+                                    @foreach (var y in years)
+                                    {
+                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">提出日</label>
+                                <input type="date" name="date" class="form-control-modern" />
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">状態</label>
+                                <select name="status" class="form-control-modern">
+                                    <option value="">すべて</option>
+                                    @foreach (var s in statuses)
+                                    {
+                                        <option value="@((int)s)"
+                                            selected="@(selectedStatus == (int)s ? "selected" : null)">
+                                            @s.ToString()
+                                        </option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">提出日</label>
-                            <input type="date" name="date" class="form-control-modern" />
-                        </div>
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">状態</label>
-                            <select name="status" class="form-control-modern">
-                                <option value="">すべて</option>
-                                @foreach (var s in statuses)
-                                {
-                                    <option value="@((int)s)" selected="@(selectedStatus == (int)s ? "selected" : null)">
-                                        @s.ToString()
-                                    </option>
-                                }
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="form-btn-row mt-3 d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-action btn-primary"><i class="fas fa-search me-1"></i>検索</button>
-                        <button type="button" class="btn btn-action btn-outline-secondary" onclick="location.href='@Url.Action("List", "Proposal")'">
-                            <i class="fas fa-eraser me-1"></i>クリア
-                        </button>
-                        <button type="button" class="btn btn-action btn-secondary" onclick="history.back();">
-                            <i class="fas fa-arrow-left me-1"></i>戻る
-                        </button>
-                    </div>
-                </form>
+                        <div class="action-buttons mt-4 d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-action btn-primary">
+                                <i class="fas fa-search me-2"></i>検索
+                            </button>
+                            <button type="button" class="btn btn-action btn-outline-secondary"
+                                onclick="location.href='@Url.Action("List", "Proposal")'">
+                                <i class="fas fa-eraser me-2"></i>クリア
+                            </button>
+                            <button type="button" class="btn btn-action btn-secondary" onclick="history.back();">
+                                <i class="fas fa-arrow-left me-2"></i>戻る
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <div class="form-card mt-4">
-            <div class="card-header">
-                <h5><i class="fas fa-table me-2"></i>提案書一覧</h5>
-            </div>
-            <div class="card-body table-responsive">
-                <table class="table table-bordered table-striped table-hover proposal-table">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>提案年度</th>
-                            <th>提案番号</th>
-                            <th>状態</th>
-                            <th>提案題名</th>
-                            <th>提案者氏名・グループ名</th>
-                            <th>所属</th>
-                            <th>提出日</th>
-                            <th>評点</th>
-                            <th>判定</th>
-                            <th>追加進達</th>
-                            <th>審査課</th>
-                            <th>関係課</th>
-                            <th>入賞区分</th>
-                            <th>提案書</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var p in Model)
-                        {
-                            <tr>
-                                <td>@p.ProposalYear</td>
-                                <td>@p.ProposalId</td>
-                                <td>@p.StatusDisplay</td>
-                                <td>@p.ProposalName</td>
-                                <td>@p.UserName</td>
-                                <td>@p.UserName</td> <!-- 所属 -->
-                                <td>@p.UserName</td> <!-- 提出日 -->
-                                <td>@p.UserName</td> <!-- 評点 -->
-                                <td>@p.UserName</td> <!-- 判定 -->
-                                <td>@p.UserName</td> <!-- 追加進達 -->
-                                <td>@p.UserName</td> <!-- 審査課 -->
-                                <td>@p.UserName</td> <!-- 関係課 -->
-                                <td>@p.UserName</td> <!-- 入賞区分 -->
-                                <td>
-                                    <a class="btn btn-action btn-primary btn-sm" asp-controller="Proposal" asp-action="SetIdAndGoCreate" asp-route-id="@p.ProposalId">
-                                        表示
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <!-- 提案書一覧カード -->
+            <div class="form-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-table me-2"></i>提案書一覧</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        <div class="table-responsive-custom">
+                            <table class="table table-modern" id="proposal-table">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th data-resizable="true">提案年度</th>
+                                        <th data-resizable="true">提案番号</th>
+                                        <th data-resizable="true">状態</th>
+                                        <th data-resizable="true">提案題名</th>
+                                        <th data-resizable="true">提案者氏名・グループ名</th>
+                                        <th data-resizable="true">所属</th>
+                                        <th data-resizable="true">提出日</th>
+                                        <th data-resizable="true">評点</th>
+                                        <th data-resizable="true">判定</th>
+                                        <th data-resizable="true">追加進達</th>
+                                        <th data-resizable="true">審査課</th>
+                                        <th data-resizable="true">関係課</th>
+                                        <th data-resizable="true">入賞区分</th>
+                                        <th data-resizable="false">提案書</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var p in Model)
+                                    {
+                                        <tr class="table-row">
+                                            <td class="text-center"><span class="badge-year">@p.ProposalYear</span></td>
+                                            <td class="text-center"><span class="proposal-id">@p.ProposalId</span></td>
+                                            <td class="text-center">
+                                                <span class="status-badge status-@p.StatusDisplay.ToLower().Replace(" ", "-")">
+                                                    @p.StatusDisplay
+                                                </span>
+                                            </td>
+                                            <td class="text-center">@p.ProposalName</td>
+                                            <td>@p.UserName</td>
+                                            <td class="text-center">@p.UserName</td> <!-- 所属 -->
+                                            <td class="text-center">@p.UserName</td> <!-- 提出日 -->
+                                            <td class="text-center">@p.UserName</td> <!-- 評点 -->
+                                            <td class="text-center">@p.UserName</td> <!-- 判定 -->
+                                            <td class="text-center">@p.UserName</td> <!-- 追加進達 -->
+                                            <td>@p.UserName</td> <!-- 審査課 -->
+                                            <td>@p.UserName</td> <!-- 関係課 -->
+                                            <td class="text-center">@p.UserName</td> <!-- 入賞区分 -->
+                                            <td class="text-center">
+                                                <a class="btn btn-action btn-primary btn-sm action-btn"
+                                                    asp-controller="Proposal" asp-action="SetIdAndGoCreate"
+                                                    asp-route-id="@p.ProposalId">
+                                                    <i class="fas fa-eye me-1"></i>表示
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-data-message">
+                            <div class="no-data-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h6>検索結果が見つかりません</h6>
+                            <p class="text-muted">検索条件を変更して再度お試しください。</p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
-    </body>
+
+
