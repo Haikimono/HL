@@ -50,7 +50,7 @@ namespace Proposal.Models
     }
     public class ProposalList
     {
-        public string ProposalId { get; set; }
+        public int ProposalId { get; set; }
         public string UserId { get; set; }
         public string? ProposalYear { get; set; }
         public int Status { get; set; }

@@ -227,3 +227,24 @@
     font-size: 14px;
     margin: 0;
 }
+
+/* 日期范围样式 */
+.date-range-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.date-range-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.date-range-separator {
+    color: #6b7280;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0 4px;
+}

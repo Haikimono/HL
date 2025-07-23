@@ -33,7 +33,7 @@ namespace Proposal.DAC
                     {
                         proposals.Add(new ProposalList
                         {
-                            ProposalId = reader.GetString(reader.GetOrdinal("proposal_id")),
+                            ProposalId = reader.GetInt32(reader.GetOrdinal("proposal_id")),
                             UserId = reader.GetString(reader.GetOrdinal("user_id")), // int
                             ProposalYear = reader.GetString(reader.GetOrdinal("proposal_year")), // nvarchar(10)
                             //BusinessYear = reader.GetString(reader.GetOrdinal("business_year")), // nvarchar(10)
