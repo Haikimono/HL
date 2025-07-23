@@ -42,7 +42,11 @@
                             </div>
                             <div class="form-group-modern">
                                 <label class="form-label-modern">提出日</label>
-                                <input type="date" name="date" class="form-control-modern" />
+                                <div class="date-range-container">
+                                    <input type="date" name="dateFrom" class="form-control-modern date-range-input" placeholder="開始日" />
+                                    <span class="date-range-separator">〜</span>
+                                    <input type="date" name="dateTo" class="form-control-modern date-range-input" placeholder="終了日" />
+                                </div>
                             </div>
                             <div class="form-group-modern">
                                 <label class="form-label-modern">状態</label>

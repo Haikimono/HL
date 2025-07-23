@@ -21,6 +21,15 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+var currentDir = AppContext.BaseDirectory;
+
+builder.Configuration
+    .SetBasePath(currentDir)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
