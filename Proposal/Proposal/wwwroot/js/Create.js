@@ -123,6 +123,12 @@
     }
 });
 
+
+//グループメンバー追加
+$(document).on("click", ".clear-member-btn", function() {
+    $(this).closest(".group-member-row").find("input").val("");
+});
+
 //基本情報と提案内容
 function showDiv(target) {
     const baseDiv = document.getElementById('baseDiv');

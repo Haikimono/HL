@@ -39,21 +39,12 @@ namespace Proposal.DAC
                 [from],
                 nameOrrepresentativename,
                 groupname,
-                groupmember1_affiliation,
-                groupmember1_name,
-                groupmember1_department,
-                groupmember1_section,
-                groupmember1_subsection,
-                groupmember2_affiliation,
-                groupmember2_name,
-                groupmember2_department,
-                groupmember2_section,
-                groupmember2_subsection,
-                groupmember3_affiliation,
-                groupmember3_name,
-                groupmember3_department,
-                groupmember3_section,
-                groupmember3_subsection,
+                evaluation_section_id,
+                responsible_section_id1,
+                responsible_section_id2,
+                responsible_section_id3,
+                responsible_section_id4,
+                responsible_section_id5,
                 firstevieweraffiliation,
                 firsteviewerdepartment,
                 firsteviewersection,
@@ -89,21 +80,6 @@ namespace Proposal.DAC
                 @from,
                 @nameOrRepName,
                 @groupName,
-                @group1,
-                @group1Name,
-                @group1BuSho,
-                @group1KaBumon,
-                @group1Kakari,
-                @group2,
-                @group2Name,
-                @group2BuSho,
-                @group2KaBumon,
-                @group2Kakari,
-                @group3,
-                @group3Name,
-                @group3BuSho,
-                @group3KaBumon,
-                @group3Kakari,
                 @evaluation_section_id,
                 @responsible_section_id1,
                 @responsible_section_id2,
@@ -140,21 +116,6 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1", pModel.GroupZenin1AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
@@ -315,21 +276,6 @@ namespace Proposal.DAC
                 [from] = @from,
                 nameOrrepresentativename = @nameOrRepName,
                 groupname = @groupName,
-                groupmember1_affiliation = @group1,
-                groupmember1_department = @group1BuSho,
-                groupmember1_section = @group1KaBumon,
-                groupmember1_subsection = @group1Kakari,
-                groupmember1_name = @group1Name,
-                groupmember2_affiliation = @group2,
-                groupmember2_department = @group2BuSho,
-                groupmember2_section = @group2KaBumon,
-                groupmember2_subsection = @group2Kakari,
-                groupmember2_name = @group2Name,
-                groupmember3_affiliation = @group3,
-                groupmember3_department = @group3BuSho,
-                groupmember3_section = @group3KaBumon,
-                groupmember3_subsection = @group3Kakari,
-                groupmember3_name = @group3Name,
                 evaluation_section_id = @evaluation_section_id,
                 responsible_section_id1 = @responsible_section_id1,
                 responsible_section_id2 = @responsible_section_id2,
@@ -364,21 +310,6 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1", pModel.GroupZenin1AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1BuSho", pModel.GroupZenin1DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1KaBumon", pModel.GroupZenin1SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Kakari", pModel.GroupZenin1SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group1Name", pModel.GroupZenin1Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2", pModel.GroupZenin2AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2BuSho", pModel.GroupZenin2DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2KaBumon", pModel.GroupZenin2SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Kakari", pModel.GroupZenin2SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group2Name", pModel.GroupZenin2Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3", pModel.GroupZenin3AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3BuSho", pModel.GroupZenin3DepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
@@ -401,96 +332,7 @@ namespace Proposal.DAC
             cmd.ExecuteNonQuery();
         }
 
-        //// 提案書一覧登録
-        //public void SqlInsertproposals(CreateModel pModel)
-        //{
-        //    using var conn = new SqlConnection(_connectionString);
-        //    conn.Open();
-
-        //    string sql = @"
-        //    INSERT INTO Te_proposals (
-        //        id,
-        //        user_id,
-        //        proposal_year,
-        //        business_year,
-        //        status,
-        //        pd_name,
-        //        user_name,
-        //        [from],
-        //        submitted_at,
-        //        point,
-        //        decision,
-        //        resubmission,
-        //        review_section,
-        //        related_sections,
-        //        award_division,
-        //        updated_at,
-        //        created_at,
-        //        [delete]
-        //    )
-        //    SELECT 
-        //        id,
-        //        user_id,
-        //        proposal_year,
-        //        proposal_year,
-        //        status,
-        //        pd_name,
-        //        nameOrrepresentativename,
-        //        [from],
-        //        submissiondate,
-        //        NULL,
-        //        NULL,
-        //        1,
-        //        NULL,
-        //        relatedsection,
-        //        NULL,
-        //        updatedate,
-        //        createddate,
-        //        0
-        //    FROM
-        //        proposal
-        //    WHERE
-        //        proposal.id = @id
-        //        ";
-
-        //    using var cmd = new SqlCommand(sql, conn);
-
-        //    cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
-
-        //    cmd.ExecuteNonQuery();
-
-        //}
-
-        //// 提案書一覧更新
-        //public void SqlUpdateproposals(CreateModel pModel)
-        //{
-        //    using var conn = new SqlConnection(_connectionString);
-        //    conn.Open();
-
-        //    string sql = @"
-        //                UPDATE T
-        //                SET
-        //                    T.user_id = D.user_id,
-        //                    T.proposal_year = D.proposal_year,
-        //                    T.status = D.status,
-        //                    T.pd_name = D.pd_name,
-        //                    T.user_name = D.nameOrrepresentativename,
-        //                    T.[from] = D.[from],
-        //                    T.submitted_at = D.submissiondate,
-        //                    T.related_sections = D.relatedsection,
-        //                    T.updated_at = D.updatedate
-        //                FROM Te_proposals T
-        //                JOIN proposal D ON T.id = D.id
-        //                WHERE T.id = @id;
-        //                 ";
-
-        //    using var cmd = new SqlCommand(sql, conn);
-
-        //    cmd.Parameters.AddWithValue("@id", pModel.Id ?? (object)DBNull.Value);
-
-        //    cmd.ExecuteNonQuery();
-        //}
-
+      
         // 提案種類（ProposalType）の一覧をデータベースから取得するメソッド
         public List<ProposalType> GetProposalTypes()
         {
@@ -582,6 +424,8 @@ namespace Proposal.DAC
             }
             return list;
         }
+
+        // 部・署をデータベースから取得するメソッド
         public List<Department> GetDepartments()
         {
             var list = new List<Department>();
@@ -603,6 +447,8 @@ namespace Proposal.DAC
             }
             return list;
         }
+
+        // 課・部門をデータベースから取得するメソッド
         public List<Section> GetSections()
         {
             var list = new List<Section>();
@@ -624,6 +470,8 @@ namespace Proposal.DAC
             }
             return list;
         }
+
+        // 係・担当をデータベースから取得するメソッド
         public List<Subsection> GetSubsections()
         {
             var list = new List<Subsection>();
@@ -646,91 +494,35 @@ namespace Proposal.DAC
             return list;
         }
 
-        // 部・署（Busho）をデータベースから取得するメソッド
-        // 注释掉Busho、Kabumon、KakariTantou相关类型和方法
-        // public List<Busho> GetBusho()
-        // {
-        //    
-        //    var result = new List<Busho>();
+        // 既存のグループデータを削除するメソッド
+        public void DeleteGroupInfo(string proposalId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+            var cmd = new SqlCommand("DELETE FROM group_info WHERE proposal_id = @proposalId", conn);
+            cmd.Parameters.AddWithValue("@proposalId", proposalId);
+            cmd.ExecuteNonQuery();
+        }
 
-        //    using (var conn = new SqlConnection(_connectionString))
-        //    {
-        //        conn.Open();
-
-        //        var cmd = new SqlCommand("SELECT department_id, department_name FROM user_department", conn);
-
-        //        using (var reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                result.Add(new Busho
-        //                {
-        //                    Department_id = reader.GetString(0),
-        //                    Department_name = reader.GetString(1)
-        //                });
-        //            }
-        //        }
-        //    }
-        //    // 結果のリストを返す
-        //    return result;
-        //}
-
-        // 課・部門（Kabumon）をデータベースから取得するメソッド
-        // public List<Kabumon> GetKabumon()
-        // {
-
-        //    var result = new List<Kabumon>();
-
-        //    using (var conn = new SqlConnection(_connectionString))
-        //    {
-        //        conn.Open();
-
-        //        var cmd = new SqlCommand("SELECT section_id, section_name FROM user_section", conn);
-
-        //        using (var reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                result.Add(new Kabumon
-        //                {
-        //                    Section_id = reader.GetString(0),
-        //                    Section_name = reader.GetString(1)
-        //                });
-        //            }
-        //        }
-        //    }
-        //    // 結果のリストを返す
-        //    return result;
-        //}
-
-
-        // 係・担当（KakariTantou）をデータベースから取得するメソッド
-        // public List<KakariTantou> GetKakariTantou()
-        // {
-
-        //    var result = new List<KakariTantou>();
-
-        //    using (var conn = new SqlConnection(_connectionString))
-        //    {
-        //        conn.Open();
-
-        //        var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM user_subsection", conn);
-
-        //        using (var reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                result.Add(new KakariTantou
-        //                {
-        //                    Subsection_id = reader.GetString(0),
-        //                    Subsection_name = reader.GetString(1)
-        //                });
-        //            }
-        //        }
-        //    }
-        //    // 結果のリストを返す
-        //    return result;
-        //}
+        // グループデータを挿入するメソッド
+        public void InsertGroupInfo(string proposalId, List<GroupMemberModel> members)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+            foreach (var m in members)
+            {
+                if (string.IsNullOrEmpty(m.AffiliationId) && string.IsNullOrEmpty(m.DepartmentId) && string.IsNullOrEmpty(m.SectionId) && string.IsNullOrEmpty(m.SubsectionId) && string.IsNullOrEmpty(m.Name))
+                    continue;
+                var cmd = new SqlCommand(@"INSERT INTO group_info (proposal_id, affiliation_id, department_id, section_id, subsection_id, member_name) VALUES (@proposalId, @affiliationId, @departmentId, @sectionId, @subsectionId, @memberName)", conn);
+                cmd.Parameters.AddWithValue("@proposalId", proposalId);
+                cmd.Parameters.AddWithValue("@affiliationId", m.AffiliationId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@departmentId", m.DepartmentId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@sectionId", m.SectionId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@subsectionId", m.SubsectionId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@memberName", m.Name ?? (object)DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
 
     }
 }
