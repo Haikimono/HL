@@ -23,16 +23,20 @@
     padding-right: 2%;
 }
 
+.form-card .card-body {
+    overflow-x: auto;
+}
 /* テーブル */
 .table-modern {
     border: none;
     background: white;
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     margin: 0;
     width: 100%;
     table-layout: fixed;
+    min-width: 1600px; /* 新增: 防止列被挤压 */
+    white-space: nowrap; /* 新增: 防止内容换行 */
 }
 
 .table-header {
@@ -41,13 +45,15 @@
 }
 
 .table-header th {
-    border-right: 1px solid #ffffff;
+ border-right: 1px solid #ffffff;
     padding: 12px 6px;
     font-weight: 600;
     font-size: 13px;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     background-color: steelblue;
     color: white;
 }
@@ -73,13 +79,13 @@
 
 .table-modern th:nth-child(4),
 .table-modern td:nth-child(4) {
-    width: 20%;
+    width: 8%;
     min-width: 150px;
 }
 
 .table-modern th:nth-child(5),
 .table-modern td:nth-child(5) {
-    width: 12%;
+    width: 20%;
     min-width: 100px;
 }
 
@@ -120,6 +126,9 @@
     vertical-align: middle;
     text-align: center;
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* バッジ */

@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Proposal.DAL;
-using Proposal.Models;
-using Proposal.Services;
-using System;
+﻿using Proposal.DAL;
 using System.Security.Cryptography;
 using System.Text;
 

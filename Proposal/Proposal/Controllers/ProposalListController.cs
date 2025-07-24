@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace Proposal.Controllers
 {
-
     public class ProposalListController : Controller
     {
         private readonly string _connectionString;
@@ -16,29 +15,36 @@ namespace Proposal.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProposalList(int? year, int? status)
+        public IActionResult ProposalList(int? year, int? status, int page = 1)
         {
-            var bl = new ProposalBL(_connectionString);
-            var proposals = bl.GetProposalList();
+            const int pageSize = 10;
+            var bl = new ProposalListBL(_connectionString);
+            var result = bl.GetProposalList(year, status, page, pageSize);
 
-            if (year.HasValue)
-            {
-                proposals = proposals.Where(p => p.ProposalYear == year.Value.ToString()).ToList();
-            }
-            if (status.HasValue)
-            {
-                proposals = proposals.Where(p => p.Status == status.Value).ToList();
-            }
-
-            // 传递当前筛选条件到View
+            ViewBag.Page = page;
+            ViewBag.TotalPages = result.TotalPages;
+            ViewBag.TotalCount = result.TotalCount;
+            ViewBag.PageSize = pageSize;
             ViewBag.SelectedYear = year;
             ViewBag.SelectedStatus = status;
+            ViewBag.Years = result.Items
+                .Select(p => p.ProposalYear)
+                .Distinct()
+                .OrderByDescending(y => y)
+                .ToList();
+            ViewBag.Statuses = bl.GetProposalStatuses();
 
-            // 传递所有可选年度和状态到View
-            ViewBag.Years = proposals.Select(p => p.ProposalYear).Distinct().OrderByDescending(y => y).ToList();
-            ViewBag.Statuses = System.Enum.GetValues(typeof(ProposalStatus)).Cast<ProposalStatus>().ToList();
 
-            return View("~/Views/ProposalList/ProposalList.cshtml", proposals);
+            return View("~/Views/ProposalList/ProposalList.cshtml", result.Items);
+        }
+
+        [HttpGet("setid")]
+        public IActionResult SetIdAndGoCreate(string id)
+        {
+            HttpContext.Session.SetString("Id", id);
+            return RedirectToAction("Create", "Create");
         }
     }
+
+
 }

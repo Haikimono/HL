@@ -6,6 +6,10 @@
     var statuses = ViewBag.Statuses as List<ProposalStatus> ?? new List<ProposalStatus>();
     string? selectedYear = ViewBag.SelectedYear as string;
     int? selectedStatus = ViewBag.SelectedStatus as int?;
+    int page = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+    int totalCount = ViewBag.TotalCount;
+    int pageSize = ViewBag.PageSize ?? 10;
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
@@ -27,7 +31,7 @@
                     <h5><i class="fas fa-search me-2"></i>検索条件</h5>
                 </div>
                 <div class="card-body">
-                    <form method="get" asp-controller="Proposal" asp-action="List">
+                    <form method="get" asp-controller="ProposalList" asp-action="ProposalList">
                         <div class="form-row-modern three-cols">
                             <div class="form-group-modern">
                                 <label class="form-label-modern">提案年度</label>
@@ -35,7 +39,8 @@
                                     <option value="">すべて</option>
                                     @foreach (var y in years)
                                     {
-                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">令和 @y
+                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">
+                                            令和 @y
                                         </option>
                                     }
                                 </select>
@@ -54,12 +59,13 @@
                                     <option value="">すべて</option>
                                     @foreach (var s in statuses)
                                     {
-                                        <option value="@((int)s)"
-                                            selected="@(selectedStatus == (int)s ? "selected" : null)">
-                                            @s.ToString()
+                                        <option value="@s.Id"
+                                                selected="@(selectedStatus == s.Id ? "selected" : null)">
+                                            @s.StatusName
                                         </option>
                                     }
                                 </select>
+
                             </div>
                         </div>
 
@@ -68,7 +74,7 @@
                                 <i class="fas fa-search me-2"></i>検索
                             </button>
                             <button type="button" class="btn btn-action btn-outline-secondary"
-                                onclick="location.href='@Url.Action("List", "Proposal")'">
+                                    onclick="location.href='@Url.Action("ProposalList", "ProposalList")'">
                                 <i class="fas fa-eraser me-2"></i>クリア
                             </button>
                             <button type="button" class="btn btn-action btn-secondary" onclick="history.back();">
@@ -87,15 +93,17 @@
                 <div class="card-body">
                     @if (Model != null && Model.Count > 0)
                     {
-                        <div class="table-responsive-custom">
-                            <table class="table table-modern" id="proposal-table">
+                        <div class="table-responsive" style="overflow-x:auto;">
+                            <table class="table table-modern" id="proposal-table" style="min-width:1500px; white-space: nowrap;">
                                 <thead class="table-header">
                                     <tr>
+                                        <th data-resizable="false">提案書</th>
                                         <th data-resizable="true">提案年度</th>
                                         <th data-resizable="true">提案番号</th>
                                         <th data-resizable="true">状態</th>
                                         <th data-resizable="true">提案題名</th>
-                                        <th data-resizable="true">提案者氏名・グループ名</th>
+                                        <th data-resizable="true">提案者氏名</th>
+                                        <th data-resizable="true">グループ名</th>
                                         <th data-resizable="true">所属</th>
                                         <th data-resizable="true">提出日</th>
                                         <th data-resizable="true">評点</th>
@@ -104,48 +112,74 @@
                                         <th data-resizable="true">審査課</th>
                                         <th data-resizable="true">関係課</th>
                                         <th data-resizable="true">入賞区分</th>
-                                        <th data-resizable="false">提案書</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var p in Model)
                                     {
                                         <tr class="table-row">
-                                            <td class="text-center"><span class="badge-year">@p.ProposalYear</span></td>
-                                            <td class="text-center"><span class="proposal-id">@p.ProposalId</span></td>
-                                            <td class="text-center">
-                                                <span class="status-badge status-@p.StatusDisplay.ToLower().Replace(" ", "-")">
-                                                    @p.StatusDisplay
-                                                </span>
-                                            </td>
-                                            <td class="text-center">@p.ProposalName</td>
-                                            <td>@p.UserName</td>
-                                            <td class="text-center">@p.UserName</td> <!-- 所属 -->
-                                            <td class="text-center">@p.UserName</td> <!-- 提出日 -->
-                                            <td class="text-center">@p.UserName</td> <!-- 評点 -->
-                                            <td class="text-center">@p.UserName</td> <!-- 判定 -->
-                                            <td class="text-center">@p.UserName</td> <!-- 追加進達 -->
-                                            <td>@p.UserName</td> <!-- 審査課 -->
-                                            <td>@p.UserName</td> <!-- 関係課 -->
-                                            <td class="text-center">@p.UserName</td> <!-- 入賞区分 -->
                                             <td class="text-center">
                                                 <a class="btn btn-action btn-primary btn-sm action-btn"
-                                                    asp-controller="Proposal" asp-action="SetIdAndGoCreate"
-                                                    asp-route-id="@p.ProposalId">
+                                                   asp-controller="Proposal" asp-action="SetIdAndGoCreate"
+                                                   asp-route-id="@p.ProposalId">
                                                     <i class="fas fa-eye me-1"></i>表示
                                                 </a>
                                             </td>
+                                            <td class="text-center" title="@p.ProposalYear"><span class="badge-year">令和 @p.ProposalYear</span></td>
+                                            <td class="text-center" title="@p.ProposalId"><span class="proposal-id">@p.ProposalId</span></td>
+                                            <td class="text-center" title="@p.Status">@p.Status</td>
+                                            <td class="text-center" title="@p.ProposalName">@p.ProposalName</td>
+                                            <td class="text-center" title="@p.UserName">@p.UserName</td>
+                                            <td class="text-center" title="@p.GroupName">@p.GroupName</td>
+                                            <td class="text-center" title="@p.Affiliation">@p.Affiliation</td> <!-- 所属 -->
+                                            <td class="text-center" title="@p.CreatedTime">@p.CreatedTime.ToString("yyyy-MM-dd")</td> <!-- 提出日 -->
+                                            <td class="text-center" title="@p.Point">@p.Point</td> <!-- 評点 -->
+                                            <td class="text-center" title="@p.Decision">@p.Decision</td> <!-- 判定 -->
+                                            <td class="text-center" title="@p.AdditionalSubmission">@p.AdditionalSubmission</td> <!-- 追加進達 -->
+                                            <td title="@p.EvaluationSection">@p.EvaluationSection</td> <!-- 審査課 -->
+                                            <td title="@p.ResponsibleSection1">@p.ResponsibleSection1</td> <!-- 関係課 -->
+                                            <td class="text-center" title="@p.AwardType">@p.AwardType</td> <!-- 入賞区分 -->
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- 分頁ナビゲーション -->
+                        @if (totalPages > 1)
+                        {
+                            <nav aria-label="ページナビゲーション" class="mt-4">
+                                <ul class="pagination justify-content-center flex-wrap">
+                                    <li class="page-item @(page > 1 ? "" : "disabled")">
+                                        <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = page - 1 })">
+                                            <span>&laquo;</span>
+                                        </a>
+                                    </li>
+                                    @for (int i = 1; i <= totalPages; i++)
+                                    {
+                                        <li class="page-item @(i == page ? "active" : "")">
+                                            <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = i })">@i</a>
+                                        </li>
+                                    }
+                                    <li class="page-item @(page < totalPages ? "" : "disabled")">
+                                        <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = page + 1 })">
+                                            <span>&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        }
+
+                        <!-- 件数表示 -->
+                        <p class="text-center text-muted mt-2">
+                            全 @totalCount 件（1ページ当たり @pageSize 件）
+                        </p>
                     }
                     else
                     {
-                        <div class="no-data-message">
-                            <div class="no-data-icon">
-                                <i class="fas fa-search"></i>
+                        <div class="no-data-message text-center">
+                            <div class="no-data-icon mb-2">
+                                <i class="fas fa-search fa-2x"></i>
                             </div>
                             <h6>検索結果が見つかりません</h6>
                             <p class="text-muted">検索条件を変更して再度お試しください。</p>
@@ -156,5 +190,3 @@
         </div>
     </div>
 </div>
-
-
