@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
+using Proposal.DAC;
 using Proposal.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -61,11 +62,13 @@ namespace Proposal.Controllers
                 {
                     //ユーザー情報取得
                     _createBL.GetUserInfoByUserId(model);
-                    // 自动赋值主提案者情报
-                    model.AffiliationName = model.AffiliationName;
-                    model.DepartmentName = model.DepartmentName;
-                    model.SectionName = model.SectionName;
-                    model.SubsectionName = model.SubsectionName;
+                }
+
+                // GET：新規作成時は GroupMembers を3人に補完し、編集時は group_info から実際のメンバー数を取得する
+                if (model.GroupMembers == null || model.GroupMembers.Count < 3)
+                {
+                    int count = Math.Max(model.GroupMembers?.Count ?? 0, 3);
+                    while (model.GroupMembers.Count < count) model.GroupMembers.Add(new GroupMemberModel());
                 }
             }
 
@@ -118,17 +121,14 @@ namespace Proposal.Controllers
 
                 var dropdowns = (Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns;
                 string proposalTypeName = dropdowns.ProposalTypes.FirstOrDefault(x => x.Value == model.ProposalTypeId)?.Text ?? "";
-                string group1Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin1AffiliationId)?.Text ?? "";
-                string group2Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin2AffiliationId)?.Text ?? "";
-                string group3Affiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.GroupZenin3AffiliationId)?.Text ?? "";
                 string firstReviewerAffiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == model.FirstReviewerAffiliationId)?.Text ?? "";
                 string firstReviewerDepartment = dropdowns.Departments.FirstOrDefault(x => x.Value == model.FirstReviewerDepartmentId)?.Text ?? "";
                 string firstReviewerSection = dropdowns.Sections.FirstOrDefault(x => x.Value == model.FirstReviewerSectionId)?.Text ?? "";
 
                 var csv = new StringBuilder();
-                csv.AppendLine("提案年度,提案題名,提案の種類,提案の区分,氏名又は代表名,グループ名,グループ1所属,グループ1氏名,グループ2所属,グループ2氏名,グループ3所属,グループ3氏名,第一次審査者所属,第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職,主務課,関係課,現状・問題点,改善案,効果の種類,効果");
+                csv.AppendLine("提案年度,提案題名,提案の種類,提案の区分,氏名又は代表名,グループ名,第一次審査者所属,第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職,主務課,関係課,現状・問題点,改善案,効果の種類,効果");
                 string koukaJishiText = model.KoukaJishi.HasValue ? (model.KoukaJishi.Value.GetType().GetField(model.KoukaJishi.Value.ToString()).GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description ?? model.KoukaJishi.Value.ToString()) : "";
-                csv.AppendLine($"\"{model.TeianYear}\",\"{model.TeianDaimei}\",\"{proposalTypeName}\",\"{model.ProposalKbnId}\",\"{model.ShimeiOrDaihyoumei}\",\"{model.GroupMei}\",\"{group1Affiliation}\",\"{model.GroupZenin1Name}\",\"{group2Affiliation}\",\"{model.GroupZenin2Name}\",\"{group3Affiliation}\",\"{model.GroupZenin3Name}\",\"{firstReviewerAffiliation}\",\"{firstReviewerDepartment}\",\"{firstReviewerSection}\",\"{model.FirstReviewerName}\",\"{model.FirstReviewerTitle}\",\"{model.EvaluationSectionId}\",\"{model.ResponsibleSectionId1}\",\"{model.GenjyoMondaiten}\",\"{model.Kaizenan}\",\"{koukaJishiText}\",\"{model.Kouka}\"");
+                csv.AppendLine($"\"{model.TeianYear}\",\"{model.TeianDaimei}\",\"{proposalTypeName}\",\"{model.ProposalKbnId}\",\"{model.ShimeiOrDaihyoumei}\",\"{model.GroupMei}\",\"{firstReviewerAffiliation}\",\"{firstReviewerDepartment}\",\"{firstReviewerSection}\",\"{model.FirstReviewerName}\",\"{model.FirstReviewerTitle}\",\"{model.EvaluationSectionId}\",\"{model.ResponsibleSectionId1}\",\"{model.GenjyoMondaiten}\",\"{model.Kaizenan}\",\"{koukaJishiText}\",\"{model.Kouka}\"");
 
                 var bytes = Encoding.UTF8.GetBytes(csv.ToString());
                 var filename = $"提案内容_{DateTime.Now:yyyyMMddHHmmss}.csv";
@@ -156,6 +156,23 @@ namespace Proposal.Controllers
                 this.InsertOrUpdate(model);
 
                 return RedirectToAction("ProposalList", "Proposal");
+            }
+
+            // グループメンバー追加
+            if (action == "AddMember")
+            {
+                model.GroupMembers ??= new List<GroupMemberModel>();
+                model.GroupMembers.Add(new GroupMemberModel());
+                SetDropdowns();
+                ModelState.Clear();
+                return View(model);
+            }
+
+            // POST：バリデーションエラー時に GroupMembers を3人に補完し、保存時に BL.SaveGroupInfo を呼び出す
+            if (!ModelState.IsValid) {
+                int count = Math.Max(model.GroupMembers?.Count ?? 0, 3);
+                while (model.GroupMembers.Count < count) model.GroupMembers.Add(new GroupMemberModel());
+                return View(model);
             }
 
             return View(model);
@@ -236,8 +253,8 @@ namespace Proposal.Controllers
                 //提案書詳細登録
                 model.Id = _createBL.Insertproposals_detail(model).ToString();
 
-                ////提案書一覧登録
-                //_createBL.Insertproposals(model);
+                //グループデータを登録
+                _createBL.InsertGroupInfo(model.Id, model.GroupMembers);
             }
             else
             {
@@ -245,8 +262,11 @@ namespace Proposal.Controllers
                 //提案書詳細更新
                 _createBL.Updateproposals_detail(model);
 
-                ////提案書一覧更新
-                //_createBL.Updateproposals(model);
+                //グループデータを削除
+                _createBL.DeleteGroupInfo(model.Id);
+
+                //グループデータを登録
+                _createBL.InsertGroupInfo(model.Id, model.GroupMembers);
             }
         }
     }

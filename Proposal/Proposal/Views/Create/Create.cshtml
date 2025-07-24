@@ -18,6 +18,7 @@
     <div class="main-content">
         <div class="container">
             <form asp-action="Create" asp-controller="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="navigation-card">
                     <div class="nav-tabs-container">
                         <div class="nav-tabs-wrapper">
@@ -29,6 +30,8 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- ナビゲーションと操作ボタン -->
                     <div class="action-buttons">
                         <button type="button" class="btn btn-action btn-secondary" onclick="window.location.href='/proposal/Menu'">
                             <i class="fas fa-arrow-left me-2"></i>戻る
@@ -49,6 +52,7 @@
                 </div>
                 <!-- 基本情報フォーム -->
                 <div id="baseDiv" class="form-content active">
+                    <!-- 基本情報セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-info-circle me-2"></i>基本情報</h5>
@@ -76,12 +80,13 @@
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">提案の区分 <span class="required-badge">必須</span></label>
                                     @Html.DropDownListFor(m => m.ProposalKbnId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).ProposalKbn, new { @class = "form-control-modern", id = "teianKbn" })
-                                    <span id="debugKbnValue">@Model.ProposalKbnId</span>
                                     @Html.ValidationMessageFor(m => m.ProposalKbnId, "", new { @class = "validation-message" })
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 提案者情報セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-user me-2"></i>提案者情報</h5>
@@ -105,7 +110,7 @@
                                     @Html.TextBoxFor(m => m.SubsectionName, new { @class = "form-control-modern", @readonly = "readonly" })
                                 </div>
                             </div>
-                            <div class="form-row-modern single">
+                            <div class="form-row-modern">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">氏名又は代表名 <span class="required-badge">必須</span></label>
                                     @Html.TextBoxFor(m => m.ShimeiOrDaihyoumei, new { @class = "form-control-modern", placeholder = "氏名を入力してください" })
@@ -114,6 +119,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- グループ情報セクション -->
                     <div class="form-card" id="groupSection" style="display:none">
                         <div class="card-header">
                             <h5><i class="fas fa-users me-2"></i>グループの全員（代表者を除く）</h5>
@@ -125,132 +132,97 @@
                                 @Html.ValidationMessageFor(m => m.GroupMei, "", new { @class = "validation-message" })
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body position-relative">
                             <div class="group-members-section">
-                                <div class="group-member-card">
-                                    <div class="member-header">
-                                        <span class="member-number">1</span>
-                                        <span class="member-title">メンバー 1</span>
-                                    </div>
-                                    <div class="form-row-modern">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">所属</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin1AffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
+                                @for (int i = 0; i < (Model.GroupMembers?.Count ?? 3); i++)
+                                {
+                                    <div class="group-member-card">
+                                        <div class="member-header">
+                                            <span class="member-number">@(i+1)</span>
+                                            <span class="member-title">メンバー @(i+1)</span>
                                         </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">氏名</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin1Name, new { @class = "form-control-modern", placeholder = "氏名を入力" })
+                                        <div class="form-row-modern">
+                                            <div class="form-group-modern">
+                                                <label class="form-label-modern">所属</label>
+                                                @Html.DropDownListFor(m => m.GroupMembers[i].AffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
+                                            </div>
+                                            <div class="form-group-modern">
+                                                <label class="form-label-modern">部・署</label>
+                                                @Html.DropDownListFor(m => m.GroupMembers[i].DepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-row-modern three-cols">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">部・署</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin1DepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
+                                        <div class="form-row-modern">
+
+                                            <div class="form-group-modern">
+                                                <label class="form-label-modern">課・部門</label>
+                                                @Html.DropDownListFor(m => m.GroupMembers[i].SectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
+                                            </div>
+                                            <div class="form-group-modern">
+                                                <label class="form-label-modern">係・担当</label>
+                                                @Html.DropDownListFor(m => m.GroupMembers[i].SubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
+                                            </div>
                                         </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">課・部門</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin1SectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">係・担当</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin1SubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="group-member-card">
-                                    <div class="member-header">
-                                        <span class="member-number">2</span>
-                                        <span class="member-title">メンバー 2</span>
-                                    </div>
-                                    <div class="form-row-modern">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">所属</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin2AffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">氏名</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin2Name, new { @class = "form-control-modern", placeholder = "氏名を入力" })
+                                        <div class="form-row-modern">
+                                            <div class="form-group-modern">
+                                                <label class="form-label-modern">氏名</label>
+                                                @Html.TextBoxFor(m => m.GroupMembers[i].Name, new { @class = "form-control-modern", placeholder = "氏名を入力" })
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-row-modern three-cols">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">部・署</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin2DepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">課・部門</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin2SectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">係・担当</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin2SubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="group-member-card">
-                                    <div class="member-header">
-                                        <span class="member-number">3</span>
-                                        <span class="member-title">メンバー 3</span>
-                                    </div>
-                                    <div class="form-row-modern">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">所属</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin3AffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">氏名</label>
-                                            @Html.TextBoxFor(m => m.GroupZenin3Name, new { @class = "form-control-modern", placeholder = "氏名を入力" })
-                                        </div>
-                                    </div>
-                                    <div class="form-row-modern three-cols">
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">部・署</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin3DepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">課・部門</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin3SectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
-                                        </div>
-                                        <div class="form-group-modern">
-                                            <label class="form-label-modern">係・担当</label>
-                                            @Html.DropDownListFor(m => m.GroupZenin3SubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
-                                        </div>
-                                    </div>
+                                }
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button type="submit" name="action" value="AddMember" id="addMemberBtn" class="btn btn-primary shadow-sm" formnovalidate>
+                                        <i class="fas fa-plus me-2"></i>追加
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 第一次審査者情報セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-user-check me-2"></i>第一次審査者情報</h5>
                         </div>
                         <div class="card-body">
-                            <div class="form-row-modern">
-                                <div class="form-group-modern">
-                                    <label class="form-label-modern">所属</label>
-                                    @Html.DropDownListFor(m => m.FirstReviewerAffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
-                                </div>
-                                <div class="form-group-modern">
-                                    <label class="form-label-modern">氏名</label>
-                                    @Html.TextBoxFor(m => m.FirstReviewerName, new { @class = "form-control-modern", placeholder = "氏名を入力" })
-                                </div>
+                            <div class="form-group-modern mt-2 mb-3">
+                                <label class="form-label-modern">
+                                    <input type="checkbox" id="check" name="SkipFirstReviewer" @(Model.SkipFirstReviewer ? "checked" : "") />
+                                    <span class="ms-2">第一次審査者を経ずに提出する</span>
+                                </label>
                             </div>
-                            <div class="form-row-modern three-cols">
-                                <div class="form-group-modern">
-                                    <label class="form-label-modern">部・署</label>
-                                    @Html.DropDownListFor(m => m.FirstReviewerDepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
+                            <div id="daiichishinsashaInputs" class="border rounded p-3 bg-light">
+                                <div class="form-row-modern">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">所属</label>
+                                        @Html.DropDownListFor(m => m.FirstReviewerAffiliationId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Affiliations, new { @class = "form-control-modern" })
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">部・署</label>
+                                        @Html.DropDownListFor(m => m.FirstReviewerDepartmentId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Departments, new { @class = "form-control-modern" })
+                                    </div>
                                 </div>
-                                <div class="form-group-modern">
-                                    <label class="form-label-modern">課・部門</label>
-                                    @Html.DropDownListFor(m => m.FirstReviewerSectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
+                                <div class="form-row-modern">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">課・部門</label>
+                                        @Html.DropDownListFor(m => m.FirstReviewerSectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Sections, new { @class = "form-control-modern" })
+                                    </div>
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">係・担当</label>
+                                        @Html.DropDownListFor(m => m.FirstReviewerSubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
+                                    </div>
                                 </div>
-                                <div class="form-group-modern">
-                                    <label class="form-label-modern">係・担当</label>
-                                    @Html.DropDownListFor(m => m.FirstReviewerSubsectionId, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Subsections, new { @class = "form-control-modern" })
+                                <div class="form-row-modern">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">氏名</label>
+                                        @Html.TextBoxFor(m => m.FirstReviewerName, new { @class = "form-control-modern", placeholder = "氏名を入力" })
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 審査項目情報セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-clipboard-check me-2"></i>審査項目情報</h5>
@@ -265,13 +237,13 @@
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">関係課 <span class="required-badge">必須</span></label>
                                     <div class="d-flex flex-column gap-2">
-                                        <div>@Html.DropDownListFor(m => m.ResponsibleSectionId1, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })</div>
+                                        <div>@Html.DropDownListFor(m => m.ResponsibleSectionId1, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })
+                                        @Html.ValidationMessageFor(m => m.ResponsibleSectionId1, "", new { @class = "validation-message" })</div>
                                         <div>@Html.DropDownListFor(m => m.ResponsibleSectionId2, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })</div>
                                         <div>@Html.DropDownListFor(m => m.ResponsibleSectionId3, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })</div>
                                         <div>@Html.DropDownListFor(m => m.ResponsibleSectionId4, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })</div>
                                         <div>@Html.DropDownListFor(m => m.ResponsibleSectionId5, ((Proposal.BL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" })</div>
                                     </div>
-                                    @Html.ValidationMessageFor(m => m.ResponsibleSectionId1, "", new { @class = "validation-message" })
                                 </div>
                             </div>
                         </div>
@@ -279,6 +251,7 @@
                 </div>
                 <!-- 提案内容フォーム -->
                 <div id="teianDiv" class="form-content">
+                    <!-- 現状・問題点セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-exclamation-triangle me-2"></i>現状・問題点</h5>
@@ -290,6 +263,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 改善案セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-lightbulb me-2"></i>改善案</h5>
@@ -301,6 +276,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 効果セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-chart-line me-2"></i>効果</h5>
@@ -319,21 +296,23 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 添付書類セクション -->
                     <div class="form-card">
                         <div class="card-header">
                             <h5><i class="fas fa-paperclip me-2"></i>添付書類</h5>
                         </div>
                         <div class="card-body">
-                            @for (int i = 1; i <= 5; i++) {
-                                <div class="file-upload-group">
-                                    <input type="file" name="TenpuFile@i" class="form-control" />
-                                    @{ 
-                                        var fileNameProp = "TenpuFileName" + i;
-                                        var fileName = (string)Model.GetType().GetProperty(fileNameProp).GetValue(Model);
-                                    }
-                                    @if (!string.IsNullOrEmpty(fileName)) {
-                                        <span class="ms-2">現在: <a href="@Url.Content("~/uploads/" + fileName)" target="_blank">@fileName</a></span>
-                                    }
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <div class="file-upload-group mb-2 w-100" style="max-width: 800px;">
+                                    <div class="d-flex align-items-center w-100">
+                                        <input type="text" id="fileName@(i)" class="form-control file-display flex-grow-1" readonly placeholder="ファイルが選択されていません" style="background:#f8f9fa; min-width:0;" />
+                                        <button type="button" class="btn btn-outline-primary btn-file-select flex-shrink-0 ms-3" id="btn@(i)" style="min-width: 120px;">
+                                            <i class="fas fa-folder-open me-2"></i>参照
+                                        </button>
+                                    </div>
+                                    <input type="file" id="file@(i)" name="TenpuFile@i" class="d-none" />
                                 </div>
                             }
                         </div>

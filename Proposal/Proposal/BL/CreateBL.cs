@@ -66,24 +66,7 @@ namespace Proposal.BL
 
             //提案書詳細更新
             _createDAC.SqlUpdateproposals_detail(pModel);
-        }
-        
-
-        ///// <summary>
-        ///// 提案書一覧登録
-        ///// </summary>
-        //public void Insertproposals(CreateModel pModel)
-        //{
-        //    _createDAC.SqlInsertproposals(pModel);
-        //}
-
-        ///// <summary>
-        ///// 提案書一覧更新
-        ///// </summary>
-        //public void Updateproposals(CreateModel pModel)
-        //{
-        //    _createDAC.SqlUpdateproposals(pModel);
-        //}
+        } 
 
         /// <summary>
         /// 提案書の詳細情報を取得し、モデルに設定
@@ -103,21 +86,6 @@ namespace Proposal.BL
                 model.ProposalTypeId = row["proposal_type"].ToString();
                 model.ProposalKbnId = row["proposal_kbn"].ToString();
                 model.AffiliationId = row["from"].ToString();
-                // グループの全員①
-                model.GroupZenin1AffiliationId = row["groupmember1_affiliation"].ToString();
-                model.GroupZenin1DepartmentId = row["groupmember1_department"].ToString();
-                model.GroupZenin1SectionId = row["groupmember1_section"].ToString();
-                model.GroupZenin1SubsectionId = row["groupmember1_subsection"].ToString();
-                // グループの全員②
-                model.GroupZenin2AffiliationId = row["groupmember2_affiliation"].ToString();
-                model.GroupZenin2DepartmentId = row["groupmember2_department"].ToString();
-                model.GroupZenin2SectionId = row["groupmember2_section"].ToString();
-                model.GroupZenin2SubsectionId = row["groupmember2_subsection"].ToString();
-                // グループの全員③
-                model.GroupZenin3AffiliationId = row["groupmember3_affiliation"].ToString();
-                model.GroupZenin3DepartmentId = row["groupmember3_department"].ToString();
-                model.GroupZenin3SectionId = row["groupmember3_section"].ToString();
-                model.GroupZenin3SubsectionId = row["groupmember3_subsection"].ToString();
                 model.FirstReviewerAffiliationId = row["firstevieweraffiliation"].ToString();
                 model.FirstReviewerDepartmentId = row["firsteviewerdepartment"].ToString();
                 model.FirstReviewerSectionId = row["firsteviewersection"].ToString();
@@ -280,6 +248,20 @@ namespace Proposal.BL
                 //関係課
                 Kankeikas = GetKankeikaList(),
             };
+        }
+
+        //グループデータの削除
+        public void DeleteGroupInfo(string proposalId)
+        {
+            // 既存のグループデータを削除する
+            _createDAC.DeleteGroupInfo(proposalId);
+        }
+
+        //グループデータの登録
+        public void InsertGroupInfo(string proposalId, List<GroupMemberModel> members)
+        {
+            // グループデータを挿入する
+            _createDAC.InsertGroupInfo(proposalId, members);
         }
     }
 

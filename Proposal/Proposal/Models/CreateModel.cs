@@ -60,6 +60,15 @@ namespace Proposal.Models
         [Description("未実施（予想効果）")] MiJisshiYosoKouka = 2
     }
 
+    public class GroupMemberModel
+    {
+        public string AffiliationId { get; set; }
+        public string DepartmentId { get; set; }
+        public string SectionId { get; set; }
+        public string SubsectionId { get; set; }
+        public string Name { get; set; }
+    }
+
     public class CreateModel : IValidatableObject
     {
         // 主提案者 所属/部・署/課・部門/係・担当 id
@@ -100,24 +109,8 @@ namespace Proposal.Models
         // グループ名
         [MaxLength(20, ErrorMessage = "20文字以内で入力してください。")]
         public string GroupMei { get; set; }
-        // Group成员1
-        public string GroupZenin1AffiliationId { get; set; }
-        public string GroupZenin1DepartmentId { get; set; }
-        public string GroupZenin1SectionId { get; set; }
-        public string GroupZenin1SubsectionId { get; set; }
-        public string GroupZenin1Name { get; set; }
-        // Group成员2
-        public string GroupZenin2AffiliationId { get; set; }
-        public string GroupZenin2DepartmentId { get; set; }
-        public string GroupZenin2SectionId { get; set; }
-        public string GroupZenin2SubsectionId { get; set; }
-        public string GroupZenin2Name { get; set; }
-        // Group成员3
-        public string GroupZenin3AffiliationId { get; set; }
-        public string GroupZenin3DepartmentId { get; set; }
-        public string GroupZenin3SectionId { get; set; }
-        public string GroupZenin3SubsectionId { get; set; }
-        public string GroupZenin3Name { get; set; }
+        // グループメンバーリスト
+        public List<GroupMemberModel> GroupMembers { get; set; } = new List<GroupMemberModel>();
         // 第一次審査者
         public string FirstReviewerAffiliationId { get; set; }
         public string FirstReviewerDepartmentId { get; set; }
@@ -132,6 +125,7 @@ namespace Proposal.Models
         public string EvaluationSectionId { get; set; }
 
         // 関係課
+        [Required(ErrorMessage = "関係課を1つ以上選択してください。")]
         public string ResponsibleSectionId1 { get; set; }
         public string ResponsibleSectionId2 { get; set; }
         public string ResponsibleSectionId3 { get; set; }
@@ -175,10 +169,14 @@ namespace Proposal.Models
         public string Createddate { get; set; }
         //提出日
         public string Submissiondate { get; set; }
-        // 校验逻辑
+
+        //第一次審査者を経ずに提出する
+        public bool SkipFirstReviewer { get; set; }
+
+        // データチェック
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            // 关系课至少选一个
+            // 関係課を1つ以上選択すること
             if (string.IsNullOrEmpty(ResponsibleSectionId1)
                 && string.IsNullOrEmpty(ResponsibleSectionId2)
                 && string.IsNullOrEmpty(ResponsibleSectionId3)
@@ -187,27 +185,32 @@ namespace Proposal.Models
             {
                 yield return new ValidationResult("関係課を1つ以上選択してください。", new[] { nameof(ResponsibleSectionId1) });
             }
-            // グループ校验
+            // グループ校验（只有区分为グループ时才校验）
             if (ProposalKbnId == "2") // 2=グループ
             {
-                if (string.IsNullOrEmpty(GroupMei))
+                // グループメンバー正しい順番チェック
+                bool foundEmpty = false;
+                for (int i = 0; i < GroupMembers.Count; i++)
                 {
-                    yield return new ValidationResult("提案区分はグループの場合、グループ名を入力してください。", new[] { nameof(GroupMei) });
-                }
-                // グループメンバー①
-                if (string.IsNullOrEmpty(GroupZenin1AffiliationId) || string.IsNullOrEmpty(GroupZenin1DepartmentId) || string.IsNullOrEmpty(GroupZenin1SectionId) || string.IsNullOrEmpty(GroupZenin1SubsectionId) || string.IsNullOrEmpty(GroupZenin1Name))
-                {
-                    yield return new ValidationResult("グループメンバー①の情報を入力してください。", new[] { nameof(GroupZenin1Name) });
-                }
-                // グループメンバー②
-                if (string.IsNullOrEmpty(GroupZenin2AffiliationId) || string.IsNullOrEmpty(GroupZenin2DepartmentId) || string.IsNullOrEmpty(GroupZenin2SectionId) || string.IsNullOrEmpty(GroupZenin2SubsectionId) || string.IsNullOrEmpty(GroupZenin2Name))
-                {
-                    yield return new ValidationResult("グループメンバー②の情報を入力してください。", new[] { nameof(GroupZenin2Name) });
-                }
-                // グループメンバー③
-                if (string.IsNullOrEmpty(GroupZenin3AffiliationId) || string.IsNullOrEmpty(GroupZenin3DepartmentId) || string.IsNullOrEmpty(GroupZenin3SectionId) || string.IsNullOrEmpty(GroupZenin3SubsectionId) || string.IsNullOrEmpty(GroupZenin3Name))
-                {
-                    yield return new ValidationResult("グループメンバー③の情報を入力してください。", new[] { nameof(GroupZenin3Name) });
+                    var m = GroupMembers[i];
+                    bool anyFilled = !string.IsNullOrEmpty(m.DepartmentId) || !string.IsNullOrEmpty(m.SectionId) || !string.IsNullOrEmpty(m.SubsectionId) || !string.IsNullOrEmpty(m.Name);
+                    if (!anyFilled)
+                    {
+                        foundEmpty = true;
+                    }
+                    else if (foundEmpty)
+                    {
+                        yield return new ValidationResult("グループメンバーは正しい順番でご記入ください。", new[] { $"GroupMembers[{i}]" });
+                        break;
+                    }
+                    //　所属は選択した場合
+                    if (!string.IsNullOrEmpty(m.DepartmentId))
+                    {
+                        if (string.IsNullOrEmpty(m.SectionId) || string.IsNullOrEmpty(m.SubsectionId) || string.IsNullOrEmpty(m.Name))
+                        {
+                            yield return new ValidationResult($"グループメンバー{i + 1}の情報をすべて入力してください。", new[] { $"GroupMembers[{i}]" });
+                        }
+                    }
                 }
             }
         }
