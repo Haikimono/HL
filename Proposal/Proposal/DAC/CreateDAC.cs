@@ -104,13 +104,17 @@ namespace Proposal.DAC
                 @group3BuSho,
                 @group3KaBumon,
                 @group3Kakari,
+                @evaluation_section_id,
+                @responsible_section_id1,
+                @responsible_section_id2,
+                @responsible_section_id3,
+                @responsible_section_id4,
+                @responsible_section_id5,
                 @hezuShozoku,
                 @hezuBuSho,
                 @hezuKaBumon,
                 @hezuShimei,
                 @hezuKanshoku,
-                @shumuKa,
-                @kankeiKa,
                 @genjo,
                 @kaizen,
                 @koukaJissi,
@@ -151,13 +155,17 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id3", pModel.ResponsibleSectionId3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id4", pModel.ResponsibleSectionId4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id5", pModel.ResponsibleSectionId5 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@shumuKa", pModel.ShumuKaId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@kankeiKa", pModel.KankeiKaId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
@@ -322,6 +330,12 @@ namespace Proposal.DAC
                 groupmember3_section = @group3KaBumon,
                 groupmember3_subsection = @group3Kakari,
                 groupmember3_name = @group3Name,
+                evaluation_section_id = @evaluation_section_id,
+                responsible_section_id1 = @responsible_section_id1,
+                responsible_section_id2 = @responsible_section_id2,
+                responsible_section_id3 = @responsible_section_id3,
+                responsible_section_id4 = @responsible_section_id4,
+                responsible_section_id5 = @responsible_section_id5,
                 firstevieweraffiliation = @hezuShozoku,
                 firsteviewerdepartment = @hezuBuSho,
                 firsteviewersection = @hezuKaBumon,
@@ -365,13 +379,17 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@group3KaBumon", pModel.GroupZenin3SectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Kakari", pModel.GroupZenin3SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@group3Name", pModel.GroupZenin3Name ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id3", pModel.ResponsibleSectionId3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id4", pModel.ResponsibleSectionId4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id5", pModel.ResponsibleSectionId5 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@shumuKa", pModel.ShumuKaId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@kankeiKa", pModel.KankeiKaId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
@@ -713,7 +731,6 @@ namespace Proposal.DAC
         //    // 結果のリストを返す
         //    return result;
         //}
-
 
     }
 }

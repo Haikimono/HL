@@ -123,8 +123,12 @@ namespace Proposal.BL
                 model.FirstReviewerSectionId = row["firsteviewersection"].ToString();
                 model.FirstReviewerName = row["firsteviewername"].ToString();
                 model.FirstReviewerTitle = row["firsteviewertitle"].ToString();
-                model.ShumuKaId = row["responsiblesection"].ToString();
-                model.KankeiKaId = row["relatedsection"].ToString();
+                model.EvaluationSectionId = row["evaluation_section_id"].ToString();
+                model.ResponsibleSectionId1 = row["responsible_section_id1"].ToString();
+                model.ResponsibleSectionId2 = row["responsible_section_id2"].ToString();
+                model.ResponsibleSectionId3 = row["responsible_section_id3"].ToString();
+                model.ResponsibleSectionId4 = row["responsible_section_id4"].ToString();
+                model.ResponsibleSectionId5 = row["responsible_section_id5"].ToString();
                 model.KoukaJishi = row["isImplemented"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["isImplemented"]);
                 
                 // 添付ファイル
@@ -234,7 +238,22 @@ namespace Proposal.BL
             }).ToList();
         }
 
- 
+        /// <summary>
+        /// 主務課のSelectListItemリストを取得
+        /// </summary>
+        public List<SelectListItem> GetShumukaList()
+        {
+            return GetSections();
+        }
+
+        /// <summary>
+        /// 関係課のSelectListItemリストを取得
+        /// </summary>
+        public List<SelectListItem> GetKankeikaList()
+        {
+            return GetSections();
+        }
+
         /// <summary>
         /// すべてのドロップダウンリストをまとめて取得するメソッド
         /// </summary>
@@ -256,6 +275,10 @@ namespace Proposal.BL
                 ProposalKbn = GetProposalKbnList(),
                 //実施
                 KoukaJishiList = GetKoukaJishiSelectList(),
+                //主務課
+                Shumukas = GetShumukaList(),
+                //関係課
+                Kankeikas = GetKankeikaList(),
             };
         }
     }
@@ -285,5 +308,11 @@ namespace Proposal.BL
 
         //実施
         public List<SelectListItem> KoukaJishiList { get; set; }
+
+        //主務課
+        public List<SelectListItem> Shumukas { get; set; }
+
+        //関係課
+        public List<SelectListItem> Kankeikas { get; set; }
     }
 }
