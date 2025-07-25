@@ -115,6 +115,26 @@ namespace Proposal.BL
                 model.Submissiondate = row["submissiondate"].ToString();
                 model.Createddate = row["createddate"].ToString();
             }
+            // --- グループメンバー情報の取得と設定 ---
+            model.GroupMembers = new List<GroupMemberModel>();
+            var groupInfoTable = _createDAC.GetGroupInfoByProposalId(model.Id);
+            if (groupInfoTable != null && groupInfoTable.Rows.Count > 0)
+            {
+                var gRow = groupInfoTable.Rows[0];
+                for (int i = 1; i <= 10; i++)
+                {
+                    var m = new GroupMemberModel
+                    {
+                        DepartmentId = gRow[$"department_id_{i}"].ToString(),
+                        SectionId = gRow[$"section_id_{i}"].ToString(),
+                        SubsectionId = gRow[$"subsection_id_{i}"].ToString(),
+                        Name = gRow[$"name_{i}"].ToString(),
+                    };
+                    // いずれかの値があれば追加
+                    if (!string.IsNullOrEmpty(m.DepartmentId) || !string.IsNullOrEmpty(m.SectionId) || !string.IsNullOrEmpty(m.SubsectionId) || !string.IsNullOrEmpty(m.Name))
+                        model.GroupMembers.Add(m);
+                }
+            }
         }
 
         /// <summary>
@@ -159,7 +179,7 @@ namespace Proposal.BL
         /// </summary>
         public List<SelectListItem> GetAffiliations()
         {
-            var list = _createDAC.GetAffiliations().Select(a => new SelectListItem { Value = a.Id, Text = a.Shozoku }).ToList();
+            var list = _createDAC.GetAffiliations().Select(a => new SelectListItem { Value = a.Id.Trim(), Text = a.Shozoku.Trim() }).ToList();
             list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
             return list;
         }
@@ -169,7 +189,7 @@ namespace Proposal.BL
         /// </summary>
         public List<SelectListItem> GetDepartments()
         {
-            var list = _createDAC.GetDepartments().Select(d => new SelectListItem { Value = d.Department_id, Text = d.Department_name }).ToList();
+            var list = _createDAC.GetDepartments().Select(d => new SelectListItem { Value = d.Department_id.Trim(), Text = d.Department_name.Trim() }).ToList();
             list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
             return list;
         }
@@ -179,7 +199,7 @@ namespace Proposal.BL
         /// </summary>
         public List<SelectListItem> GetSections()
         {
-            var list = _createDAC.GetSections().Select(s => new SelectListItem { Value = s.Section_id, Text = s.Section_name }).ToList();
+            var list = _createDAC.GetSections().Select(s => new SelectListItem { Value = s.Section_id.Trim(), Text = s.Section_name.Trim() }).ToList();
             list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
             return list;
         }
@@ -189,7 +209,7 @@ namespace Proposal.BL
         /// </summary>
         public List<SelectListItem> GetSubsections()
         {
-            var list = _createDAC.GetSubsections().Select(s => new SelectListItem { Value = s.Subsection_id, Text = s.Subsection_name }).ToList();
+            var list = _createDAC.GetSubsections().Select(s => new SelectListItem { Value = s.Subsection_id.Trim(), Text = s.Subsection_name.Trim() }).ToList();
             list.Insert(0, new SelectListItem { Value = "", Text = "選択してください" });
             return list;
         }
@@ -258,10 +278,10 @@ namespace Proposal.BL
         }
 
         //グループデータの登録
-        public void InsertGroupInfo(string proposalId, List<GroupMemberModel> members)
+        public void InsertGroupInfo(CreateModel model)
         {
             // グループデータを挿入する
-            _createDAC.InsertGroupInfo(proposalId, members);
+            _createDAC.InsertGroupInfo(model);
         }
     }
 

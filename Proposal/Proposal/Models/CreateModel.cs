@@ -62,20 +62,20 @@ namespace Proposal.Models
 
     public class GroupMemberModel
     {
-        public string AffiliationId { get; set; }
-        public string DepartmentId { get; set; }
-        public string SectionId { get; set; }
-        public string SubsectionId { get; set; }
-        public string Name { get; set; }
+        public string? AffiliationId { get; set; }
+        public string? DepartmentId { get; set; }
+        public string? SectionId { get; set; }
+        public string? SubsectionId { get; set; }
+        public string? Name { get; set; }
     }
 
     public class CreateModel : IValidatableObject
     {
         // 主提案者 所属/部・署/課・部門/係・担当 id
-        public string AffiliationId { get; set; } // 所属id
-        public string DepartmentId { get; set; }  // 部・署id
-        public string SectionId { get; set; }     // 課・部門id
-        public string SubsectionId { get; set; }  // 係・担当id
+        public string? AffiliationId { get; set; } // 所属id
+        public string? DepartmentId { get; set; }  // 部・署id
+        public string? SectionId { get; set; }     // 課・部門id
+        public string? SubsectionId { get; set; }  // 係・担当id
 
         // 主提案者 所属/部・署/課・部門/係・担当 名称（只读显示用）
         public string AffiliationName { get; set; }
@@ -92,8 +92,9 @@ namespace Proposal.Models
 
         // 用户ID
         public string UserId { get; set; }
+
         // 提案书编号
-        public string Id { get; set; }
+        public string? Id { get; set; }
         // 提案状态
         public int? Status { get; set; }
         // 提案年度
@@ -106,19 +107,21 @@ namespace Proposal.Models
         [Required(ErrorMessage = "氏名又は代表名を入力してください。")]
         [MaxLength(20, ErrorMessage = "20文字以内で入力してください。")]
         public string ShimeiOrDaihyoumei { get; set; }
+
         // グループ名
         [MaxLength(20, ErrorMessage = "20文字以内で入力してください。")]
-        public string GroupMei { get; set; }
+        public string? GroupMei { get; set; }
+
         // グループメンバーリスト
         public List<GroupMemberModel> GroupMembers { get; set; } = new List<GroupMemberModel>();
         // 第一次審査者
-        public string FirstReviewerAffiliationId { get; set; }
-        public string FirstReviewerDepartmentId { get; set; }
-        public string FirstReviewerSectionId { get; set; }
-        public string FirstReviewerSubsectionId { get; set; }
-        public string FirstReviewerUserId { get; set; }
-        public string FirstReviewerName { get; set; }
-        public string FirstReviewerTitle { get; set; }
+        public string? FirstReviewerAffiliationId { get; set; }
+        public string? FirstReviewerDepartmentId { get; set; }
+        public string? FirstReviewerSectionId { get; set; }
+        public string? FirstReviewerSubsectionId { get; set; }
+        public string? FirstReviewerUserId { get; set; }
+        public string? FirstReviewerName { get; set; }
+        public string? FirstReviewerTitle { get; set; }
 
         // 主務課
         [Required(ErrorMessage = "主務課を選択してください。")]
@@ -127,10 +130,10 @@ namespace Proposal.Models
         // 関係課
         [Required(ErrorMessage = "関係課を1つ以上選択してください。")]
         public string ResponsibleSectionId1 { get; set; }
-        public string ResponsibleSectionId2 { get; set; }
-        public string ResponsibleSectionId3 { get; set; }
-        public string ResponsibleSectionId4 { get; set; }
-        public string ResponsibleSectionId5 { get; set; }
+        public string? ResponsibleSectionId2 { get; set; }
+        public string? ResponsibleSectionId3 { get; set; }
+        public string? ResponsibleSectionId4 { get; set; }
+        public string? ResponsibleSectionId5 { get; set; }
 
         // 現状・問題点
         [Required(ErrorMessage = "現状・問題点を入力してください。")]
@@ -148,27 +151,27 @@ namespace Proposal.Models
         [MaxLength(2000, ErrorMessage = "2,000文字以内で入力してください。")]
         public string Kouka { get; set; }
         // 添付書類
-        public IFormFile TenpuFile1 { get; set; }
-        public IFormFile TenpuFile2 { get; set; }
-        public IFormFile TenpuFile3 { get; set; }
-        public IFormFile TenpuFile4 { get; set; }
-        public IFormFile TenpuFile5 { get; set; }
+        public IFormFile? TenpuFile1 { get; set; }
+        public IFormFile? TenpuFile2 { get; set; }
+        public IFormFile? TenpuFile3 { get; set; }
+        public IFormFile? TenpuFile4 { get; set; }
+        public IFormFile? TenpuFile5 { get; set; }
         // 添付ファイル名
-        public string TenpuFileName1 { get; set; }
-        public string TenpuFileName2 { get; set; }
-        public string TenpuFileName3 { get; set; }
-        public string TenpuFileName4 { get; set; }
-        public string TenpuFileName5 { get; set; }
+        public string? TenpuFileName1 { get; set; }
+        public string? TenpuFileName2 { get; set; }
+        public string? TenpuFileName3 { get; set; }
+        public string? TenpuFileName4 { get; set; }
+        public string? TenpuFileName5 { get; set; }
         // 添付ファイルパス
-        public string TenpuFilePath1 { get; set; }
-        public string TenpuFilePath2 { get; set; }
-        public string TenpuFilePath3 { get; set; }
-        public string TenpuFilePath4 { get; set; }
-        public string TenpuFilePath5 { get; set; }
+        public string? TenpuFilePath1 { get; set; }
+        public string? TenpuFilePath2 { get; set; }
+        public string? TenpuFilePath3 { get; set; }
+        public string? TenpuFilePath4 { get; set; }
+        public string? TenpuFilePath5 { get; set; }
         //作成日
-        public string Createddate { get; set; }
+        public string? Createddate { get; set; }
         //提出日
-        public string Submissiondate { get; set; }
+        public string? Submissiondate { get; set; }
 
         //第一次審査者を経ずに提出する
         public bool SkipFirstReviewer { get; set; }
@@ -211,6 +214,11 @@ namespace Proposal.Models
                             yield return new ValidationResult($"グループメンバー{i + 1}の情報をすべて入力してください。", new[] { $"GroupMembers[{i}]" });
                         }
                     }
+                }
+                // 区分がグループの時のみグループ名必須
+                if (string.IsNullOrWhiteSpace(GroupMei))
+                {
+                    yield return new ValidationResult("グループ名は必須です。", new[] { nameof(GroupMei) });
                 }
             }
         }

@@ -31,108 +31,86 @@ namespace Proposal.DAC
             string sql = @"
             INSERT INTO proposal (
                 user_id,
-                status,
-                proposal_year,
-                pd_name,
+                affiliation_id,
+                department_id,
+                section_id,
+                subsection_id,
+                proposal_name,
                 proposal_type,
-                proposal_kbn,
-                [from],
-                nameOrrepresentativename,
-                groupname,
+                proposal_year,
+                status,
                 evaluation_section_id,
                 responsible_section_id1,
                 responsible_section_id2,
                 responsible_section_id3,
                 responsible_section_id4,
                 responsible_section_id5,
-                firstevieweraffiliation,
-                firsteviewerdepartment,
-                firsteviewersection,
-                firsteviewername,
-                firsteviewertitle,
-                responsiblesection,
-                relatedsection,
-                currentsituation,
-                improvementproposal,
-                isImplemented,
-                effect,
-                attachmentfilename1,
-                attachmentfilename2,
-                attachmentfilename3,
-                attachmentfilename4,
-                attachmentfilename5,
-                attachmentfilepath1,
-                attachmentfilepath2,
-                attachmentfilepath3,
-                attachmentfilepath4,
-                attachmentfilepath5,
-                submissiondate,
-                updatedate,
-                createddate
+                first_reviewer_affiliation_id,
+                first_reviewer_department_id,
+                first_reviewer_section_id,
+                first_reviewer_subsection_id,
+                first_reviewer_user_id,
+                genjyomondaiten,
+                kaizenan,
+                koukaJishi,
+                kouka,
+                created_time,
+                updated_time
             )
-            VALUES (
-                @userId,
+            SELECT
+                @user_id,
+                u.shozoku_id,
+                u.department_id,
+                u.section_id,
+                u.subsection_id,
+                @proposal_name,
+                @proposal_type,
+                @proposal_year,
                 @status,
-                @proposalYear,
-                @pdName,
-                @proposalType,
-                @proposalKbn,
-                @from,
-                @nameOrRepName,
-                @groupName,
                 @evaluation_section_id,
                 @responsible_section_id1,
                 @responsible_section_id2,
                 @responsible_section_id3,
                 @responsible_section_id4,
                 @responsible_section_id5,
-                @hezuShozoku,
-                @hezuBuSho,
-                @hezuKaBumon,
-                @hezuShimei,
-                @hezuKanshoku,
-                @genjo,
-                @kaizen,
-                @koukaJissi,
+                @first_reviewer_affiliation_id,
+                @first_reviewer_department_id,
+                @first_reviewer_section_id,
+                @first_reviewer_subsection_id,
+                @first_reviewer_user_id,
+                @genjyomondaiten,
+                @kaizenan,
+                @koukaJishi,
                 @kouka,
-                NULL, NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL, NULL, NULL,
-                @submissiondate,
-                SYSDATETIME(), 
-                @createddate
-            );
-            
-            SELECT TOP 1 id FROM proposal ORDER BY id DESC;
+                SYSDATETIME(),
+                SYSDATETIME()
+            FROM [user] u
+            WHERE u.user_id = @user_id;
+            SELECT TOP 1 proposal_id FROM proposal ORDER BY proposal_id DESC;
             ";
 
             using var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@userId", pModel.UserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@user_id", pModel.UserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_name", pModel.TeianDaimei ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_type", pModel.ProposalTypeId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_year", pModel.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@status", pModel.Status ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalType", pModel.ProposalTypeId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalKbn", pModel.ProposalKbnId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id3", pModel.ResponsibleSectionId3 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id4", pModel.ResponsibleSectionId4 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id5", pModel.ResponsibleSectionId5 ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
+            cmd.Parameters.AddWithValue("@first_reviewer_affiliation_id", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_department_id", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_section_id", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_subsection_id", pModel.FirstReviewerSubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_user_id", pModel.FirstReviewerUserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@genjyomondaiten", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@kaizenan", pModel.Kaizenan ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@koukaJishi", (object)(pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
             cmd.Parameters.AddWithValue("@kouka", pModel.Kouka ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@submissiondate", pModel.Submissiondate ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@createddate", pModel.Createddate ?? (object)DBNull.Value);
             
             var result = cmd.ExecuteScalar();
 
@@ -267,67 +245,64 @@ namespace Proposal.DAC
             string sql = @"
             UPDATE proposal
             SET
-                user_id = @userId,
+                user_id = @user_id,
                 status = @status,
-                proposal_year = @proposalYear,
-                pd_name = @pdName,
-                proposal_type = @proposalType,
-                proposal_kbn = @proposalKbn,
-                [from] = @from,
-                nameOrrepresentativename = @nameOrRepName,
-                groupname = @groupName,
+                proposal_year = @proposal_year,
+                proposal_name = @proposal_name,
+                proposal_type = @proposal_type,
+                affiliation_id = @affiliation_id,
+                department_id = @department_id,
+                section_id = @section_id,
+                subsection_id = @subsection_id,
+                name = @name,
                 evaluation_section_id = @evaluation_section_id,
                 responsible_section_id1 = @responsible_section_id1,
                 responsible_section_id2 = @responsible_section_id2,
                 responsible_section_id3 = @responsible_section_id3,
                 responsible_section_id4 = @responsible_section_id4,
                 responsible_section_id5 = @responsible_section_id5,
-                firstevieweraffiliation = @hezuShozoku,
-                firsteviewerdepartment = @hezuBuSho,
-                firsteviewersection = @hezuKaBumon,
-                firsteviewername = @hezuShimei,
-                firsteviewertitle = @hezuKanshoku,
-                responsiblesection = @shumuKa,
-                relatedsection = @kankeiKa,
-                currentsituation = @genjo,
-                improvementproposal = @kaizen,
-                isImplemented = @koukaJissi,
-                effect = @kouka,
-                submissiondate  = @Submissiondate,
-                updatedate = SYSDATETIME()
+                first_reviewer_affiliation_id = @first_reviewer_affiliation_id,
+                first_reviewer_department_id = @first_reviewer_department_id,
+                first_reviewer_section_id = @first_reviewer_section_id,
+                first_reviewer_subsection_id = @first_reviewer_subsection_id,
+                first_reviewer_user_id = @first_reviewer_user_id,
+                genjyomondaiten = @genjyomondaiten,
+                kaizenan = @kaizenan,
+                koukaJishi = @koukaJishi,
+                kouka = @kouka,
+                updated_time = SYSDATETIME()
             WHERE 
-                id = @id;
+                proposal_id = @proposal_id;
             ";
 
             using var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@userId", pModel.UserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@user_id", pModel.UserId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@status", pModel.Status ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalYear", pModel.TeianYear ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@pdName", pModel.TeianDaimei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalType", pModel.ProposalTypeId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposalKbn", pModel.ProposalKbnId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@from", pModel.AffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@nameOrRepName", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@groupName", pModel.GroupMei ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_year", pModel.TeianYear ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_name", pModel.TeianDaimei ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_type", pModel.ProposalTypeId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@affiliation_id", pModel.AffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@department_id", pModel.DepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@section_id", pModel.SectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@subsection_id", pModel.SubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@name", pModel.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@evaluation_section_id", pModel.EvaluationSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id1", pModel.ResponsibleSectionId1 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id2", pModel.ResponsibleSectionId2 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id3", pModel.ResponsibleSectionId3 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id4", pModel.ResponsibleSectionId4 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id5", pModel.ResponsibleSectionId5 ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShozoku", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuBuSho", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKaBumon", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuShimei", pModel.FirstReviewerName ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@hezuKanshoku", pModel.FirstReviewerTitle ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@genjo", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@kaizen", pModel.Kaizenan ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@koukaJissi", (object) (pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
+            cmd.Parameters.AddWithValue("@first_reviewer_affiliation_id", pModel.FirstReviewerAffiliationId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_department_id", pModel.FirstReviewerDepartmentId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_section_id", pModel.FirstReviewerSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_subsection_id", pModel.FirstReviewerSubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_user_id", pModel.FirstReviewerUserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@genjyomondaiten", pModel.GenjyoMondaiten ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@kaizenan", pModel.Kaizenan ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@koukaJishi", (object)(pModel.KoukaJishi.HasValue ? (int)pModel.KoukaJishi.Value : DBNull.Value));
             cmd.Parameters.AddWithValue("@kouka", pModel.Kouka ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@submissiondate", pModel.Submissiondate ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@createddate", pModel.Createddate ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@id", pModel.Id);
+            cmd.Parameters.AddWithValue("@proposal_id", pModel.Id);
 
             cmd.ExecuteNonQuery();
         }
@@ -505,23 +480,80 @@ namespace Proposal.DAC
         }
 
         // グループデータを挿入するメソッド
-        public void InsertGroupInfo(string proposalId, List<GroupMemberModel> members)
+        public void InsertGroupInfo(CreateModel model)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
-            foreach (var m in members)
+            // 既存のグループデータを削除
+            var delCmd = new SqlCommand("DELETE FROM group_info WHERE proposal_id = @proposalId", conn);
+            delCmd.Parameters.AddWithValue("@proposalId", model.Id);
+            delCmd.ExecuteNonQuery();
+
+            // 10人分のメンバー情報を挿入
+            var sql = @"INSERT INTO group_info (
+                proposal_id,
+                group_name,
+                department_id_1, section_id_1, subsection_id_1, name_1,
+                department_id_2, section_id_2, subsection_id_2, name_2,
+                department_id_3, section_id_3, subsection_id_3, name_3,
+                department_id_4, section_id_4, subsection_id_4, name_4,
+                department_id_5, section_id_5, subsection_id_5, name_5,
+                department_id_6, section_id_6, subsection_id_6, name_6,
+                department_id_7, section_id_7, subsection_id_7, name_7,
+                department_id_8, section_id_8, subsection_id_8, name_8,
+                department_id_9, section_id_9, subsection_id_9, name_9,
+                department_id_10, section_id_10, subsection_id_10, name_10
+            ) VALUES (
+                @proposal_id,
+                @group_name,
+                @department_id_1, @section_id_1, @subsection_id_1, @name_1,
+                @department_id_2, @section_id_2, @subsection_id_2, @name_2,
+                @department_id_3, @section_id_3, @subsection_id_3, @name_3,
+                @department_id_4, @section_id_4, @subsection_id_4, @name_4,
+                @department_id_5, @section_id_5, @subsection_id_5, @name_5,
+                @department_id_6, @section_id_6, @subsection_id_6, @name_6,
+                @department_id_7, @section_id_7, @subsection_id_7, @name_7,
+                @department_id_8, @section_id_8, @subsection_id_8, @name_8,
+                @department_id_9, @section_id_9, @subsection_id_9, @name_9,
+                @department_id_10, @section_id_10, @subsection_id_10, @name_10
+            )";
+            var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@proposal_id", model.Id);
+            cmd.Parameters.AddWithValue("@group_name", model.GroupMei ?? (object)DBNull.Value);
+            for (int i = 0; i < 10; i++)
             {
-                if (string.IsNullOrEmpty(m.AffiliationId) && string.IsNullOrEmpty(m.DepartmentId) && string.IsNullOrEmpty(m.SectionId) && string.IsNullOrEmpty(m.SubsectionId) && string.IsNullOrEmpty(m.Name))
-                    continue;
-                var cmd = new SqlCommand(@"INSERT INTO group_info (proposal_id, affiliation_id, department_id, section_id, subsection_id, member_name) VALUES (@proposalId, @affiliationId, @departmentId, @sectionId, @subsectionId, @memberName)", conn);
-                cmd.Parameters.AddWithValue("@proposalId", proposalId);
-                cmd.Parameters.AddWithValue("@affiliationId", m.AffiliationId ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@departmentId", m.DepartmentId ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@sectionId", m.SectionId ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@subsectionId", m.SubsectionId ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@memberName", m.Name ?? (object)DBNull.Value);
-                cmd.ExecuteNonQuery();
+                var m = (model.GroupMembers != null && i < model.GroupMembers.Count) ? model.GroupMembers[i] : null;
+                cmd.Parameters.AddWithValue($"@department_id_{i + 1}", m?.DepartmentId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue($"@section_id_{i + 1}", m?.SectionId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue($"@subsection_id_{i + 1}", m?.SubsectionId ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue($"@name_{i + 1}", m?.Name ?? (object)DBNull.Value);
             }
+            cmd.ExecuteNonQuery();
+        }
+
+        // 指定proposal_idでgroup_infoの10人分のメンバー情報を取得
+        public DataTable GetGroupInfoByProposalId(string proposalId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+            string sql = @"SELECT 
+                department_id_1, section_id_1, subsection_id_1, name_1,
+                department_id_2, section_id_2, subsection_id_2, name_2,
+                department_id_3, section_id_3, subsection_id_3, name_3,
+                department_id_4, section_id_4, subsection_id_4, name_4,
+                department_id_5, section_id_5, subsection_id_5, name_5,
+                department_id_6, section_id_6, subsection_id_6, name_6,
+                department_id_7, section_id_7, subsection_id_7, name_7,
+                department_id_8, section_id_8, subsection_id_8, name_8,
+                department_id_9, section_id_9, subsection_id_9, name_9,
+                department_id_10, section_id_10, subsection_id_10, name_10
+            FROM group_info WHERE proposal_id = @proposalId";
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@proposalId", proposalId);
+            using var adapter = new SqlDataAdapter(cmd);
+            var dataTable = new DataTable();
+            adapter.Fill(dataTable);
+            return dataTable;
         }
 
     }

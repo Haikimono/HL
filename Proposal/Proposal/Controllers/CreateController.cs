@@ -105,7 +105,7 @@ namespace Proposal.Controllers
                 //登録又は更新処理
                 this.InsertOrUpdate(model);
 
-                return RedirectToAction("ProposalList", "Proposal");
+                return RedirectToAction("ProposalList", "ProposalList");
             }
 
             //出力
@@ -155,17 +155,7 @@ namespace Proposal.Controllers
                 //登録又は更新処理
                 this.InsertOrUpdate(model);
 
-                return RedirectToAction("ProposalList", "Proposal");
-            }
-
-            // グループメンバー追加
-            if (action == "AddMember")
-            {
-                model.GroupMembers ??= new List<GroupMemberModel>();
-                model.GroupMembers.Add(new GroupMemberModel());
-                SetDropdowns();
-                ModelState.Clear();
-                return View(model);
+                return RedirectToAction("ProposalList", "ProposalList");
             }
 
             // POST：バリデーションエラー時に GroupMembers を3人に補完し、保存時に BL.SaveGroupInfo を呼び出す
@@ -253,8 +243,11 @@ namespace Proposal.Controllers
                 //提案書詳細登録
                 model.Id = _createBL.Insertproposals_detail(model).ToString();
 
-                //グループデータを登録
-                _createBL.InsertGroupInfo(model.Id, model.GroupMembers);
+                //グループデータを登録（区分がグループの時のみ）
+                if (model.ProposalKbnId == "2")
+                {
+                    _createBL.InsertGroupInfo(model);
+                }
             }
             else
             {
@@ -262,11 +255,16 @@ namespace Proposal.Controllers
                 //提案書詳細更新
                 _createBL.Updateproposals_detail(model);
 
-                //グループデータを削除
-                _createBL.DeleteGroupInfo(model.Id);
+                //グループデータを登録（区分がグループの時のみ）
+                if (model.ProposalKbnId == "2")
+                {
 
-                //グループデータを登録
-                _createBL.InsertGroupInfo(model.Id, model.GroupMembers);
+                    //グループデータを削除
+                    _createBL.DeleteGroupInfo(model.Id);
+
+                    //グループデータを登録
+                    _createBL.InsertGroupInfo(model);
+                }
             }
         }
     }
