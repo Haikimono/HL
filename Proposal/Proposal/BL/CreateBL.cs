@@ -365,6 +365,49 @@ namespace Proposal.BL
             // グループデータを挿入する
             _createDAC.InsertGroupInfo(model);
         }
+
+        /// <summary>
+        /// 获取所有组织架构数据
+        /// </summary>
+        public List<object> GetAllOrganizations()
+        {
+            var organizations = _createDAC.GetAllOrganizations();
+            return organizations.Select(org => new
+            {
+                Id = org.Id,
+                Name = org.Name,
+                ParentId = org.ParentId,
+                Level = org.Level
+            }).Cast<object>().ToList();
+        }
+
+        /// <summary>
+        /// 根据父级ID获取子组织
+        /// </summary>
+        public List<object> GetOrganizationsByParentId(string parentId)
+        {
+            var organizations = _createDAC.GetOrganizationsByParentId(parentId);
+            return organizations.Select(org => new
+            {
+                Id = org.Id,
+                Name = org.Name,
+                ParentId = org.ParentId,
+                Level = org.Level
+            }).Cast<object>().ToList();
+        }
+
+        /// <summary>
+        /// 获取顶级组织（Level 1）
+        /// </summary>
+        public List<object> GetTopLevelOrganizations()
+        {
+            var organizations = _createDAC.GetTopLevelOrganizations();
+            return organizations.Select(org => new
+            {
+                Value = org.Value,
+                Text = org.Text
+            }).Cast<object>().ToList();
+        }
     }
 
     /// <summary>

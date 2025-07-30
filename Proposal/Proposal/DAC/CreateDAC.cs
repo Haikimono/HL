@@ -712,5 +712,101 @@ namespace Proposal.DAC
             return dataTable;
         }
 
+        /// <summary>
+        /// 获取所有组织架构数据
+        /// </summary>
+        public List<Organization> GetAllOrganizations()
+        {
+            var list = new List<Organization>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand(@"
+                    SELECT Id, Name, ParentId, Level, CreatedDate 
+                    FROM Organizations 
+                    ORDER BY Level, Name", conn);
+                
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Organization
+                        {
+                            Id = reader["Id"].ToString(),
+                            Name = reader["Name"].ToString(),
+                            ParentId = reader["ParentId"]?.ToString(),
+                            Level = Convert.ToInt32(reader["Level"]),
+                            CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 根据父级ID获取子组织
+        /// </summary>
+        public List<Organization> GetOrganizationsByParentId(string parentId)
+        {
+            var list = new List<Organization>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand(@"
+                    SELECT Id, Name, ParentId, Level, CreatedDate 
+                    FROM Organizations 
+                    WHERE ParentId = @ParentId 
+                    ORDER BY Level, Name", conn);
+                
+                cmd.Parameters.AddWithValue("@ParentId", parentId ?? (object)DBNull.Value);
+                
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Organization
+                        {
+                            Id = reader["Id"].ToString(),
+                            Name = reader["Name"].ToString(),
+                            ParentId = reader["ParentId"]?.ToString(),
+                            Level = Convert.ToInt32(reader["Level"]),
+                            CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 获取顶级组织（Level 1）
+        /// </summary>
+        public List<SelectListItem> GetTopLevelOrganizations()
+        {
+            var list = new List<SelectListItem>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = new SqlCommand(@"
+                    SELECT Id, Name 
+                    FROM Organizations 
+                    WHERE Level = 1 
+                    ORDER BY Name", conn);
+                
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new SelectListItem
+                        {
+                            Value = reader["Id"].ToString(),
+                            Text = reader["Name"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
     }
 }

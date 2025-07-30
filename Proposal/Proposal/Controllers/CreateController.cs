@@ -472,5 +472,35 @@ namespace Proposal.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// 获取所有组织架构数据
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetAllOrganizations()
+        {
+            var organizations = _createBL.GetAllOrganizations();
+            return Json(organizations);
+        }
+
+        /// <summary>
+        /// 根据父级ID获取子组织
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetOrganizationsByParentId(string parentId)
+        {
+            var organizations = _createBL.GetOrganizationsByParentId(parentId);
+            return Json(organizations);
+        }
+
+        /// <summary>
+        /// 获取顶级组织（Level 1）
+        /// </summary>
+        [HttpGet]
+        public JsonResult GetTopLevelOrganizations()
+        {
+            var organizations = _createBL.GetTopLevelOrganizations();
+            return Json(organizations);
+        }
     }
 }

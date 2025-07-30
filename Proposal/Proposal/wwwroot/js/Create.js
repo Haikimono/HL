@@ -397,4 +397,127 @@ function initializeForm() {
     }
 }
 
+// 組織架构テスト機能
+document.addEventListener("DOMContentLoaded", function () {
+    // 組織架构テストの初期化
+    initializeOrganizationTest();
+});
+
+function initializeOrganizationTest() {
+    let allOrganizations = [];
+    
+    // 加载所有组织数据
+    function loadAllOrganizations() {
+        $.get('/Create/GetAllOrganizations', function(data) {
+            allOrganizations = data;
+            loadTopLevelOrganizations();
+        }).fail(function() {
+            console.log('組織架构データの取得に失敗しました');
+        });
+    }
+    
+    // 加载顶级组织
+    function loadTopLevelOrganizations() {
+        $.get('/Create/GetTopLevelOrganizations', function(data) {
+            let html = '<option value="">選択してください</option>';
+            data.forEach(function(item) {
+                html += `<option value="${item.value}">${item.text}</option>`;
+            });
+            $('#testLevel1').html(html);
+        }).fail(function() {
+            console.log('トップレベル組織の取得に失敗しました');
+        });
+    }
+    
+    // Level 1 选择事件
+    $('#testLevel1').change(function() {
+        let selectedId = $(this).val();
+        updateTestResults('Level 1', selectedId);
+        
+        // 清空所有下级下拉菜单
+        $('#testLevel2').html('<option value="">選択してください</option>');
+        $('#testLevel3').html('<option value="">選択してください</option>');
+        $('#testLevel4').html('<option value="">選択してください</option>');
+        
+        if (selectedId) {
+            loadChildOrganizations(selectedId, '#testLevel2');
+        }
+    });
+    
+    // Level 2 选择事件
+    $('#testLevel2').change(function() {
+        let selectedId = $(this).val();
+        updateTestResults('Level 2', selectedId);
+        
+        // 清空下级下拉菜单
+        $('#testLevel3').html('<option value="">選択してください</option>');
+        $('#testLevel4').html('<option value="">選択してください</option>');
+        
+        if (selectedId) {
+            loadChildOrganizations(selectedId, '#testLevel3');
+        }
+    });
+    
+    // Level 3 选择事件
+    $('#testLevel3').change(function() {
+        let selectedId = $(this).val();
+        updateTestResults('Level 3', selectedId);
+        
+        // 清空下级下拉菜单
+        $('#testLevel4').html('<option value="">選択してください</option>');
+        
+        if (selectedId) {
+            loadChildOrganizations(selectedId, '#testLevel4');
+        }
+    });
+    
+    // Level 4 选择事件
+    $('#testLevel4').change(function() {
+        let selectedId = $(this).val();
+        updateTestResults('Level 4', selectedId);
+    });
+    
+    // 加载子组织
+    function loadChildOrganizations(parentId, targetSelector) {
+        $.get('/Create/GetOrganizationsByParentId', { parentId: parentId }, function(data) {
+            let html = '<option value="">選択してください</option>';
+            
+            // 根据targetSelector确定应该显示哪个Level的数据
+            let targetLevel = 0;
+            if (targetSelector === '#testLevel2') targetLevel = 2;
+            else if (targetSelector === '#testLevel3') targetLevel = 3;
+            else if (targetSelector === '#testLevel4') targetLevel = 4;
+            
+            data.forEach(function(item) {
+                // 只显示对应Level的数据
+                if (item.level === targetLevel) {
+                    html += `<option value="${item.id}">${item.name}</option>`;
+                }
+            });
+            $(targetSelector).html(html);
+        }).fail(function() {
+            console.log('子組織の取得に失敗しました');
+        });
+    }
+    
+    // 更新测试结果
+    function updateTestResults(level, selectedId) {
+        let selectedName = '';
+        let selectedLevel = '';
+        if (selectedId) {
+            let org = allOrganizations.find(x => x.id === selectedId);
+            selectedName = org ? org.name : '';
+            selectedLevel = org ? `(Level ${org.level})` : '';
+        }
+        
+        let newResult = `<div><strong>${level}:</strong> ${selectedId || '未選択'} ${selectedName ? `(${selectedName})` : ''} ${selectedLevel}</div>`;
+        
+        // 清除之前的结果，只显示当前选择
+        $('#testResults').html(newResult);
+    }
+    
+    // 初始化
+    loadAllOrganizations();
+}
+
 

@@ -53,6 +53,16 @@ namespace Proposal.Models
         public string Kankeika_name { get; set; }
     }
 
+    // 組織架构
+    public class Organization
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string ParentId { get; set; }
+        public int Level { get; set; }
+        public DateTime CreatedDate { get; set; }
+    }
+
     public enum KoukaJishi
     {
         [Description("選択してください")] Select = 0,
