@@ -27,51 +27,57 @@ namespace Proposal.BL
         /// <summary>
         /// 提案書詳細登録
         /// </summary>
-        public int Insertproposals_detail(CreateModel pModel)
+        public int Insertproposals_detail(CreateModel basicInfo, ProposalContentModel proposalContent)
         {
             //作成日
-            pModel.Createddate = DateTime.Now.ToString();
+            basicInfo.Createddate = DateTime.Now.ToString();
 
             //提出日
             //一時保存
-            if (pModel.Status == 1)
+            if (basicInfo.Status == 1)
             {
-                pModel.Submissiondate = null;
+                basicInfo.Submissiondate = null;
             }
             //提出
-            else if(pModel.Status == 11)
+            else if (basicInfo.Status == 11)
             {
-                pModel.Submissiondate = DateTime.Now.ToString();
+                basicInfo.Submissiondate = DateTime.Now.ToString();
             }
 
-            return _createDAC.SqlInsertproposals_detail(pModel);
+            return _createDAC.SqlInsertproposals_detail(basicInfo, proposalContent);
         }
 
         /// <summary>
         /// 提案書詳細更新
         /// </summary>
-        public void Updateproposals_detail(CreateModel pModel)
+        public void Updateproposals_detail(CreateModel basicInfo, ProposalContentModel proposalContent)
         {
             //提出日
             //一時保存
-            if (pModel.Status == 1)
+            if (basicInfo.Status == 1)
             {
-                pModel.Submissiondate = null;
+                basicInfo.Submissiondate = null;
             }
             //提出
-            else if (pModel.Status == 11)
+            else if (basicInfo.Status == 11)
             {
-                pModel.Submissiondate = DateTime.Now.ToString();
+                basicInfo.Submissiondate = DateTime.Now.ToString();
+            }
+
+            // 更新前にユーザー情報を取得してaffiliation_idなどを設定
+            if (!string.IsNullOrEmpty(basicInfo.UserId))
+            {
+                GetUserInfoByUserId(basicInfo);
             }
 
             //提案書詳細更新
-            _createDAC.SqlUpdateproposals_detail(pModel);
-        } 
+            _createDAC.SqlUpdateproposals_detail(basicInfo, proposalContent);
+        }
 
         /// <summary>
         /// 提案書の詳細情報を取得し、モデルに設定
         /// </summary>
-        public void GetProposalDetailById(CreateModel model)
+        public void GetProposalDetailById(CreateModel model, ProposalContentModel proposalContent)
         {
             var dataTable = _createDAC.GetProposalDetailById(model.Id);
             if (dataTable != null && dataTable.Rows.Count > 0)
@@ -79,60 +85,107 @@ namespace Proposal.BL
                 var row = dataTable.Rows[0]; // 指定IDのデータを取得
 
                 // モデルに設定
-                model.Id = row["id"].ToString();
+                model.Id = row["proposal_id"].ToString();
                 model.Status = row["status"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["status"]);
                 model.TeianYear = row["proposal_year"].ToString();
-                model.TeianDaimei = row["pd_name"].ToString();
+                model.TeianDaimei = row["proposal_name"].ToString();
                 model.ProposalTypeId = row["proposal_type"].ToString();
-                model.ProposalKbnId = row["proposal_kbn"].ToString();
-                model.AffiliationId = row["from"].ToString();
-                model.FirstReviewerAffiliationId = row["firstevieweraffiliation"].ToString();
-                model.FirstReviewerDepartmentId = row["firsteviewerdepartment"].ToString();
-                model.FirstReviewerSectionId = row["firsteviewersection"].ToString();
-                model.FirstReviewerName = row["firsteviewername"].ToString();
-                model.FirstReviewerTitle = row["firsteviewertitle"].ToString();
-                model.EvaluationSectionId = row["evaluation_section_id"].ToString();
-                model.ResponsibleSectionId1 = row["responsible_section_id1"].ToString();
-                model.ResponsibleSectionId2 = row["responsible_section_id2"].ToString();
-                model.ResponsibleSectionId3 = row["responsible_section_id3"].ToString();
-                model.ResponsibleSectionId4 = row["responsible_section_id4"].ToString();
-                model.ResponsibleSectionId5 = row["responsible_section_id5"].ToString();
-                model.KoukaJishi = row["isImplemented"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["isImplemented"]);
+                model.ShimeiOrDaihyoumei = row["name"].ToString();
+                model.AffiliationId = row["affiliation_id"].ToString();
+                model.DepartmentId = row["department_id"].ToString();
+                model.SectionId = row["section_id"].ToString();
+                model.SubsectionId = row["subsection_id"].ToString();
+                model.FirstReviewerAffiliationId = row["first_reviewer_affiliation_id"].ToString();
+                model.FirstReviewerDepartmentId = row["first_reviewer_department_id"].ToString();
+                model.FirstReviewerSectionId = row["first_reviewer_section_id"].ToString();
+                model.FirstReviewerSubsectionId = row["first_reviewer_subsection_id"].ToString();
+                model.FirstReviewerUserId = row["first_reviewer_user_id"].ToString();
+                model.FirstReviewerName = row["first_reviewer_name"].ToString();
                 
-                // 添付ファイル
-                model.TenpuFileName1 = row["attachmentfilename1"].ToString();
-                model.TenpuFileName2 = row["attachmentfilename2"].ToString();
-                model.TenpuFileName3 = row["attachmentfilename3"].ToString();
-                model.TenpuFileName4 = row["attachmentfilename4"].ToString();
-                model.TenpuFileName5 = row["attachmentfilename5"].ToString();
-                model.TenpuFilePath1 = row["attachmentfilepath1"].ToString();
-                model.TenpuFilePath2 = row["attachmentfilepath2"].ToString();
-                model.TenpuFilePath3 = row["attachmentfilepath3"].ToString();
-                model.TenpuFilePath4 = row["attachmentfilepath4"].ToString();
-                model.TenpuFilePath5 = row["attachmentfilepath5"].ToString();
-                
+                // 第一次審査者情報がnullの場合はcheckboxをチェック
+                if (string.IsNullOrEmpty(model.FirstReviewerAffiliationId))
+                {
+                    model.SkipFirstReviewer = true;
+                }
+                model.EvaluationSectionId = row["evaluation_section_id"].ToString().Trim();
+                model.ResponsibleSectionId1 = row["responsible_section_id1"].ToString().Trim();
+                model.ResponsibleSectionId2 = row["responsible_section_id2"].ToString().Trim();
+                model.ResponsibleSectionId3 = row["responsible_section_id3"].ToString().Trim();
+                model.ResponsibleSectionId4 = row["responsible_section_id4"].ToString().Trim();
+                model.ResponsibleSectionId5 = row["responsible_section_id5"].ToString().Trim();
+
+                // 提案内容赋值
+                proposalContent.GenjyoMondaiten = row["genjyomondaiten"].ToString();
+                proposalContent.Kaizenan = row["kaizenan"].ToString();
+                proposalContent.KoukaJishi = row["koukaJishi"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["koukaJishi"]);
+                proposalContent.Kouka = row["kouka"].ToString();
                 // 日付
-                model.Submissiondate = row["submissiondate"].ToString();
-                model.Createddate = row["createddate"].ToString();
+                model.Createddate = row["created_time"].ToString();
+
+                // ProposalKbnId はデータベースに存在しないため、group_info テーブルから判断
+                var groupInfoData = _createDAC.GetGroupInfoByProposalId(model.Id);
+                if (groupInfoData != null && groupInfoData.Rows.Count > 0)
+                {
+                    // group_info にデータがあればグループ提案
+                    model.ProposalKbnId = "2";
+                }
+                else
+                {
+                    // group_info にデータがなければ個人提案
+                    model.ProposalKbnId = "1";
+                }
+
+                // 編集時はユーザー情報も取得して所属名などを設定
+                if (!string.IsNullOrEmpty(model.UserId))
+                {
+                    GetUserInfoByUserId(model);
+                }
             }
+            else
+            {
+            }
+
             // --- グループメンバー情報の取得と設定 ---
             model.GroupMembers = new List<GroupMemberModel>();
             var groupInfoTable = _createDAC.GetGroupInfoByProposalId(model.Id);
             if (groupInfoTable != null && groupInfoTable.Rows.Count > 0)
             {
                 var gRow = groupInfoTable.Rows[0];
+                
+                // グループ名を設定
+                model.GroupMei = gRow["group_name"].ToString();
+                
+                int validMemberCount = 0;
                 for (int i = 1; i <= 10; i++)
                 {
                     var m = new GroupMemberModel
                     {
-                        DepartmentId = gRow[$"department_id_{i}"].ToString(),
-                        SectionId = gRow[$"section_id_{i}"].ToString(),
-                        SubsectionId = gRow[$"subsection_id_{i}"].ToString(),
+                        AffiliationId = gRow[$"affiliation_id_{i}"].ToString().Trim(),
+                        DepartmentId = gRow[$"department_id_{i}"].ToString().Trim(),
+                        SectionId = gRow[$"section_id_{i}"].ToString().Trim(),
+                        SubsectionId = gRow[$"subsection_id_{i}"].ToString().Trim(),
                         Name = gRow[$"name_{i}"].ToString(),
                     };
-                    // いずれかの値があれば追加
-                    if (!string.IsNullOrEmpty(m.DepartmentId) || !string.IsNullOrEmpty(m.SectionId) || !string.IsNullOrEmpty(m.SubsectionId) || !string.IsNullOrEmpty(m.Name))
+                    // 氏名がnullでなければ有効なメンバーとしてカウント
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        validMemberCount++;
                         model.GroupMembers.Add(m);
+                    }
+                }
+                
+                // 有効なメンバーが3人未満の場合は3人まで補完
+                while (model.GroupMembers.Count < Math.Max(validMemberCount, 3))
+                {
+                    model.GroupMembers.Add(new GroupMemberModel());
+                }
+            }
+            else
+            {
+                // グループ情報がない場合は3人で初期化
+                for (int i = 0; i < 3; i++)
+                {
+                    model.GroupMembers.Add(new GroupMemberModel());
                 }
             }
         }
@@ -147,10 +200,39 @@ namespace Proposal.BL
             {
                 var row = dataTable.Rows[0]; // 指定IDのデータを取得
 
+                // ID フィールドを設定（既存の値がある場合は上書きしない）
+                var affiliationId = row["affiliation_id"].ToString();
+                if (!string.IsNullOrEmpty(affiliationId))
+                {
+                    model.AffiliationId = affiliationId;
+                }
+                
+                var departmentId = row["department_id"].ToString();
+                if (!string.IsNullOrEmpty(departmentId))
+                {
+                    model.DepartmentId = departmentId;
+                }
+                
+                var sectionId = row["section_id"].ToString();
+                if (!string.IsNullOrEmpty(sectionId))
+                {
+                    model.SectionId = sectionId;
+                }
+                
+                var subsectionId = row["subsection_id"].ToString();
+                if (!string.IsNullOrEmpty(subsectionId))
+                {
+                    model.SubsectionId = subsectionId;
+                }
+
+                // 表示名フィールドを設定
                 model.AffiliationName = row["affiliation_name"].ToString();
                 model.DepartmentName = row["department_name"].ToString();
                 model.SectionName = row["section_name"].ToString();
                 model.SubsectionName = row["subsection_name"].ToString();
+            }
+            else
+            {
             }
         }
 

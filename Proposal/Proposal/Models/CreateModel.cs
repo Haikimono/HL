@@ -135,39 +135,6 @@ namespace Proposal.Models
         public string? ResponsibleSectionId4 { get; set; }
         public string? ResponsibleSectionId5 { get; set; }
 
-        // 現状・問題点
-        [Required(ErrorMessage = "現状・問題点を入力してください。")]
-        [MaxLength(2000, ErrorMessage = "2,000文字以内で入力してください。")]
-        public string GenjyoMondaiten { get; set; }
-        // 改善案
-        [Required(ErrorMessage = "改善案を入力してください。")]
-        [MaxLength(2000, ErrorMessage = "2,000文字以内で入力してください。")]
-        public string Kaizenan { get; set; }
-        // 効果（実施）
-        [Required(ErrorMessage = "効果の種類を選択してください。")]
-        public KoukaJishi? KoukaJishi { get; set; }
-        // 効果
-        [Required(ErrorMessage = "効果を入力してください。")]
-        [MaxLength(2000, ErrorMessage = "2,000文字以内で入力してください。")]
-        public string Kouka { get; set; }
-        // 添付書類
-        public IFormFile? TenpuFile1 { get; set; }
-        public IFormFile? TenpuFile2 { get; set; }
-        public IFormFile? TenpuFile3 { get; set; }
-        public IFormFile? TenpuFile4 { get; set; }
-        public IFormFile? TenpuFile5 { get; set; }
-        // 添付ファイル名
-        public string? TenpuFileName1 { get; set; }
-        public string? TenpuFileName2 { get; set; }
-        public string? TenpuFileName3 { get; set; }
-        public string? TenpuFileName4 { get; set; }
-        public string? TenpuFileName5 { get; set; }
-        // 添付ファイルパス
-        public string? TenpuFilePath1 { get; set; }
-        public string? TenpuFilePath2 { get; set; }
-        public string? TenpuFilePath3 { get; set; }
-        public string? TenpuFilePath4 { get; set; }
-        public string? TenpuFilePath5 { get; set; }
         //作成日
         public string? Createddate { get; set; }
         //提出日

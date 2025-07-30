@@ -21,7 +21,6 @@
         const fileNameInput = document.getElementById(`fileName${i}`);
 
         if (!btn || !fileInput || !fileNameInput) {
-            console.warn(`Missing element for file@${i}`);
             continue;
         }
 
@@ -39,18 +38,13 @@
     }
 
     // 画面初期表示時にViewBagの値に基づいて画面を切り替え
-    // ページ初期表示時、ViewBagの値によりタブを自動で切り替える
-    var flagElem = document.getElementById('showProposalContentFlag'); // id='showProposalContentFlag'の要素（サーバーからのタブ表示フラグ）を取得
-    var showProposalContent = flagElem && flagElem.textContent.trim() === 'true'; // flagElemが存在すれば、その内容をtrimして'true'かどうか判定
-    setTimeout(function() {
-        var btnTeian = document.getElementById('btnTeian'); // 'btnTeian'（提案内容タブボタン）の要素を取得
-        var btnBase = document.getElementById('btnBase');   // 'btnBase'（基本情報タブボタン）の要素を取得
-        if (showProposalContent) { // showProposalContentがtrueなら（提案内容タブを表示したい場合）
-            if (btnTeian) btnTeian.click(); // btnTeianが存在すれば、クリックをシミュレート
-        } else { // それ以外（基本情報タブを表示したい場合）
-            if (btnBase) btnBase.click(); // btnBaseが存在すれば、クリックをシミュレート
-        }
-    }, 0); // 0ミリ秒遅延で実行し、ボタンが描画済みであることを保証
+    var flagElem = document.getElementById('showProposalContentFlag');
+    var showProposalContent = flagElem && flagElem.textContent.trim() === 'true';
+    if (showProposalContent) {
+        showDiv('teian');
+    } else {
+        showDiv('base');
+    }
 
     // 編集権限の制御
     // statusがnullまたは1以外の場合は編集不可
@@ -113,7 +107,7 @@
 
     // 「第一次審査者を経ずに提出する」チェック時、下の入力欄を無効化
     function toggleDaiichishinsashaInputs() {
-        var checkbox = document.getElementById('SkipFirstReviewer');
+        var checkbox = document.querySelector('input[name="BasicInfo.SkipFirstReviewer"]');
         var target = document.getElementById('daiichishinsashaInputs');
         if (!checkbox || !target) return;
         var disabled = checkbox.checked;
@@ -131,11 +125,15 @@
             }
         });
     }
-    var daiichiCheckbox = document.getElementById('SkipFirstReviewer');
-    if (daiichiCheckbox) {
-        daiichiCheckbox.addEventListener('change', toggleDaiichishinsashaInputs);
-        toggleDaiichishinsashaInputs(); // 初期表示時も実行
-    }
+    
+    // 等待DOM完全加载后再绑定事件
+    setTimeout(function() {
+        var daiichiCheckbox = document.querySelector('input[name="BasicInfo.SkipFirstReviewer"]');
+        if (daiichiCheckbox) {
+            daiichiCheckbox.addEventListener('change', toggleDaiichishinsashaInputs);
+            toggleDaiichishinsashaInputs(); // 初期表示時も実行
+        }
+    }, 100);
 
     // 「提案の区分」による「氏名/代表名」ラベル切替
     function toggleShimeiLabel() {
@@ -163,38 +161,38 @@
     function createMemberCard(index) {
         return `
     <div class="group-member-card mb-3" data-index="${index}">
-        <div class="member-header d-flex align-items-center mb-2">
-            <span class="member-number me-2">${index + 1}</span>
-            <span class="member-title">メンバー ${index + 1}</span>
-            <button type="button" class="btn btn-danger btn-sm ms-auto remove-member">削除</button>
-        </div>
+    <div class="member-header d-flex align-items-center mb-2">
+        <span class="member-number me-2">${index + 1}</span>
+        <span class="member-title">メンバー ${index + 1}</span>
+        ${index >= 3 ? '<button type="button" class="btn btn-danger btn-sm ms-auto remove-member">削除</button>' : ''}
+    </div>
         <div class="form-row-modern">
             <div class="form-group-modern me-2">
                 <label class="form-label-modern">所属</label>
-                <select name="GroupMembers[${index}].AffiliationId" class="form-control-modern">${window.affiliationOptions}</select>
+                <select name="BasicInfo.GroupMembers[${index}].AffiliationId" class="form-control-modern">${window.affiliationOptions}</select>
             </div>
             <div class="form-group-modern">
                 <label class="form-label-modern">部・署</label>
-                <select name="GroupMembers[${index}].DepartmentId" class="form-control-modern">${window.departmentOptions}</select>
+                <select name="BasicInfo.GroupMembers[${index}].DepartmentId" class="form-control-modern">${window.departmentOptions}</select>
                 <span class="validation-message validation-department"></span>
             </div>
         </div>
         <div class="form-row-modern">
             <div class="form-group-modern me-2">
                 <label class="form-label-modern">課・部門</label>
-                <select name="GroupMembers[${index}].SectionId" class="form-control-modern">${window.sectionOptions}</select>
+                <select name="BasicInfo.GroupMembers[${index}].SectionId" class="form-control-modern">${window.sectionOptions}</select>
                 <span class="validation-message validation-section"></span>
             </div>
             <div class="form-group-modern">
                 <label class="form-label-modern">係・担当</label>
-                <select name="GroupMembers[${index}].SubsectionId" class="form-control-modern">${window.subsectionOptions}</select>
+                <select name="BasicInfo.GroupMembers[${index}].SubsectionId" class="form-control-modern">${window.subsectionOptions}</select>
                 <span class="validation-message validation-subsection"></span>
             </div>
         </div>
         <div class="form-row-modern">
             <div class="form-group-modern">
                 <label class="form-label-modern">氏名</label>
-                <input type="text" name="GroupMembers[${index}].Name" class="form-control-modern" placeholder="氏名を入力" />
+                <input type="text" name="BasicInfo.GroupMembers[${index}].Name" class="form-control-modern" placeholder="氏名を入力" />
                 <span class="validation-message validation-name"></span>
             </div>
         </div>
@@ -213,35 +211,35 @@
         <div class="member-header d-flex align-items-center mb-2">
             <span class="member-number me-2">${index + 1}</span>
             <span class="member-title">メンバー ${index + 1}</span>
-            <button type="button" class="btn btn-danger btn-sm ms-auto remove-member">削除</button>
+            ${index >= 3 ? '<button type="button" class="btn btn-danger btn-sm ms-auto remove-member">削除</button>' : ''}
         </div>
         <div class="form-row-modern">
             <div class="form-group-modern me-2">
                 <label class="form-label-modern">所属</label>
-                <select name="GroupMembers[${index}].AffiliationId" class="form-control-modern">${getOptions(window.affiliationOptions, member.AffiliationId)}</select>
+                <select name="BasicInfo.GroupMembers[${index}].AffiliationId" class="form-control-modern">${getOptions(window.affiliationOptions, member.AffiliationId)}</select>
             </div>
             <div class="form-group-modern">
                 <label class="form-label-modern">部・署</label>
-                <select name="GroupMembers[${index}].DepartmentId" class="form-control-modern">${getOptions(window.departmentOptions, member.DepartmentId)}</select>
+                <select name="BasicInfo.GroupMembers[${index}].DepartmentId" class="form-control-modern">${getOptions(window.departmentOptions, member.DepartmentId)}</select>
                 <span class="validation-message validation-department"></span>
             </div>
         </div>
         <div class="form-row-modern">
             <div class="form-group-modern me-2">
                 <label class="form-label-modern">課・部門</label>
-                <select name="GroupMembers[${index}].SectionId" class="form-control-modern">${getOptions(window.sectionOptions, member.SectionId)}</select>
+                <select name="BasicInfo.GroupMembers[${index}].SectionId" class="form-control-modern">${getOptions(window.sectionOptions, member.SectionId)}</select>
                 <span class="validation-message validation-section"></span>
             </div>
             <div class="form-group-modern">
                 <label class="form-label-modern">係・担当</label>
-                <select name="GroupMembers[${index}].SubsectionId" class="form-control-modern">${getOptions(window.subsectionOptions, member.SubsectionId)}</select>
+                <select name="BasicInfo.GroupMembers[${index}].SubsectionId" class="form-control-modern">${getOptions(window.subsectionOptions, member.SubsectionId)}</select>
                 <span class="validation-message validation-subsection"></span>
             </div>
         </div>
         <div class="form-row-modern">
             <div class="form-group-modern">
                 <label class="form-label-modern">氏名</label>
-                <input type="text" name="GroupMembers[${index}].Name" class="form-control-modern" placeholder="氏名を入力" value="${member.Name || ''}" />
+                <input type="text" name="BasicInfo.GroupMembers[${index}].Name" class="form-control-modern" placeholder="氏名を入力" value="${member.Name || ''}" />
                 <span class="validation-message validation-name"></span>
             </div>
         </div>
@@ -311,11 +309,11 @@
             const groupCards = document.querySelectorAll('.group-member-card');
             groupCards.forEach(function(card, idx) {
                 const n = idx + 1;
-                const aff = card.querySelector(`[name='GroupMembers[${idx}].AffiliationId']`);
-                const dep = card.querySelector(`[name='GroupMembers[${idx}].DepartmentId']`);
-                const sec = card.querySelector(`[name='GroupMembers[${idx}].SectionId']`);
-                const sub = card.querySelector(`[name='GroupMembers[${idx}].SubsectionId']`);
-                const name = card.querySelector(`[name='GroupMembers[${idx}].Name']`);
+                const aff = card.querySelector(`[name='BasicInfo.GroupMembers[${idx}].AffiliationId']`);
+                const dep = card.querySelector(`[name='BasicInfo.GroupMembers[${idx}].DepartmentId']`);
+                const sec = card.querySelector(`[name='BasicInfo.GroupMembers[${idx}].SectionId']`);
+                const sub = card.querySelector(`[name='BasicInfo.GroupMembers[${idx}].SubsectionId']`);
+                const name = card.querySelector(`[name='BasicInfo.GroupMembers[${idx}].Name']`);
                 // 各エラーメッセージ表示用要素
                 const depMsg = card.querySelector('.validation-department');
                 const secMsg = card.querySelector('.validation-section');
